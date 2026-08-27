@@ -12,12 +12,14 @@ small to use full-bleed.
 Run it from the repository root. Needs only the standard library.
 """
 
+import base64
 import hashlib
 import html
 import json
 import pathlib
 import re
 import sys
+import urllib.parse
 import urllib.request
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -93,7 +95,14 @@ def destination(stem: str):
 def main():
     if len(sys.argv) < 2:
         sys.exit(__doc__)
-    page = pathlib.Path(sys.argv[1]).read_text(encoding="utf-8", errors="replace")
+    if not (ROOT / "index.html").exists():
+        sys.exit(f"Expected the site at {ROOT} but index.html isn't there.\n"
+                 f"Run this from inside the repository, e.g.\n"
+                 f"    python3 tools/fetch-assets.py collection.html")
+    src_file = pathlib.Path(sys.argv[1])
+    if not src_file.exists():
+        sys.exit(f"No such file: {src_file}")
+    page = src_file.read_text(encoding="utf-8", errors="replace")
     items = list(parse(page))
     if not items:
         sys.exit("No <h2>filename</h2> + <img src> pairs found in that file.")
@@ -114,9 +123,16 @@ def main():
         out_dir.mkdir(parents=True, exist_ok=True)
 
         try:
-            req = urllib.request.Request(url, headers=UA)
-            with urllib.request.urlopen(req, timeout=60) as r:
-                blob = r.read()
+            if url.startswith(("http://", "https://")):
+                req = urllib.request.Request(url, headers=UA)
+                with urllib.request.urlopen(req, timeout=60) as r:
+                    blob = r.read()
+            elif url.startswith("data:"):
+                blob = base64.b64decode(url.split(",", 1)[1])
+            else:
+                # "Save page as → Complete" rewrites src to a local file
+                local = (src_file.parent / urllib.parse.unquote(url)).resolve()
+                blob = local.read_bytes()
         except Exception as exc:                      # noqa: BLE001
             failed.append((name, str(exc)[:70]))
             print(f"  FAIL  {name:26} {str(exc)[:50]}")
