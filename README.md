@@ -44,17 +44,19 @@ for the scenery behind each moment, hand-authored SVG for the sigils and the
 map, particle systems for embers, snow, fire and blood. Official stills belong
 to HBO, so none ship here.
 
-If you want real images, you don't have to touch the code — drop files into
-`assets/img/` and list them in a `manifest.json`, and they replace the paintings
-while inheriting the same colour grade, drift and scrim. See
-[`assets/img/README.md`](assets/img/README.md) for the ids and the format.
+**Every drawn thing has a slot.** Backdrops, house sigils, cast portraits, the
+Iron Throne and the score can each be replaced by a real file without touching
+the code: put it in `assets/`, name it in `assets/manifest.json`, and it takes
+over. Anything you don't supply keeps what the code draws.
+**[`ASSETS.md`](ASSETS.md) is the full list** — every id, what shot works, and
+the formats.
 
 **The music is not the real theme.** Djawadi's main title is a copyrighted
 composition, so instead `js/audio.js` synthesises an original piece live in the
 browser with the Web Audio API: a cello ostinato in C minor over i–VI–III–VII,
 with the instrumentation re-scored section by section as you scroll (drums come
 in for the war sections, ice bells for the North, everything drops away for the
-quiet ones). To use your own file instead, see [`assets/README.md`](assets/README.md).
+quiet ones). To use your own file instead, see [`ASSETS.md`](ASSETS.md).
 
 ---
 
@@ -63,6 +65,7 @@ quiet ones). To use your own file instead, see [`assets/README.md`](assets/READM
 ```
 index.html            page structure — mostly empty containers
 css/style.css         the whole design system
+js/assets.js          the drop-in layer — reads assets/manifest.json
 js/data.js            all the lore: houses, seasons, moments, cast, quotes, sigil SVG
 js/scenery.js         the matte paintings — skyline, wall, godswood, hall, pyre, crowd, battlefield
 js/gl.js              tiny WebGL helper — mat4 maths, shaders, procedural meshes

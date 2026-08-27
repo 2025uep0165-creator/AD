@@ -294,10 +294,13 @@ const Score = (() => {
     }
   }
 
-  /* Look for a user-supplied track before falling back to the synth. */
+  /* Look for a user-supplied track before falling back to the synth. The
+     path comes from assets/manifest.json when one names it. */
   function tryFile() {
+    const src = (typeof Assets !== 'undefined' && Assets.audio())
+      ? Assets.audio() : 'assets/theme.mp3';
     return new Promise(resolve => {
-      const el = new Audio('assets/theme.mp3');
+      const el = new Audio(src);
       el.loop = true; el.preload = 'auto'; el.volume = 0;
       let settled = false;
       const done = ok => { if (!settled) { settled = true; resolve(ok ? el : null); } };
@@ -311,6 +314,7 @@ const Score = (() => {
     if (started) return;
     started = true;
 
+    if (typeof Assets !== 'undefined') { try { await Assets.ready; } catch (e) {} }
     const el = await tryFile();
     if (el) {
       usingFile = true;

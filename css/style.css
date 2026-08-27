@@ -535,6 +535,35 @@ p:last-child { margin-bottom: 0; }
   transform: translateZ(10px);
 }
 
+/* a supplied emblem file, standing in for the drawn one */
+.sig-img {
+  width: 100%; height: 100%;
+  object-fit: contain; display: block;
+  filter: drop-shadow(0 6px 18px rgba(0,0,0,.7));
+}
+.minor-sig { display: block; width: 34px; height: 34px; flex: 0 0 auto; }
+
+/* cast portrait, only laid out once a file is actually supplied */
+.cast-photo { display: none; }
+.cast-photo.has-img {
+  display: block; position: relative;
+  margin: -1.6rem -1.4rem 1.2rem; height: 190px; overflow: hidden;
+}
+.cast-photo.has-img img {
+  width: 100%; height: 100%; object-fit: cover; object-position: center 22%;
+  filter: grayscale(.35) contrast(1.08) brightness(.82);
+  transition: transform .8s var(--ease), filter .6s;
+}
+.cast-card:hover .cast-photo.has-img img { transform: scale(1.06); filter: grayscale(0) brightness(.92); }
+.cast-photo.has-img::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 35%, rgba(16,19,23,.55) 78%, var(--panel-2) 100%);
+}
+.cast-card.has-photo .cast-sig {
+  position: absolute; top: 152px; right: 1.2rem;
+  width: 40px; height: 40px; margin: 0; z-index: 2;
+}
+
 /* the sigil drawing itself */
 .sig { display: block; overflow: visible; }
 .sig path, .sig circle { fill: var(--sigc, var(--gold)); }
@@ -864,6 +893,24 @@ p:last-child { margin-bottom: 0; }
   display: grid; place-items: center;
 }
 #throneGL { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+/* a photographed throne, when one is supplied, in place of the model */
+#throneShot { position: absolute; inset: 0; overflow: hidden; }
+#throneShot img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: contain; object-position: center 46%;
+  transform: scale(var(--z, 1)) translateY(var(--dy, 0));
+  transition: none;
+}
+#throneShot .throne-heat {
+  position: absolute; inset: 0; pointer-events: none;
+  opacity: var(--melt, 0);
+  background:
+    radial-gradient(70% 45% at 50% 78%, rgba(255,150,40,.85), rgba(200,60,10,.35) 45%, transparent 72%),
+    linear-gradient(0deg, rgba(255,120,20,.55), transparent 55%);
+  mix-blend-mode: screen;
+  filter: blur(calc(var(--melt, 0) * 6px));
+}
 .throne-sticky::after {
   content: ''; position: absolute; inset: 0; pointer-events: none;
   background:

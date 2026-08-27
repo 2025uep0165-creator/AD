@@ -20,6 +20,7 @@ ROOT = pathlib.Path(__file__).parent
 
 # order matters: data and Scenery must exist before effects.js runs
 SCRIPTS = [
+    "assets.js",
     "data.js",
     "scenery.js",
     "gl.js",

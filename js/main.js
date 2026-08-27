@@ -79,7 +79,7 @@ HOUSES.forEach((h, i) => {
   el.setAttribute('tabindex', '0');
   el.setAttribute('role', 'button');
   el.innerHTML = `
-    <div class="house-sig">${sigilSVG(h.key, h.c1, h.accent)}</div>
+    <div class="house-sig" data-sigil="${h.key}">${sigilSVG(h.key, h.c1, h.accent)}</div>
     <h3 class="house-name">${h.name}</h3>
     <p class="house-words">${h.words}</p>
     <p class="house-seat">${h.seat} · ${h.region}</p>`;
@@ -99,7 +99,7 @@ function openHouse(key) {
   panel.style.setProperty('--hc1', h.c1);
   panel.innerHTML = `
     <button class="hp-close" aria-label="Close">close ✕</button>
-    <div class="hp-sig">${sigilSVG(h.key, h.c1, h.accent)}</div>
+    <div class="hp-sig" data-sigil="${h.key}">${sigilSVG(h.key, h.c1, h.accent)}</div>
     <div>
       <h3 class="hp-name">House ${h.name}</h3>
       <p class="hp-words">“${h.words}”</p>
@@ -142,7 +142,7 @@ houseGrid.addEventListener('keydown', e => {
 /* minor houses strip */
 $('#houseMinor').innerHTML = MINOR_HOUSES.map(h => `
   <div class="minor" style="--mc1:${h.c1}">
-    ${sigilSVG(h.key, h.c1, h.c2)}
+    <span class="minor-sig" data-sigil="${h.key}">${sigilSVG(h.key, h.c1, h.c2)}</span>
     <div><b>${h.name}</b><span>${h.words}</span></div>
   </div>`).join('');
 
@@ -234,22 +234,44 @@ MOMENTS.forEach((m, i) => {
   }
 });
 
-/* Real photographs, if any have been supplied. assets/img/manifest.json maps
-   a moment id (or a section id) to a filename; anything listed replaces the
-   painted backdrop and inherits the same grade and drift. One quiet 404 when
-   the file isn't there, and the paintings stand on their own. */
-fetch('assets/img/manifest.json')
-  .then(r => r.ok ? r.json() : null)
-  .then(map => {
-    if (!map) return;
-    momentFx.forEach(m => {
-      if (map[m.id]) m.fx.setImage('assets/img/' + map[m.id]);
-    });
-    Object.keys(BACKDROPS).forEach(id => {
-      if (map[id]) BACKDROPS[id].setImage('assets/img/' + map[id]);
-    });
-  })
-  .catch(() => {});
+/* Anything supplied in assets/manifest.json takes over from what the code
+   draws — backdrops, sigils, portraits, the throne, the score. See
+   js/assets.js for the format. */
+Assets.ready.then(() => {
+  /* backdrops */
+  momentFx.forEach(m => {
+    const url = Assets.scene(m.id);
+    if (url) m.fx.setImage(url);
+  });
+  Object.keys(BACKDROPS).forEach(id => {
+    const url = Assets.scene(id);
+    if (url) BACKDROPS[id].setImage(url);
+  });
+
+  /* house emblems, wherever they appear */
+  $$('[data-sigil]').forEach(el => {
+    const url = Assets.sigil(el.dataset.sigil);
+    if (url) el.innerHTML = `<img class="sig-img" src="${url}" alt="">`;
+  });
+
+  /* cast portraits */
+  $$('[data-portrait]').forEach(el => {
+    const url = Assets.cast(el.dataset.portrait);
+    if (!url) return;
+    el.innerHTML = `<img src="${url}" alt="">`;
+    el.classList.add('has-img');
+    el.closest('.cast-card').classList.add('has-photo');
+  });
+
+  /* a photographed throne stands in for the model */
+  const throneShot = Assets.throne();
+  if (throneShot) {
+    const host = $('#throneShot');
+    host.querySelector('img').src = throneShot;
+    host.hidden = false;
+    $('#throneGL').style.display = 'none';
+  }
+});
 
 /* ════════════════════════════════ 4 · MAP ═════════════════════════════════ */
 
@@ -300,7 +322,8 @@ CHARACTERS.forEach((c, i) => {
   el.style.setProperty('--cc', h.c1);
   el.style.setProperty('--d', (i % 5) * 0.06 + 's');
   el.innerHTML = `
-    <div class="cast-sig">${sigilSVG(c.house, h.c1, h.accent || h.c2)}</div>
+    <div class="cast-photo" data-portrait="${c.name}"></div>
+    <div class="cast-sig" data-sigil="${c.house}">${sigilSVG(c.house, h.c1, h.accent || h.c2)}</div>
     <h3 class="cast-name">${c.name}</h3>
     <p class="cast-actor">${c.actor}</p>
     <p class="cast-title">${c.title}</p>
@@ -471,6 +494,16 @@ function updateThrone() {
     throne.state.spin = -0.55 + p * 1.15;
     throne.state.melt = smooth(clamp((p - 0.45) / 0.35, 0, 1));
   }
+  /* a supplied photograph gets the same choreography: a slow push-in, then
+     the heat overlay coming up as the melt does */
+  const shot = $('#throneShot');
+  if (shot && !shot.hidden) {
+    const melt = smooth(clamp((p - 0.45) / 0.35, 0, 1));
+    shot.style.setProperty('--z', (1.02 + p * 0.16).toFixed(3));
+    shot.style.setProperty('--dy', (p * -2.5).toFixed(2) + '%');
+    shot.style.setProperty('--melt', melt.toFixed(3));
+  }
+
   const step = p < 0.34 ? 0 : p < 0.62 ? 1 : 2;
   throneSteps.forEach(s => s.classList.toggle('on', +s.dataset.step === step));
   const meta = $('.throne-meta');

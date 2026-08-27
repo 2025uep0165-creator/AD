@@ -1,0 +1,20 @@
+{
+  "audio": "theme.mp3",
+  "throne": "img/iron-throne.png",
+  "scenes": {
+    "redwedding": "img/red-wedding.jpg",
+    "bells": "img/kings-landing-burning.jpg",
+    "hardhome": "img/the-wall.jpg",
+    "longnight": "img/night-king.jpg",
+    "dragons": "img/drogon.jpg"
+  },
+  "sigils": {
+    "stark": "sigils/stark.png",
+    "lannister": "sigils/lannister.png",
+    "targaryen": "sigils/targaryen.png"
+  },
+  "cast": {
+    "Jon Snow": "cast/jon-snow.jpg",
+    "Daenerys Targaryen": "cast/daenerys.jpg"
+  }
+}
