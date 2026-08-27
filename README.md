@@ -48,7 +48,7 @@ to HBO, so none ship here.
 Iron Throne and the score can each be replaced by a real file without touching
 the code: put it in `assets/`, name it in `assets/manifest.json`, and it takes
 over. Anything you don't supply keeps what the code draws.
-**[`ASSETS.md`](ASSETS.md) is the full list** — every id, what shot works, and
+**[`ASSETS.md`](ASSETS.md) is the full list** (and [`ASSET-PROMPT.md`](ASSET-PROMPT.md) is a ready-to-paste prompt for generating it) — every id, what shot works, and
 the formats.
 
 **The music is not the real theme.** Djawadi's main title is a copyrighted

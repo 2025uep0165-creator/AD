@@ -415,7 +415,7 @@ const dragons = reduced ? null : DragonScene($('#dragonFx'));
    backdrop-only, since each already has its own particle system on top. */
 const BACKDROPS = {};
 if (!reduced) {
-  BACKDROPS.longnight = MomentFX($('#lnBg'),
+  BACKDROPS.thewall = MomentFX($('#lnBg'),
     { fx: 'ice', scene: 'wall', sceneSeed: 501, noParticles: true });
   BACKDROPS.dragons = MomentFX($('#dragonBg'),
     { fx: 'fire', scene: 'pyre', sceneSeed: 502, noParticles: true });
@@ -557,7 +557,7 @@ function frame(now) {
     dragons.step(dt, 1);
   }
   if (snow && isVis('#longnight')) {
-    BACKDROPS.longnight.step(dt, 1);
+    BACKDROPS.thewall.step(dt, 1);
     snow.step(dt, 1);
   }
   if (endEmb && isVis('#end')) endEmb.step(dt, 1);

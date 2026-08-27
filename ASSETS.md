@@ -4,6 +4,9 @@ Everything on this page is drawn in code and works with no files at all. But
 every drawn thing has a slot. Put a file in `assets/`, name it in
 `assets/manifest.json`, and it takes over — no code changes.
 
+There is a ready-to-paste prompt for generating all of this in
+[`ASSET-PROMPT.md`](ASSET-PROMPT.md).
+
 Work down the tiers. **Tier 1 alone changes the feel of the whole page.**
 Anything you skip keeps what the code draws, so a partial manifest is fine.
 
@@ -40,10 +43,7 @@ close-ups lose their detail and hurt readability. JPG is fine.
 | id | section | what to look for |
 | --- | --- | --- |
 | `dragons` | Fire made flesh | Drogon in flight, wings spread, against sky |
-| `longnight` | The Long Night | The Wall, or the army of the dead marching |
-
-Note `longnight` is shared with the Tier 1 moment of the same name — one file
-covers both.
+| `thewall` | The Long Night | The Wall, or the army of the dead marching |
 
 ## Tier 3 — the house sigils
 

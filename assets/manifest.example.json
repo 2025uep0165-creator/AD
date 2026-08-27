@@ -6,7 +6,8 @@
     "bells": "img/kings-landing-burning.jpg",
     "hardhome": "img/the-wall.jpg",
     "longnight": "img/night-king.jpg",
-    "dragons": "img/drogon.jpg"
+    "dragons": "img/dragons.jpg",
+    "thewall": "img/thewall.jpg"
   },
   "sigils": {
     "stark": "sigils/stark.png",
