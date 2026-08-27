@@ -1,2 +1,4 @@
 dist/
 .bundle-preview.html
+.fetch/
+collection.html
