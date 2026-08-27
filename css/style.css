@@ -286,15 +286,26 @@ p:last-child { margin-bottom: 0; }
   flex-wrap: wrap;
   margin-bottom: 1.5rem;
 }
+/* Two clipped layers per letter: the gold below, a specular sweep above.
+   Doing the sheen per-letter keeps it aligned with the flex-laid-out
+   wordmark — a single overlay copy drifts out of register. */
 .megatitle span, .megatitle em {
   display: inline-block;
-  background: linear-gradient(180deg, #fdf6dd 0%, #e6cf86 32%, var(--gold) 58%, #6f5510 100%);
+  background-image:
+    linear-gradient(100deg, transparent 42%, rgba(255,255,255,.55) 50%, transparent 58%),
+    linear-gradient(180deg, #fdf6dd 0%, #e6cf86 32%, var(--gold) 58%, #6f5510 100%);
+  background-size: 300% 100%, 100% 100%;
+  background-position: 190% 0, 0 0;
   -webkit-background-clip: text; background-clip: text;
   -webkit-text-fill-color: transparent;
   filter: drop-shadow(0 3px 18px rgba(0,0,0,.85));
   opacity: 0; transform: translateY(34px) rotateX(-55deg);
-  animation: letterIn .95s var(--ease) forwards;
-  animation-delay: calc(var(--i) * .052s + .3s);
+  animation-name: letterIn, sheen;
+  animation-duration: .95s, 7s;
+  animation-timing-function: var(--ease), ease-in-out;
+  animation-delay: calc(var(--i) * .052s + .3s), calc(var(--i) * .05s + 2.2s);
+  animation-fill-mode: forwards, none;
+  animation-iteration-count: 1, infinite;
 }
 .megatitle em {
   font-family: var(--serif); font-style: italic; font-weight: 400;
@@ -303,22 +314,9 @@ p:last-child { margin-bottom: 0; }
 }
 @keyframes letterIn { to { opacity: 1; transform: none; } }
 
-/* a slow specular sweep across the wordmark */
-.megatitle::after {
-  content: attr(data-text);
-  position: absolute; left: 50%; transform: translateX(-50%);
-  pointer-events: none;
-  background: linear-gradient(100deg, transparent 38%, rgba(255,255,255,.5) 50%, transparent 62%);
-  -webkit-background-clip: text; background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-size: 260% 100%;
-  animation: sheen 7s ease-in-out infinite;
-  opacity: 0;
-}
 @keyframes sheen {
-  0%, 62% { background-position: 190% 0; opacity: 0; }
-  70%     { opacity: .9; }
-  100%    { background-position: -60% 0; opacity: 0; }
+  0%, 55%   { background-position: 190% 0, 0 0; }
+  75%, 100% { background-position: -90% 0, 0 0; }
 }
 
 .hero-tag {
