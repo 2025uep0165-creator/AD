@@ -23,7 +23,7 @@ python3 -m http.server 8000    # then visit http://localhost:8000
 | **The Map** | Hand-plotted SVG map of Westeros and western Essos. 26 selectable locations, a drifting raven, the Wall across the top |
 | **The Houses** | Nine great houses as 3D-tilting cards with hand-drawn heraldic sigils; click one to expand its history, seat, and a fact |
 | **8 Seasons** | A drag/scroll/arrow-key rail — every season, its key events, and how it closed |
-| **Moments** | Fourteen full-screen panels that stack over one another as you scroll, each with its own particle atmosphere (blood, wildfire, ice, poison, dust) |
+| **Moments** | Fourteen full-screen panels that stack over one another as you scroll. Each sits in a painted scene — a burning King's Landing, the Wall, a godswood, a hall of columns — graded to its own palette, with matching particles over the top |
 | **Dragons** | Drogon, Rhaegal and Viserion crossing the panel — the lead one breathes fire at your cursor |
 | **The Long Night** | Snowfall, the White Walkers, dragonglass and Valyrian steel |
 | **The Throne** | ~200 procedural swords baked into one mesh. Scroll and it melts, in the vertex shader |
@@ -38,11 +38,16 @@ drives the season rail when it's focused.
 
 ## Two things worth knowing
 
-**There are no photographs.** Every visual is generated in code — WebGL for the
-orrery and the throne, hand-authored SVG for the sigils and the map, canvas
-particle systems for the embers, snow, fire and blood. That's partly a
-copyright decision (official stills belong to HBO) and partly because it lets
-everything move.
+**There are no photographs — but there's a slot for them.** Every visual is
+generated in code: WebGL for the orrery and the throne, canvas matte paintings
+for the scenery behind each moment, hand-authored SVG for the sigils and the
+map, particle systems for embers, snow, fire and blood. Official stills belong
+to HBO, so none ship here.
+
+If you want real images, you don't have to touch the code — drop files into
+`assets/img/` and list them in a `manifest.json`, and they replace the paintings
+while inheriting the same colour grade, drift and scrim. See
+[`assets/img/README.md`](assets/img/README.md) for the ids and the format.
 
 **The music is not the real theme.** Djawadi's main title is a copyrighted
 composition, so instead `js/audio.js` synthesises an original piece live in the
@@ -59,6 +64,7 @@ quiet ones). To use your own file instead, see [`assets/README.md`](assets/READM
 index.html            page structure — mostly empty containers
 css/style.css         the whole design system
 js/data.js            all the lore: houses, seasons, moments, cast, quotes, sigil SVG
+js/scenery.js         the matte paintings — skyline, wall, godswood, hall, pyre, crowd, battlefield
 js/gl.js              tiny WebGL helper — mat4 maths, shaders, procedural meshes
 js/scene-hero.js      the clockwork orrery
 js/scene-throne.js    the Iron Throne, and the shader that melts it
@@ -73,7 +79,7 @@ EB Garamond — if it's blocked, the fallback serif stack takes over and the pag
 is unaffected. Nothing is tracked or phoned home.
 
 Everything animated is gated behind an IntersectionObserver so off-screen
-canvases stop drawing, and the whole thing collapses to a static, readable
+canvases stop drawing and scenery isn't painted until it's needed, and the whole thing collapses to a static, readable
 document under `prefers-reduced-motion: reduce`.
 
 ---

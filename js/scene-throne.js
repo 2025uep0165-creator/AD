@@ -178,31 +178,48 @@ function ThroneScene(canvas) {
   for (let r = 0; r < ROWS; r++) {
     const rt = r / (ROWS - 1);
     const count = 11 + Math.round(rt * 4);
-    const y = 0.05 + r * 0.30;
-    const halfW = 1.45 + rt * 1.75;
+    /* rows are not evenly stacked and not centred — the chair was hammered
+       together out of whatever was surrendered, not designed */
+    const y = 0.05 + r * 0.30 + (rnd() - 0.5) * 0.10;
+    const skew = (rnd() - 0.5) * 0.45;
+    const halfW = (1.45 + rt * 1.75) * (0.88 + rnd() * 0.24);
     for (let j = 0; j < count; j++) {
       const u = count === 1 ? 0 : (j / (count - 1)) * 2 - 1;
-      const x = u * halfW;
-      const z = -0.60 - rt * 0.30 + Math.abs(u) * 0.30;
-      const lean = -0.10 - rt * 0.16 + (rnd() - 0.5) * 0.09;      /* tips back  */
-      const splay = u * (0.10 + rt * 0.55) + (rnd() - 0.5) * 0.12; /* fans out   */
-      const len = 0.80 + rnd() * 0.80 + rt * 0.70;
-      const wide = 0.8 + rnd() * 0.55;
+      const x = u * halfW + skew + (rnd() - 0.5) * 0.22;
+      const z = -0.60 - rt * 0.30 + Math.abs(u) * 0.30 + (rnd() - 0.5) * 0.18;
+      const lean = -0.10 - rt * 0.16 + (rnd() - 0.5) * 0.26;      /* tips back  */
+      const splay = u * (0.10 + rt * 0.55) + (rnd() - 0.5) * 0.30; /* fans out   */
+      const len = 0.70 + rnd() * 1.15 + rt * 0.70;
+      const wide = 0.75 + rnd() * 0.70;
       const mat = M4.mul(M4.translate(x, y, z),
                   M4.mul(M4.rotZ(-splay), M4.mul(M4.rotX(lean), M4.rotY(rnd() * 3.14))));
       addSword(mat, [x, y, z], 0.55 + rt * 0.45, len, wide);
     }
   }
 
-  /* crown of long blades over the top */
-  for (let j = 0; j < 13; j++) {
-    const u = (j / 12) * 2 - 1;
-    const x = u * 3.05;
-    const y = 0.05 + ROWS * 0.30;
-    const z = -0.92 + Math.abs(u) * 0.30;
+  /* Rogue blades driven in at wild angles, breaking the fan into something
+     that looks piled rather than arranged. */
+  for (let i = 0; i < 26; i++) {
+    const x = (rnd() - 0.5) * 6.2;
+    const y = 0.3 + rnd() * 3.6;
+    const z = -1.0 + rnd() * 1.5;
     const mat = M4.mul(M4.translate(x, y, z),
-                M4.mul(M4.rotZ(-u * 0.62), M4.rotX(-0.32 + (rnd() - 0.5) * 0.2)));
-    addSword(mat, [x, y, z], 1.0, 1.4 + rnd() * 1.0, 0.9 + rnd() * 0.5);
+                M4.mul(M4.rotZ((rnd() - 0.5) * 2.4),
+                M4.mul(M4.rotX((rnd() - 0.5) * 1.5), M4.rotY(rnd() * 3.14))));
+    addSword(mat, [x, y, z], 0.7 + rnd() * 0.3, 0.9 + rnd() * 1.5, 0.7 + rnd() * 0.6);
+  }
+
+  /* crown of long blades over the top, deliberately ragged and uneven so the
+     silhouette never resolves into a clean arc */
+  for (let j = 0; j < 15; j++) {
+    const u = (j / 14) * 2 - 1;
+    const x = u * 3.05 + (rnd() - 0.5) * 0.4;
+    const y = 0.05 + ROWS * 0.30 - rnd() * 0.55;
+    const z = -0.92 + Math.abs(u) * 0.30 + (rnd() - 0.5) * 0.25;
+    const mat = M4.mul(M4.translate(x, y, z),
+                M4.mul(M4.rotZ(-u * 0.62 + (rnd() - 0.5) * 0.45),
+                M4.rotX(-0.32 + (rnd() - 0.5) * 0.45)));
+    addSword(mat, [x, y, z], 1.0, 1.1 + rnd() * 1.7, 0.85 + rnd() * 0.6);
   }
 
   /* arms: blades laid across, points outward */

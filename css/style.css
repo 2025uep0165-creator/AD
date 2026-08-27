@@ -717,7 +717,10 @@ p:last-child { margin-bottom: 0; }
 }
 .moment::after {
   content: ''; position: absolute; inset: 0; pointer-events: none;
-  background: radial-gradient(120% 90% at 50% 50%, transparent 30%, rgba(4,5,7,.92) 100%);
+  /* darkens the centre too — white type has to hold over a photograph */
+  background:
+    radial-gradient(115% 88% at 50% 50%,
+      rgba(4,5,7,.48) 0%, rgba(4,5,7,.66) 42%, rgba(4,5,7,.95) 100%);
 }
 .moment-inner {
   position: relative; z-index: 2;
@@ -762,7 +765,8 @@ p:last-child { margin-bottom: 0; }
   background: linear-gradient(180deg, #0a0708, #150a06 45%, #0a0708);
   overflow: hidden;
 }
-#dragonFx { position: absolute; inset: 0; width: 100%; height: 100%; }
+#dragonFx { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; }
+.sec-bg { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
 .dragon-copy { position: relative; z-index: 2; pointer-events: none; }
 .dragon-copy .sec-head, .dragon-grid, .dragon-note { pointer-events: auto; }
 
@@ -807,6 +811,11 @@ p:last-child { margin-bottom: 0; }
   overflow: hidden;
 }
 #snowFx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+#longnight::after, #dragons::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 1;
+  background: radial-gradient(110% 85% at 50% 50%,
+    rgba(4,6,9,.42) 0%, rgba(4,6,9,.68) 45%, rgba(4,6,9,.94) 100%);
+}
 .ln-copy { position: relative; z-index: 2; }
 
 .ice-title {
@@ -1152,7 +1161,7 @@ p:last-child { margin-bottom: 0; }
     transition-duration: .01ms !important;
   }
   .reveal, .house, .cast-card, .quote-card, .score-card { opacity: 1 !important; transform: none !important; }
-  #cursorFx, .moment canvas, #snowFx, #heroEmbers, #endEmbers { display: none; }
+  #cursorFx, .moment canvas, #snowFx, #heroEmbers, #endEmbers, .sec-bg { display: none; }
   .moment { position: relative; height: auto; padding: 6rem 0; }
   #throne { height: auto; }
   .throne-sticky { position: relative; height: auto; padding: 4rem 0; display: block; }

@@ -172,6 +172,7 @@
 
 <!-- ═════════════════════════════ 7 · DRAGONS ════════════════════════════ -->
 <section id="dragons" class="sec sec-pad" data-mood="fire" data-dot="Dragons">
+  <canvas id="dragonBg" class="sec-bg" aria-hidden="true"></canvas>
   <canvas id="dragonFx" aria-hidden="true"></canvas>
   <div class="wrap dragon-copy">
     <header class="sec-head">
@@ -210,6 +211,7 @@
 
 <!-- ════════════════════════════ 8 · LONG NIGHT ══════════════════════════ -->
 <section id="longnight" class="sec sec-pad" data-mood="north" data-dot="The Long Night">
+  <canvas id="lnBg" class="sec-bg" aria-hidden="true"></canvas>
   <canvas id="snowFx" aria-hidden="true"></canvas>
   <div class="wrap ln-copy">
     <p class="kicker ice">Beyond the Wall</p>
@@ -323,7 +325,9 @@
           included here. What you're hearing is an original Web Audio piece written for this
           page — a cello ostinato in C minor over i&ndash;VI&ndash;III&ndash;VII, re-scored
           section by section as you scroll. Drop your own file at
-          <code>assets/theme.mp3</code> and it will play that instead.</p>
+          <code>assets/theme.mp3</code> and it will play that instead. The scenery works the
+          same way: every backdrop on this page is painted in code, and any of them can be
+          replaced with a real photograph via <code>assets/img/manifest.json</code>.</p>
       </div>
       <button id="soundBtn2" class="score-btn">toggle score</button>
     </div>
@@ -365,6 +369,7 @@
 </main>
 
 <script src="js/data.js"></script>
+<script src="js/scenery.js"></script>
 <script src="js/gl.js"></script>
 <script src="js/scene-hero.js"></script>
 <script src="js/scene-throne.js"></script>

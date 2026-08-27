@@ -137,10 +137,77 @@ const FX_STYLE = {
   dust:     { hue: 34,  sat: 18, light: 46, rise: false, glow: 0.2,  speed: 34, size: 5.5, count: 80 }
 };
 
-function MomentFX(cv, type) {
+/* Colour grades. Each is a multiply tint plus an additive bloom, so the
+   backdrop below reads as the same shot the particles belong to. */
+const FX_GRADE = {
+  blood:    { tint: 'rgba(255,116,104,1)', tintA: 0.50, bloom: 'rgba(150,10,14,1)',   bloomA: 0.16 },
+  fire:     { tint: 'rgba(255,172,110,1)', tintA: 0.36, bloom: 'rgba(255,110,30,1)',  bloomA: 0.14 },
+  wildfire: { tint: 'rgba(140,255,190,1)', tintA: 0.44, bloom: 'rgba(20,220,130,1)',  bloomA: 0.15 },
+  ice:      { tint: 'rgba(146,198,255,1)', tintA: 0.46, bloom: 'rgba(60,150,210,1)',  bloomA: 0.13 },
+  poison:   { tint: 'rgba(206,152,255,1)', tintA: 0.42, bloom: 'rgba(130,60,200,1)',  bloomA: 0.14 },
+  dust:     { tint: 'rgba(226,210,182,1)', tintA: 0.34, bloom: 'rgba(150,120,80,1)',  bloomA: 0.10 }
+};
+
+/* `spec` is the moment: { fx, scene, sceneSeed, sceneOpts }. The painted
+   backdrop can be swapped for a real photograph at any time via setImage(). */
+function MomentFX(cv, spec) {
+  const type = typeof spec === 'string' ? spec : spec.fx;
   const s = FX_STYLE[type] || FX_STYLE.dust;
+  const grade = FX_GRADE[type] || FX_GRADE.dust;
   const g = cv.getContext('2d');
   let W = 0, H = 0, parts = [], t = 0;
+
+  /* Sections that already run their own particle system (snow, dragons) ask
+     for the backdrop alone, so the two don't stack up. */
+  const quiet = typeof spec === 'object' && spec.noParticles;
+
+  /* The backdrop is painted the first time this section is actually near the
+     viewport, not at load: painting all sixteen up front costs ~50MB of
+     canvas and a visible stall before the first frame. A photo, if one is
+     supplied, replaces it. */
+  let backdrop = null, photo = null, painted = false;
+  const wantsScene = typeof spec === 'object' && spec.scene && typeof Scenery !== 'undefined';
+
+  function ensurePainted() {
+    if (painted || !wantsScene) return;
+    painted = true;
+    backdrop = Scenery.paint(spec.scene, spec.sceneSeed, spec.sceneOpts, 1200, 675);
+  }
+
+  function setImage(url) {
+    const im = new Image();
+    im.decoding = 'async';
+    im.onload = () => { photo = im; };
+    im.src = url;
+  }
+
+  /* cover-fit the backdrop, with a slow push-in so the frame is never static */
+  function drawBackdrop(k) {
+    ensurePainted();
+    const src = photo || backdrop;
+    if (!src) return;
+    const sw = src.naturalWidth || src.width, sh = src.naturalHeight || src.height;
+    const zoom = 1.06 + (1 - k) * 0.10 + Math.sin(t * 0.06) * 0.012;
+    const scale = Math.max(W / sw, H / sh) * zoom;
+    const dw = sw * scale, dh = sh * scale;
+    const dx = (W - dw) / 2 + Math.sin(t * 0.05) * W * 0.012;
+    const dy = (H - dh) / 2 + (1 - k) * H * 0.045 + Math.cos(t * 0.04) * H * 0.010;
+    g.globalAlpha = Math.min(1, k * 1.25);
+    g.drawImage(src, dx, dy, dw, dh);
+    g.globalAlpha = 1;
+
+    /* grade it into the moment's palette */
+    g.globalCompositeOperation = 'multiply';
+    g.globalAlpha = grade.tintA * k;
+    g.fillStyle = grade.tint; g.fillRect(0, 0, W, H);
+
+    g.globalCompositeOperation = 'lighter';
+    g.globalAlpha = grade.bloomA * k;
+    g.fillStyle = grade.bloom; g.fillRect(0, 0, W, H);
+
+    g.globalCompositeOperation = 'source-over';
+    g.globalAlpha = 1;
+  }
 
   function spawn(p, seed) {
     p.x = Math.random() * W;
@@ -170,6 +237,9 @@ function MomentFX(cv, type) {
     g.clearRect(0, 0, W, H);
     if (k <= 0.01) return;
     t += dt;
+
+    drawBackdrop(k);
+    if (quiet) return;
 
     if (s.glow > 0.4) g.globalCompositeOperation = 'lighter';
 
@@ -223,7 +293,7 @@ function MomentFX(cv, type) {
     }
   }
 
-  return { step, resize };
+  return { step, resize, setImage };
 }
 
 /* ------------------------------------------------------------ dragon flight */

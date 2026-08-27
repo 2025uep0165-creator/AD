@@ -230,9 +230,26 @@ MOMENTS.forEach((m, i) => {
     </div>`;
   momentStack.appendChild(sec);
   if (!reduced) {
-    momentFx.push({ el: sec, fx: MomentFX(sec.querySelector('canvas'), m.fx), vis: 0 });
+    momentFx.push({ el: sec, id: m.id, fx: MomentFX(sec.querySelector('canvas'), m), vis: 0 });
   }
 });
+
+/* Real photographs, if any have been supplied. assets/img/manifest.json maps
+   a moment id (or a section id) to a filename; anything listed replaces the
+   painted backdrop and inherits the same grade and drift. One quiet 404 when
+   the file isn't there, and the paintings stand on their own. */
+fetch('assets/img/manifest.json')
+  .then(r => r.ok ? r.json() : null)
+  .then(map => {
+    if (!map) return;
+    momentFx.forEach(m => {
+      if (map[m.id]) m.fx.setImage('assets/img/' + map[m.id]);
+    });
+    Object.keys(BACKDROPS).forEach(id => {
+      if (map[id]) BACKDROPS[id].setImage('assets/img/' + map[id]);
+    });
+  })
+  .catch(() => {});
 
 /* ════════════════════════════════ 4 · MAP ═════════════════════════════════ */
 
@@ -370,6 +387,16 @@ const embers  = reduced ? null : EmberField($('#heroEmbers'), { count: 110 });
 const endEmb  = reduced ? null : EmberField($('#endEmbers'), { count: 80 });
 const snow    = reduced ? null : SnowField($('#snowFx'), { count: 240 });
 const dragons = reduced ? null : DragonScene($('#dragonFx'));
+
+/* Painted backdrops for the two big atmospheric sections. They run
+   backdrop-only, since each already has its own particle system on top. */
+const BACKDROPS = {};
+if (!reduced) {
+  BACKDROPS.longnight = MomentFX($('#lnBg'),
+    { fx: 'ice', scene: 'wall', sceneSeed: 501, noParticles: true });
+  BACKDROPS.dragons = MomentFX($('#dragonBg'),
+    { fx: 'fire', scene: 'pyre', sceneSeed: 502, noParticles: true });
+}
 const cursor  = (reduced || matchMedia('(pointer: coarse)').matches)
   ? null : CursorTrail($('#cursorFx'));
 
@@ -492,8 +519,14 @@ function frame(now) {
   if (throne && isVis('#throne')) throne.render(t);
 
   /* dragons + snow + end embers */
-  if (dragons && isVis('#dragons')) dragons.step(dt, 1);
-  if (snow && isVis('#longnight')) snow.step(dt, 1);
+  if (dragons && isVis('#dragons')) {
+    BACKDROPS.dragons.step(dt, 1);
+    dragons.step(dt, 1);
+  }
+  if (snow && isVis('#longnight')) {
+    BACKDROPS.longnight.step(dt, 1);
+    snow.step(dt, 1);
+  }
   if (endEmb && isVis('#end')) endEmb.step(dt, 1);
 
   /* moment atmospheres */
@@ -519,6 +552,7 @@ requestAnimationFrame(frame);
 
 window.addEventListener('resize', () => {
   [hero, throne, embers, endEmb, snow, dragons, cursor].forEach(o => o && o.resize && o.resize());
+  Object.keys(BACKDROPS).forEach(k => BACKDROPS[k].resize());
   momentFx.forEach(m => m.fx.resize());
 }, { passive: true });
 

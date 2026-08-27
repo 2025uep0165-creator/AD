@@ -323,7 +323,7 @@ const SEASONS = [
 const MOMENTS = [
   {
     id: 'ned', label: 'S1 · E9 — Baelor', title: 'The Head of Eddard Stark',
-    fx: 'blood',
+    fx: 'blood', scene: 'crowd',      sceneSeed: 11,
     text: 'He confessed to treason he never committed to keep his daughters alive. Joffrey called for his head anyway, because he could. Arya was in the crowd. Yoren covered her eyes.',
     quote: 'The man who passes the sentence should swing the sword.',
     who: 'Eddard Stark',
@@ -331,7 +331,7 @@ const MOMENTS = [
   },
   {
     id: 'birth', label: 'S1 · E10 — Fire and Blood', title: 'The Dragons Are Born',
-    fx: 'fire',
+    fx: 'fire', scene: 'pyre',       sceneSeed: 22,
     text: 'She walked into her husband\'s funeral pyre carrying three stone eggs and a witch, and in the morning the ashes were cold and she was not burned. Three newborn dragons clung to her, screaming at a world that had written them off three centuries ago.',
     quote: 'I am the blood of the dragon. I must be strong.',
     who: 'Daenerys Targaryen',
@@ -339,7 +339,7 @@ const MOMENTS = [
   },
   {
     id: 'blackwater', label: 'S2 · E9 — Blackwater', title: 'Green Fire on the Bay',
-    fx: 'wildfire',
+    fx: 'wildfire', scene: 'skyline',    sceneSeed: 33, sceneOpts: { green: true },
     text: 'Stannis brought two hundred ships up the Blackwater Rush. Tyrion answered with one ship full of wildfire and a single flaming arrow. The bay turned emerald and the sound the fleet made is not something a person forgets.',
     quote: "I'm going to die here.",
     who: 'Tyrion Lannister',
@@ -347,7 +347,7 @@ const MOMENTS = [
   },
   {
     id: 'redwedding', label: 'S3 · E9 — The Rains of Castamere', title: 'The Red Wedding',
-    fx: 'blood',
+    fx: 'blood', scene: 'hall',       sceneSeed: 44, sceneOpts: { banner: 'rgba(80,14,16,0.6)' },
     text: 'A wedding, a guest right, bread and salt. Then the doors shut, the musicians in the gallery put down their instruments and picked up crossbows, and Catelyn Stark pulled back Roose Bolton\'s sleeve and found chainmail underneath.',
     quote: 'The Lannisters send their regards.',
     who: 'Roose Bolton',
@@ -355,7 +355,7 @@ const MOMENTS = [
   },
   {
     id: 'purple', label: 'S4 · E2 — The Lion and the Rose', title: 'The Purple Wedding',
-    fx: 'poison',
+    fx: 'poison', scene: 'hall',       sceneSeed: 55, sceneOpts: { banner: 'rgba(90,70,16,0.5)' },
     text: 'The most hated boy in fiction choked on a poisoned cup at his own feast, clawing at his throat while his mother screamed and his uncle was dragged away in chains for it. The murderer was an old woman who had already told us she would do it.',
     quote: 'Tell Cersei. I want her to know it was me.',
     who: 'Olenna Tyrell',
@@ -363,7 +363,7 @@ const MOMENTS = [
   },
   {
     id: 'viper', label: 'S4 · E8 — The Mountain and the Viper', title: 'The Red Viper',
-    fx: 'blood',
+    fx: 'blood', scene: 'crowd',      sceneSeed: 66,
     text: 'He fought like water — fast, circling, spear flicking. He had the Mountain on his back with a spear through him. He only needed a confession. He asked for it one time too many.',
     quote: 'You raped her. You murdered her. You killed her children.',
     who: 'Oberyn Martell',
@@ -371,7 +371,7 @@ const MOMENTS = [
   },
   {
     id: 'hardhome', label: 'S5 · E8 — Hardhome', title: 'The Night King Raises His Arms',
-    fx: 'ice',
+    fx: 'ice', scene: 'wall',       sceneSeed: 77,
     text: 'The gates closed on thousands still outside. Jon Snow, in a boat pulling away, watched the Night King step down to the water\'s edge, look him dead in the eye, and lift both arms. Every body on that beach stood up.',
     quote: '',
     who: '',
@@ -379,7 +379,7 @@ const MOMENTS = [
   },
   {
     id: 'hodor', label: 'S6 · E5 — The Door', title: 'Hold the Door',
-    fx: 'ice',
+    fx: 'ice', scene: 'godswood',   sceneSeed: 88,
     text: 'Bran reached back through time into a boy in a Winterfell stableyard, and the boy seized, eyes white, hearing a scream from decades in the future. Hold the door. Hold the door. Hold door. Hodor.',
     quote: 'Hold the door!',
     who: 'Meera Reed',
@@ -387,7 +387,7 @@ const MOMENTS = [
   },
   {
     id: 'bastards', label: 'S6 · E9 — Battle of the Bastards', title: 'One Man Against Cavalry',
-    fx: 'dust',
+    fx: 'dust', scene: 'battlefield',sceneSeed: 99,
     text: 'Rickon ran and the arrows found him. Jon stood alone on open ground and drew his sword against a charge, and then the battle became a crush — a mound of bodies, boots on his chest, no air, no sky. Then horns, and the Knights of the Vale.',
     quote: 'Your words will disappear. Your house will disappear. Your name will disappear.',
     who: 'Sansa Stark',
@@ -395,7 +395,7 @@ const MOMENTS = [
   },
   {
     id: 'sept', label: 'S6 · E10 — The Winds of Winter', title: 'Light of the Seven',
-    fx: 'wildfire',
+    fx: 'wildfire', scene: 'skyline',    sceneSeed: 111, sceneOpts: { green: true },
     text: 'Ten minutes of piano and no dialogue. Green light under the floorboards, a boy in a crown at a window, sparrows in the sept — and then the whole hill goes up in a column of emerald fire and Cersei pours herself a drink.',
     quote: 'Shame. Shame. Shame.',
     who: 'The Faith Militant',
@@ -403,7 +403,7 @@ const MOMENTS = [
   },
   {
     id: 'loottrain', label: 'S7 · E4 — The Spoils of War', title: 'Dracarys on the Roseroad',
-    fx: 'fire',
+    fx: 'fire', scene: 'battlefield',sceneSeed: 122, sceneOpts: { fire: true },
     text: 'A Dothraki horde comes over the ridge screaming, and behind them, low and enormous, comes Drogon. Jaime Lannister watched an army he understood turn into a wall of fire he did not, and rode a horse at a dragon anyway.',
     quote: 'Dracarys.',
     who: 'Daenerys Targaryen',
@@ -411,7 +411,7 @@ const MOMENTS = [
   },
   {
     id: 'longnight', label: 'S8 · E3 — The Long Night', title: 'Not Today',
-    fx: 'ice',
+    fx: 'ice', scene: 'godswood',   sceneSeed: 133,
     text: 'The Night King walked into the godswood with the whole war behind him and reached for Bran. Arya came out of the dark, was caught by the throat, dropped the dagger from one hand — and caught it in the other.',
     quote: 'What do we say to the God of Death? Not today.',
     who: 'Syrio Forel',
@@ -419,7 +419,7 @@ const MOMENTS = [
   },
   {
     id: 'bells', label: 'S8 · E5 — The Bells', title: 'The Bells',
-    fx: 'fire',
+    fx: 'fire', scene: 'skyline',    sceneSeed: 144,
     text: 'The gates opened. The swords went down. The bells rang surrender across King\'s Landing. Daenerys sat on Drogon above it all, looked at the Red Keep, and decided that mercy had never bought her anything.',
     quote: '',
     who: '',
@@ -427,7 +427,7 @@ const MOMENTS = [
   },
   {
     id: 'throne', label: 'S8 · E6 — The Iron Throne', title: 'The Throne Melts',
-    fx: 'fire',
+    fx: 'fire', scene: 'hall',       sceneSeed: 155, sceneOpts: { warm: false },
     text: 'Jon put a knife in her while he kissed her. Drogon nosed at her body, then turned on the chair — a thousand swords surrendered to Aegon, forged in dragonfire — and unmade it. He knew what killed her, and it was not a man.',
     quote: 'Love is the death of duty.',
     who: 'Maester Aemon',
