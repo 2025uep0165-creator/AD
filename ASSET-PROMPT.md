@@ -9,6 +9,16 @@ Two things here:
 Send whatever comes back and I'll wire it up. Partial is fine; anything
 missing keeps the artwork the code draws.
 
+**If the AI hands you an HTML page of results**, save it and run:
+
+```bash
+python3 tools/fetch-assets.py collection.html
+```
+
+That downloads every image, files it in the right folder, writes
+`assets/manifest.json`, and reports anything too small to use full-bleed or
+duplicated across two different slots.
+
 ---
 
 ## 1. Backdrops — 16 files → `assets/img/`
