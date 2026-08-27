@@ -1,157 +1,220 @@
-# Asset brief — table + a prompt to paste into another AI
+# Asset brief — what to send, and a prompt to paste into another AI
 
 Two things here:
 
 1. **The tables** — every file the site can take, with its exact filename.
-2. **The prompt** — copy the block at the bottom into an image-generating AI.
+2. **The prompt** — copy the block into another AI (one that can browse the
+   web) and ask it to find the real images.
 
-Send me whatever comes back and I'll wire it up. Partial is fine; anything
+Send whatever comes back and I'll wire it up. Partial is fine; anything
 missing keeps the artwork the code draws.
 
 ---
 
-## 1. Backdrops — 16 files
+## 1. Backdrops — 16 files → `assets/img/`
 
-Full-bleed images behind the text. **Landscape 16:9, 1920×1080, JPG or PNG.**
+Landscape 16:9, 1920×1080 or wider, JPG.
 
-| # | filename | what it shows |
-| --- | --- | --- |
-| 1 | `ned.jpg` | Stone cathedral plaza, wide steps, a crowd from behind, cold grey light |
-| 2 | `birth.jpg` | Dawn over a dry plain, the smoking remains of a great funeral pyre |
-| 3 | `blackwater.jpg` | Night sea battle, ships burning with emerald-green fire on black water |
-| 4 | `redwedding.jpg` | Stone feast hall at night, long tables, dark red banners, guttering torches |
-| 5 | `purple.jpg` | Outdoor royal wedding feast, golden pavilions, warm late-afternoon light |
-| 6 | `viper.jpg` | Sand-floored fighting pit ringed by stone tiers, harsh midday sun, dust |
-| 7 | `hardhome.jpg` | Frozen shore at dusk, wooden palisade, dark figures massing, cold blue light |
-| 8 | `hodor.jpg` | Cave beneath vast pale tree roots, faint blue-green light, a stone doorway |
-| 9 | `bastards.jpg` | Muddy battlefield under grey sky, scattered banners, arrows, haze |
-| 10 | `sept.jpg` | Domed cathedral erupting in a column of emerald fire, seen across a night city |
-| 11 | `loottrain.jpg` | Burning wheat field, overturned wagons, a huge winged shadow overhead |
-| 12 | `longnight.jpg` | Snowy grove of white trees with red leaves at night, blue moonlight, mist |
-| 13 | `bells.jpg` | A vast medieval city burning, seen from above, orange fire and black smoke |
-| 14 | `throne.jpg` | Ruined stone throne room, roof open to the sky, snow and ash falling |
-| 15 | `dragons.jpg` | A huge black dragon in flight over dark mountains against a burning sky |
-| 16 | `thewall.jpg` | A colossal wall of blue ice to the horizon, aurora above, night |
-
-## 2. House sigils — 12 files
-
-**Square 1024×1024, PNG with a transparent background.** Transparency matters —
-they sit on dark cards with a drop shadow.
-
-| # | filename | emblem | colour |
+| # | filename | episode | the shot |
 | --- | --- | --- | --- |
-| 1 | `stark.png` | Direwolf head | grey / white |
-| 2 | `lannister.png` | Rampant lion | gold |
-| 3 | `targaryen.png` | Three-headed dragon | red |
-| 4 | `baratheon.png` | Crowned stag | black on gold |
-| 5 | `greyjoy.png` | Kraken | gold |
-| 6 | `tyrell.png` | Rose | gold on green |
-| 7 | `martell.png` | Sun pierced by a spear | red / orange |
-| 8 | `arryn.png` | Falcon and crescent moon | white on sky blue |
-| 9 | `tully.png` | Leaping trout | silver on blue |
-| 10 | `bolton.png` | Flayed man | pale red |
-| 11 | `mormont.png` | Standing bear | black |
-| 12 | `watch.png` | Crossed swords | black / steel |
+| 1 | `ned.jpg` | S1E9 *Baelor* | Ned's execution on the steps of the Great Sept of Baelor |
+| 2 | `birth.jpg` | S1E10 *Fire and Blood* | Daenerys in the ashes of the pyre at dawn, dragons on her |
+| 3 | `blackwater.jpg` | S2E9 *Blackwater* | The wildfire explosion tearing through Stannis's fleet |
+| 4 | `redwedding.jpg` | S3E9 *The Rains of Castamere* | The feast hall at the Twins, wide |
+| 5 | `purple.jpg` | S4E2 *The Lion and the Rose* | Joffrey's wedding feast, the tables and dais |
+| 6 | `viper.jpg` | S4E8 *The Mountain and the Viper* | Oberyn circling Gregor in the trial-by-combat yard |
+| 7 | `hardhome.jpg` | S5E8 *Hardhome* | The Night King on the shore raising his arms |
+| 8 | `hodor.jpg` | S6E5 *The Door* | Hodor holding the door, or the cave under the weirwood |
+| 9 | `bastards.jpg` | S6E9 *Battle of the Bastards* | Jon alone facing the cavalry charge |
+| 10 | `sept.jpg` | S6E10 *The Winds of Winter* | Green wildfire erupting through the Great Sept |
+| 11 | `loottrain.jpg` | S7E4 *The Spoils of War* | Drogon low over the burning Loot Train on the Roseroad |
+| 12 | `longnight.jpg` | S8E3 *The Long Night* | The godswood — Arya, the Night King, blue-lit snow |
+| 13 | `bells.jpg` | S8E5 *The Bells* | King's Landing burning, wide or aerial |
+| 14 | `throne.jpg` | S8E6 *The Iron Throne* | The ruined throne room, snow falling, or Drogon melting the chair |
+| 15 | `dragons.jpg` | any | Drogon in flight, wings spread, against sky |
+| 16 | `thewall.jpg` | any | The Wall, wide establishing shot, or Castle Black beneath it |
 
-## 3. The Iron Throne — 1 file
+## 2. House sigils — 12 files → `assets/sigils/`
 
-| filename | notes |
-| --- | --- |
-| `iron-throne.png` | Straight-on, **transparent background PNG**, 2000px tall. Replaces the 3D model. |
+Square, **transparent PNG**, 1024×1024 or larger.
 
-If you'd rather keep the 3D model and make it more accurate instead, send a
-plain reference photo and say so.
+`stark` (direwolf) · `lannister` (lion) · `targaryen` (three-headed dragon) ·
+`baratheon` (crowned stag) · `greyjoy` (kraken) · `tyrell` (rose) ·
+`martell` (sun and spear) · `arryn` (falcon and moon) · `tully` (trout) ·
+`bolton` (flayed man) · `mormont` (bear) · `watch` (Night's Watch)
 
-## 4. Cast portraits — 20 files, optional
+## 3. The Iron Throne — 1 file → `assets/img/`
 
-**AI image tools can't produce the real actors**, so these need real
-photographs or you skip the tier. Portrait, 800×1000, JPG.
+`iron-throne.png` — straight-on, **transparent PNG cutout**, 2000px tall.
+Replaces the 3D model. A plain photo works too, a cutout composites cleaner.
+
+## 4. Cast portraits — 20 files → `assets/cast/`
+
+Portrait, 800×1000, JPG. Official HBO promo shots work best.
 
 `jon-snow` · `daenerys` · `tyrion` · `arya` · `cersei` · `ned` · `sansa` ·
 `jaime` · `tywin` · `brienne` · `the-hound` · `bran` · `melisandre` ·
 `ygritte` · `joffrey` · `olenna` · `oberyn` · `theon` · `samwell` ·
 `night-king`
 
-## 5. Audio — 1 file
+## 5. Audio — 1 file → `assets/`
 
-| filename | notes |
-| --- | --- |
-| `theme.mp3` | Plays on loop. A cleanly-looping version sounds best. |
+`theme.mp3` — the main title by Ramin Djawadi. It loops on the page.
 
 ---
 
 ## The prompt to paste
 
-Copy everything between the lines into an image-generating AI. If it only
-makes one image per turn, it will work through them in order — just keep
-saying "next".
+Copy everything between the lines.
 
 ---
 
-> I need 29 images for a dark-fantasy website. Please generate them one at a
-> time and tell me the filename for each so I can save it correctly.
+> I'm building a personal, non-commercial Game of Thrones fan tribute website
+> and I need to collect real images from the show. Please help me find them.
 >
-> **Global style — apply to every image in Part 1, keep them consistent:**
-> cinematic matte painting, wide establishing shot, 16:9, 1920×1080.
-> Low-key lighting with one dominant light source. Desaturated, muted colour.
-> Heavy atmospheric haze and depth. Medieval/dark-fantasy setting.
-> No text, no watermarks, no logos, no borders. No faces or figures in the
-> foreground — keep people small, distant and silhouetted. Leave the centre of
-> the frame relatively simple and uncluttered, because text will be laid over
-> it. Original artwork — do not copy any existing film or TV frame.
+> For each item below, show me the actual image so I can save it, and give me
+> the direct source URL underneath. Work through them in order — if you can
+> only do a few at a time, just keep going when I say "next". Tell me the
+> filename to save each one as.
 >
-> **Part 1 — 16 landscape scenes:**
-> 1. `ned.jpg` — A stone cathedral plaza at dusk, wide steps leading up, a dense crowd of silhouetted medieval figures seen from behind, cold grey light, hanging banners.
-> 2. `birth.jpg` — Dawn over a vast dry plain, the smoking collapsed remains of a great funeral pyre, ash drifting in the air, glowing embers, low golden light.
-> 3. `blackwater.jpg` — A night naval battle in a bay, wooden ships burning with unnatural emerald-green flame, green light reflecting off black water, a walled city on the cliffs above.
-> 4. `redwedding.jpg` — The interior of a long stone feast hall at night, trestle tables, dark red banners on the walls, guttering torchlight, empty and ominous.
-> 5. `purple.jpg` — An outdoor royal wedding feast, long tables under golden pavilions, warm late-afternoon light, a raised dais at the far end.
-> 6. `viper.jpg` — A sand-floored fighting pit ringed by stone tiers of spectators, harsh midday sun, dust hanging in the air.
-> 7. `hardhome.jpg` — A frozen shoreline at dusk, a wooden palisade settlement, dark figures massing on the beach, cold blue light, driving snow.
-> 8. `hodor.jpg` — The inside of a cave beneath enormous pale tree roots, faint blue-green light filtering down, a heavy stone doorway.
-> 9. `bastards.jpg` — An open muddy battlefield under a heavy grey sky, scattered broken banners, spent arrows, dust and haze, distant hills.
-> 10. `sept.jpg` — A great domed cathedral erupting in a towering column of emerald-green fire, seen from across a medieval city at night.
-> 11. `loottrain.jpg` — A golden wheat field on fire, overturned supply wagons, the huge shadow of winged creature cast across the ground, thick smoke.
-> 12. `longnight.jpg` — A snow-covered grove of pale white trees with deep red leaves at night, blue moonlight, low mist.
-> 13. `bells.jpg` — A vast medieval city burning, seen from high above, collapsed towers, orange firelight and rolling black smoke.
-> 14. `throne.jpg` — A ruined stone throne room, the roof torn open to the sky, snow and ash falling through shafts of pale light, rubble across the floor.
-> 15. `dragons.jpg` — An enormous black dragon in flight over dark mountains at dusk, wings fully spread, silhouetted against a burning orange sky.
-> 16. `thewall.jpg` — A colossal sheer wall of blue ice stretching to the horizon, hundreds of feet high, aurora in the night sky above, tiny torches at its base for scale.
+> Good places to look: the Game of Thrones Wiki (gameofthrones.fandom.com),
+> Wiki of Westeros, HBO's official press and media assets, IMDb episode photo
+> galleries, screencap archives like screencaps.us or kissthemgoodbye,
+> Wikimedia Commons, and official HBO promotional material.
 >
-> **Part 2 — 12 heraldic emblems.**
-> Different style, apply to all of Part 2: flat vector heraldry, centred,
-> symmetrical, bold clean silhouette, square 1024×1024, **transparent
-> background**, single subject, no text, no shield outline, no background
-> pattern.
-> 1. `stark.png` — a snarling direwolf head, grey and white
-> 2. `lannister.png` — a rampant lion, gold
-> 3. `targaryen.png` — a three-headed dragon with spread wings, deep red
-> 4. `baratheon.png` — a crowned stag's head, black
-> 5. `greyjoy.png` — a kraken with curling tentacles, gold
-> 6. `tyrell.png` — a stylised rose, gold with green leaves
-> 7. `martell.png` — a blazing sun pierced diagonally by a spear, red and orange
-> 8. `arryn.png` — a falcon with spread wings above a crescent moon, white
-> 9. `tully.png` — a leaping trout, silver
-> 10. `bolton.png` — a stark heraldic figure of a flayed man, pale red
-> 11. `mormont.png` — a standing bear, black
-> 12. `watch.png` — two crossed longswords, black steel
+> **PART 1 — 16 episode stills.** Landscape, as high-resolution as you can
+> find, ideally 1920×1080 or larger. I want wide shots rather than tight
+> close-ups, and darker frames rather than bright ones, because text will be
+> laid over them. No fan art, no posters with text on them, no watermarks.
 >
-> **Part 3 — 1 object.**
-> `iron-throne.png` — A massive throne welded together from hundreds of iron
-> swords, jagged and asymmetric, blades pointing outward in all directions,
-> a high towering back. Straight-on front view, dramatic side lighting,
-> **transparent background**, 2000px tall, no floor, no room, no people.
+> 1. `ned.jpg` — Season 1 Episode 9 "Baelor". Ned Stark's execution on the
+>    steps of the Great Sept of Baelor. Wide shot of the steps and the crowd.
+> 2. `birth.jpg` — Season 1 Episode 10 "Fire and Blood". Daenerys in the ashes
+>    of Khal Drogo's funeral pyre at dawn with the three newborn dragons.
+> 3. `blackwater.jpg` — Season 2 Episode 9 "Blackwater". The wildfire
+>    explosion in Blackwater Bay — green fire and burning ships.
+> 4. `redwedding.jpg` — Season 3 Episode 9 "The Rains of Castamere". The feast
+>    hall at the Twins during the Red Wedding, wide shot of the hall.
+> 5. `purple.jpg` — Season 4 Episode 2 "The Lion and the Rose". Joffrey and
+>    Margaery's wedding feast — the outdoor tables and the royal dais.
+> 6. `viper.jpg` — Season 4 Episode 8 "The Mountain and the Viper". Oberyn
+>    Martell fighting Gregor Clegane in the trial by combat.
+> 7. `hardhome.jpg` — Season 5 Episode 8 "Hardhome". The Night King standing
+>    on the shore raising his arms to raise the dead.
+> 8. `hodor.jpg` — Season 6 Episode 5 "The Door". Hodor holding the door, or
+>    the cave beneath the weirwood tree.
+> 9. `bastards.jpg` — Season 6 Episode 9 "Battle of the Bastards". Jon Snow
+>    standing alone on the battlefield facing the charging cavalry.
+> 10. `sept.jpg` — Season 6 Episode 10 "The Winds of Winter". The Great Sept
+>     of Baelor exploding in green wildfire.
+> 11. `loottrain.jpg` — Season 7 Episode 4 "The Spoils of War". The Loot Train
+>     Attack — Drogon flying low over the burning wagons.
+> 12. `longnight.jpg` — Season 8 Episode 3 "The Long Night". The godswood at
+>     Winterfell — Arya, the Night King, blue-lit snow.
+> 13. `bells.jpg` — Season 8 Episode 5 "The Bells". King's Landing burning —
+>     a wide or aerial shot of the city on fire.
+> 14. `throne.jpg` — Season 8 Episode 6 "The Iron Throne". The ruined throne
+>     room with snow falling through the broken roof, or Drogon melting the
+>     Iron Throne.
+> 15. `dragons.jpg` — Any season. Drogon in flight, wings fully spread,
+>     against the sky.
+> 16. `thewall.jpg` — Any season. A wide establishing shot of the Wall, or
+>     Castle Black at the base of it.
+>
+> **PART 2 — 12 house sigils.** I need the official house sigil artwork as
+> **square PNG files with transparent backgrounds**, 1024×1024 or larger. Not
+> photographs of banners — the clean emblem artwork. If you can only find them
+> on a solid background, give me those and say so.
+>
+> Stark (direwolf), Lannister (lion), Targaryen (three-headed dragon),
+> Baratheon (crowned stag), Greyjoy (kraken), Tyrell (rose), Martell (sun and
+> spear), Arryn (falcon and crescent moon), Tully (trout), Bolton (flayed
+> man), Mormont (bear), and the Night's Watch.
+>
+> **PART 3 — the Iron Throne.** One clean image of the Iron Throne itself,
+> photographed or rendered straight on, as high resolution as possible.
+> A **transparent PNG cutout with no background** is ideal. Save as
+> `iron-throne.png`.
+>
+> **PART 4 — 20 character portraits.** Official HBO promotional portraits,
+> head and shoulders, portrait orientation, at least 800×1000:
+> Jon Snow, Daenerys Targaryen, Tyrion Lannister, Arya Stark, Cersei
+> Lannister, Ned Stark, Sansa Stark, Jaime Lannister, Tywin Lannister,
+> Brienne of Tarth, Sandor Clegane (The Hound), Bran Stark, Melisandre,
+> Ygritte, Joffrey Baratheon, Olenna Tyrell, Oberyn Martell, Theon Greyjoy,
+> Samwell Tarly, and the Night King.
+>
+> **PART 5 — the music.** Where can I get the Game of Thrones "Main Title"
+> theme by Ramin Djawadi as an audio file I can use on a personal site? Give
+> me the legitimate options — the official soundtrack on streaming or
+> purchase stores, and anything that's freely licensed.
+>
+> Finally, give me a plain list at the end of every filename you found, so I
+> can check what's missing.
 
 ---
 
-Save each file to the folder its table says, then send them over:
+## If that AI can't browse or comes up short
 
-```
-assets/img/      backdrops (Part 1) + iron-throne.png (Part 3)
-assets/sigils/   emblems (Part 2)
-assets/cast/     portraits, if you get them
-assets/theme.mp3 the music
-```
+Some tools can't fetch images, and official transparent-background sigils in
+particular can be hard to find. In that case ask it to **generate** the
+missing pieces instead — there's a full generation prompt in the appendix
+below, written so the sixteen backdrops come back as a matching set.
 
-Filenames don't have to be exact — tell me what each one is and I'll place
-and wire them.
+<details>
+<summary>Generation fallback prompt</summary>
+
+> Generate these as original artwork. **Global style, keep all 16 consistent:**
+> cinematic matte painting, wide establishing shot, 16:9, 1920×1080. Low-key
+> lighting, one dominant light source, desaturated muted colour, heavy
+> atmospheric haze. Medieval dark fantasy. No text, no watermarks, no borders.
+> No faces in the foreground — people small, distant, silhouetted. Keep the
+> centre of the frame uncluttered, text goes over it.
+>
+> 1. `ned.jpg` — stone cathedral plaza at dusk, wide steps, a crowd of
+>    silhouetted medieval figures from behind, cold grey light, banners.
+> 2. `birth.jpg` — dawn over a dry plain, the smoking collapsed remains of a
+>    great funeral pyre, drifting ash, embers, low golden light.
+> 3. `blackwater.jpg` — night naval battle, ships burning with emerald-green
+>    flame, green light on black water, a walled city on cliffs above.
+> 4. `redwedding.jpg` — long stone feast hall at night, trestle tables, dark
+>    red banners, guttering torchlight, empty and ominous.
+> 5. `purple.jpg` — outdoor royal wedding feast, golden pavilions, warm
+>    late-afternoon light, a raised dais.
+> 6. `viper.jpg` — sand-floored fighting pit ringed by stone tiers, harsh
+>    midday sun, dust in the air.
+> 7. `hardhome.jpg` — frozen shoreline at dusk, wooden palisade, dark figures
+>    massing on the beach, cold blue light, driving snow.
+> 8. `hodor.jpg` — cave beneath enormous pale tree roots, faint blue-green
+>    light, a heavy stone doorway.
+> 9. `bastards.jpg` — muddy battlefield under heavy grey sky, broken banners,
+>    spent arrows, dust and haze.
+> 10. `sept.jpg` — domed cathedral erupting in a towering column of
+>     emerald-green fire, seen across a medieval city at night.
+> 11. `loottrain.jpg` — burning wheat field, overturned wagons, the shadow of
+>     a winged creature across the ground, thick smoke.
+> 12. `longnight.jpg` — snow-covered grove of pale white trees with deep red
+>     leaves at night, blue moonlight, low mist.
+> 13. `bells.jpg` — vast medieval city burning seen from above, collapsed
+>     towers, orange firelight and black smoke.
+> 14. `throne.jpg` — ruined stone throne room, roof torn open, snow and ash
+>     falling through shafts of pale light, rubble.
+> 15. `dragons.jpg` — enormous black dragon in flight over dark mountains at
+>     dusk, wings spread, against a burning orange sky.
+> 16. `thewall.jpg` — colossal sheer wall of blue ice to the horizon, aurora
+>     above, tiny torches at the base for scale.
+>
+> Then 12 heraldic emblems — flat vector heraldry, centred, symmetrical, bold
+> silhouette, 1024×1024, **transparent background**, no text, no shield
+> outline: direwolf head (grey), rampant lion (gold), three-headed dragon
+> (red), crowned stag (black), kraken (gold), rose (gold and green), sun
+> pierced by a spear (red/orange), falcon above a crescent moon (white),
+> leaping trout (silver), flayed man (pale red), standing bear (black),
+> crossed longswords (black steel).
+
+</details>
+
+---
+
+Filenames don't need to be exact — tell me what each one is and I'll place and
+wire it. Keep the page non-commercial and the attribution in the footer intact.
