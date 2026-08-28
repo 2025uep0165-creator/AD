@@ -236,6 +236,7 @@ const momentFx = [];
 MOMENTS.forEach((m, i) => {
   const sec = document.createElement('section');
   sec.className = 'moment';
+  sec.dataset.moment = m.id;
   sec.style.setProperty('--mc', FX_COLOR[m.fx] || '#c9a227');
   sec.style.zIndex = i + 1;
   sec.innerHTML = `
