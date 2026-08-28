@@ -18,13 +18,13 @@ python3 -m http.server 8000    # then visit http://localhost:8000
 
 | Section | What it does |
 | --- | --- |
-| **Title** | A full-bleed still of King's Landing under the parallax, embers drifting over it, the title cut in a letter at a time |
+| **Title** | A sixteen-second loop: Drogon over King's Landing, then the city burning, each plate moving the whole cycle and returning to where it started so the crossfade never lands on a jump. Embers over the top, the title cut in a letter at a time. Drop a clip in and it plays that instead |
 | **The Game** | The premise in three columns, plus the production facts |
-| **The Map** | A drawn SVG atlas of Westeros and western Essos — curved coastlines roughened by a fractal displacement filter, relief hatching and woodland clipped to the land, the Iron Islands and Dragonstone offshore, a compass rose, a drifting raven, and the Wall clipped to the northern coast. 26 selectable locations; drag to pan, scroll to zoom, double-click to close in |
+| **The Map** | A drawn chart: parchment land on a slate sea, soundings hugging every coast, painted relief for the mountain belts, canopy for the forests and sand for Dorne, the Trident and the Blackwater running through it, a compass rose and a ruled border. Coastlines are cubic curves roughened by a fractal displacement filter. 26 locations; drag to pan, scroll to zoom, double-click to close in |
 | **The Houses** | Nine great houses as 3D-tilting cards — the real heraldic emblem over a still of the house's own seat; click one to expand its history, seat, and a fact |
 | **8 Seasons** | A drag/scroll/arrow-key rail — every season, its key events, and how it closed |
 | **Moments** | Fourteen full-screen panels that stack over one another as you scroll. Each sits on the still from its own scene, graded to its own palette, with matching particles — embers, ash, snow, blood — over the top |
-| **Dragons** | Drogon, Rhaegal and Viserion crossing the panel — the lead one breathes fire at your cursor |
+| **Dragons** | Drogon, Rhaegal and Viserion as actual geometry — ribcage, segmented neck and tail, skull with a hinged jaw, and a bat's wing of humerus, forearm, four fingers and scalloped membrane. Every vertex carries a rig attribute and the vertex shader does the flapping, so it is one draw call each. Drogon breathes across the frame once a pass |
 | **The Long Night** | Snowfall, the White Walkers, dragonglass and Valyrian steel |
 | **The Throne** | ~200 procedural swords baked into one mesh. Scroll and it melts, in the vertex shader |
 | **The Cast** | Twenty characters, their actor, their allegiance, and how they ended |
@@ -53,12 +53,16 @@ over. Anything you don't supply keeps what the code draws.
 **[`ASSETS.md`](ASSETS.md) is the full list** (and [`ASSET-PROMPT.md`](ASSET-PROMPT.md) is a ready-to-paste prompt for sourcing it) — every id, what shot works, and
 the formats.
 
-**The music is not the real theme.** Djawadi's main title is a copyrighted
-composition, so instead `js/audio.js` synthesises an original piece live in the
-browser with the Web Audio API: a cello ostinato in C minor over i–VI–III–VII,
-with the instrumentation re-scored section by section as you scroll (drums come
-in for the war sections, ice bells for the North, everything drops away for the
-quiet ones). To use your own file instead, see [`ASSETS.md`](ASSETS.md).
+**Bring your own media.** Put files in a folder called `grom/` at the root and
+run `python3 tools/install-grom.py --apply`: it works out what each file is from
+its name and extension, files it into `assets/`, keys the background out of any
+emblem, and updates the manifest. Audio lands as the score. Video loops behind
+the title. Images matched to one of the fourteen moments replace that backdrop.
+Anything it can't place is listed rather than guessed at.
+
+Without an audio file, `js/audio.js` plays a piece synthesised live in the
+browser — a cello ostinato in C minor over i–VI–III–VII, re-scored section by
+section as you scroll. Djawadi's own recordings are not distributed here.
 
 ---
 
@@ -72,12 +76,13 @@ js/data.js            all the lore: houses, seasons, moments, cast, quotes, sigi
 js/scenery.js         the matte paintings — skyline, wall, godswood, hall, pyre, crowd, battlefield
 js/gl.js              tiny WebGL helper — mat4 maths, shaders, procedural meshes
 js/scene-throne.js    the Iron Throne, and the shader that melts it
+js/scene-dragons.js   the dragon mesh, and the shader that flies it
 js/effects.js         embers, snow, per-moment atmospheres, dragons, cursor sparks
 js/map.js             the map geometry and its 26 locations
 js/audio.js           the synthesised score
 js/main.js            builds every section from the data, runs one rAF loop
 assets/               the images, and manifest.json that names them
-tools/                the sourcing and re-encoding scripts
+tools/                the sourcing, re-encoding and drop-in scripts
 build.py              flattens the whole thing into one self-contained file
 ```
 

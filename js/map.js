@@ -12,7 +12,7 @@ const LOCATIONS = [
   { id: 'castleblack', name: 'Castle Black', x: 286, y: 150, region: 'The Wall', house: 'watch',
     text: 'Headquarters of the Night\'s Watch. Seven hundred feet of ice, three hundred miles long, and about a hundred men left to hold it.',
     tag: '"And now my watch begins"' },
-  { id: 'bearisland', name: 'Bear Island', x: 138, y: 236, region: 'The North', house: 'mormont',
+  { sea: true, id: 'bearisland', name: 'Bear Island', x: 138, y: 236, region: 'The North', house: 'mormont',
     text: 'Cold, poor, and stubborn. It sent sixty-two men to the war — and one ten-year-old girl who shamed a room full of lords into fighting.',
     tag: 'House Mormont · Here We Stand' },
   { id: 'winterfell', name: 'Winterfell', x: 296, y: 262, region: 'The North', house: 'stark',
@@ -33,7 +33,7 @@ const LOCATIONS = [
   { id: 'riverrun', name: 'Riverrun', x: 278, y: 452, region: 'The Riverlands', house: 'tully',
     text: 'Seat of House Tully, set in the fork of two rivers so the moat can be flooded on command. Catelyn Stark grew up here.',
     tag: 'House Tully · Family, Duty, Honor' },
-  { id: 'pyke', name: 'Pyke', x: 116, y: 440, region: 'The Iron Islands', house: 'greyjoy',
+  { sea: true, id: 'pyke', name: 'Pyke', x: 116, y: 440, region: 'The Iron Islands', house: 'greyjoy',
     text: 'A castle on sea stacks, joined by rope bridges, hammered by the surf. The ironborn take what is theirs from here and pay the iron price for it.',
     tag: 'House Greyjoy · We Do Not Sow' },
   { id: 'eyrie', name: 'The Eyrie', x: 396, y: 434, region: 'The Vale', house: 'arryn',
@@ -48,7 +48,7 @@ const LOCATIONS = [
   { id: 'kingslanding', name: "King's Landing", x: 424, y: 548, region: 'The Crownlands', house: 'lannister',
     text: 'Half a million people, the Red Keep, the Great Sept, Flea Bottom, and the Iron Throne itself. Built where Aegon first landed. Burned to the ground by the last Targaryen.',
     tag: 'The Iron Throne' },
-  { id: 'dragonstone', name: 'Dragonstone', x: 522, y: 516, region: 'The Narrow Sea', house: 'targaryen',
+  { sea: true, id: 'dragonstone', name: 'Dragonstone', x: 522, y: 516, region: 'The Narrow Sea', house: 'targaryen',
     text: 'A Valyrian fortress of black stone and carved dragons on a volcanic island. The Targaryen foothold for a century before the Conquest — and where Daenerys came home.',
     tag: 'House Targaryen · Fire and Blood' },
   { id: 'stormsend', name: "Storm's End", x: 450, y: 642, region: 'The Stormlands', house: 'baratheon',
@@ -150,42 +150,56 @@ function buildMap(host) {
   svg.setAttribute('role', 'img');
   svg.setAttribute('aria-label', 'Map of Westeros and western Essos');
 
+  const isles = ISLES.map(d => `<path d="${d}"/>`).join('');
+  const coasts = `<path d="${WESTEROS_PATH}"/><path d="${ESSOS_PATH}"/>${isles}`;
+
   svg.innerHTML = `
     <defs>
       <linearGradient id="landGrad" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%"   stop-color="#2a2318"/>
-        <stop offset="42%"  stop-color="#221d15"/>
-        <stop offset="100%" stop-color="#191510"/>
+        <stop offset="0%"   stop-color="#e3d7b8"/>
+        <stop offset="38%"  stop-color="#d9cba6"/>
+        <stop offset="100%" stop-color="#c6b489"/>
       </linearGradient>
-      <radialGradient id="seaGrad" cx="50%" cy="45%" r="75%">
-        <stop offset="0%"   stop-color="#0b1420"/>
-        <stop offset="70%"  stop-color="#070d16"/>
-        <stop offset="100%" stop-color="#04070c"/>
-      </radialGradient>
+      <linearGradient id="seaGrad" x1="0" y1="0" x2="0.3" y2="1">
+        <stop offset="0%"   stop-color="#22384a"/>
+        <stop offset="55%"  stop-color="#1a2c3b"/>
+        <stop offset="100%" stop-color="#13212c"/>
+      </linearGradient>
       <filter id="mapGlow" x="-60%" y="-60%" width="220%" height="220%">
-        <feGaussianBlur stdDeviation="4" result="b"/>
+        <feGaussianBlur stdDeviation="3" result="b"/>
         <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
       </filter>
+      <!-- the coastline is drawn smooth and roughened here, which is where
+           fractal detail belongs -->
       <filter id="rough">
-        <feTurbulence type="fractalNoise" baseFrequency="0.022" numOctaves="4" seed="11"/>
-        <feDisplacementMap in="SourceGraphic" scale="7" xChannelSelector="R" yChannelSelector="G"/>
+        <feTurbulence type="fractalNoise" baseFrequency="0.026" numOctaves="4" seed="11"/>
+        <feDisplacementMap in="SourceGraphic" scale="6" xChannelSelector="R" yChannelSelector="G"/>
       </filter>
-      <!-- aged vellum: fibre noise burnt in over the land -->
+      <!-- laid paper: fibre noise burnt into the land -->
       <filter id="vellum" x="0" y="0" width="100%" height="100%">
-        <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" seed="3" result="n"/>
+        <feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="4" seed="3" result="n"/>
         <feColorMatrix in="n" type="saturate" values="0"/>
-        <feComponentTransfer><feFuncA type="linear" slope=".26"/></feComponentTransfer>
+        <feComponentTransfer><feFuncA type="linear" slope=".30"/></feComponentTransfer>
       </filter>
-      <pattern id="waves" width="52" height="30" patternUnits="userSpaceOnUse">
-        <path d="M0 20 q 13 -10 26 0 t 26 0" fill="none"
-              stroke="rgba(150,185,215,0.085)" stroke-width="1"/>
+      <filter id="landShadow" x="-15%" y="-15%" width="130%" height="130%">
+        <feDropShadow dx="3" dy="5" stdDeviation="5" flood-color="#050a0e" flood-opacity=".55"/>
+      </filter>
+      <pattern id="waves" width="46" height="26" patternUnits="userSpaceOnUse">
+        <path d="M0 17 q 11.5 -8 23 0 t 23 0" fill="none"
+              stroke="rgba(150,190,220,0.085)" stroke-width=".9"/>
       </pattern>
-      <!-- relief hatching for the mountain belts -->
-      <pattern id="ridges" width="14" height="10" patternUnits="userSpaceOnUse">
-        <path d="M1 9 L7 2 L13 9" fill="none" stroke="rgba(226,208,170,.30)" stroke-width="1.2"/>
+      <!-- relief: ranges drawn as ridges, forest as canopy, Dorne as sand -->
+      <pattern id="ridges" width="17" height="12" patternUnits="userSpaceOnUse">
+        <path d="M1 11 L8.5 2 L16 11" fill="none" stroke="rgba(84,64,36,.85)" stroke-width="1.5"/>
+        <path d="M4 11 L8.5 5.5 L13 11" fill="none" stroke="rgba(112,88,52,.6)" stroke-width=".9"/>
       </pattern>
-      <pattern id="woods" width="16" height="14" patternUnits="userSpaceOnUse">
-        <circle cx="8" cy="8" r="2.6" fill="none" stroke="rgba(150,180,140,.24)" stroke-width="1"/>
+      <pattern id="woods" width="18" height="16" patternUnits="userSpaceOnUse">
+        <circle cx="9" cy="9" r="2.9" fill="rgba(74,92,54,.52)"/>
+        <circle cx="9" cy="6.6" r="2.1" fill="rgba(96,116,70,.46)"/>
+      </pattern>
+      <pattern id="sand" width="14" height="14" patternUnits="userSpaceOnUse">
+        <circle cx="3" cy="4" r="1" fill="rgba(140,110,58,.62)"/>
+        <circle cx="10" cy="10" r="1" fill="rgba(140,110,58,.62)"/>
       </pattern>
       <clipPath id="clipWest"><path d="${WESTEROS_PATH}"/></clipPath>
       <clipPath id="clipEast"><path d="${ESSOS_PATH}"/></clipPath>
@@ -195,27 +209,66 @@ function buildMap(host) {
     <rect x="60" y="0" width="920" height="920" fill="url(#waves)"/>
 
     <g filter="url(#rough)">
-      <path d="${WESTEROS_PATH}" class="landmass"/>
-      <path d="${ESSOS_PATH}" class="landmass"/>
-      ${ISLES.map(d => `<path d="${d}" class="landmass isle"/>`).join('')}
+      <!-- the soundings that hug every coast on a drawn chart -->
+      <g class="shelf" fill="none">
+        <g stroke-width="26" opacity=".16">${coasts}</g>
+        <g stroke-width="16" opacity=".20">${coasts}</g>
+        <g stroke-width="8"  opacity=".26">${coasts}</g>
+      </g>
+      <g filter="url(#landShadow)">
+        <path d="${WESTEROS_PATH}" class="landmass"/>
+        <path d="${ESSOS_PATH}" class="landmass"/>
+        ${ISLES.map(d => `<path d="${d}" class="landmass isle"/>`).join('')}
+      </g>
     </g>
 
     <!-- terrain, clipped to the coastlines -->
     <g clip-path="url(#clipWest)">
-      <rect x="60" y="0" width="920" height="920" filter="url(#vellum)" opacity=".5"/>
-      <!-- relief laid down as soft masses, so no rectangle edges show -->
-      <ellipse cx="212" cy="300" rx="52" ry="118" fill="url(#ridges)" opacity=".5"/>
-      <ellipse cx="238" cy="470" rx="46" ry="96"  fill="url(#ridges)" opacity=".42"/>
-      <ellipse cx="392" cy="440" rx="58" ry="74"  fill="url(#ridges)" opacity=".5"/>
-      <ellipse cx="384" cy="250" rx="66" ry="88"  fill="url(#woods)"  opacity=".46"/>
-      <ellipse cx="300" cy="640" rx="104" ry="72" fill="url(#woods)"  opacity=".4"/>
-      <ellipse cx="436" cy="770" rx="72" ry="56"  fill="url(#ridges)" opacity=".32"/>
+      <rect x="60" y="0" width="920" height="920" filter="url(#vellum)" opacity=".42"/>
+      <ellipse cx="206" cy="296" rx="48" ry="112" fill="url(#ridges)" opacity=".70"/>
+      <ellipse cx="236" cy="474" rx="44" ry="92"  fill="url(#ridges)" opacity=".60"/>
+      <ellipse cx="404" cy="446" rx="58" ry="76"  fill="url(#ridges)" opacity=".78"/>
+      <ellipse cx="380" cy="248" rx="70" ry="92"  fill="url(#woods)"  opacity=".85"/>
+      <ellipse cx="296" cy="648" rx="108" ry="74" fill="url(#woods)"  opacity=".70"/>
+      <ellipse cx="300" cy="392" rx="66" ry="30"  fill="url(#woods)"  opacity=".50"/>
+      <ellipse cx="432" cy="784" rx="86" ry="58"  fill="url(#sand)"   opacity=".95"/>
+      <ellipse cx="452" cy="748" rx="46" ry="34"  fill="url(#ridges)" opacity=".45"/>
     </g>
     <g clip-path="url(#clipEast)">
-      <rect x="600" y="0" width="380" height="920" filter="url(#vellum)" opacity=".5"/>
-      <ellipse cx="852" cy="272" rx="84" ry="112" fill="url(#ridges)" opacity=".38"/>
-      <ellipse cx="800" cy="620" rx="76" ry="64"  fill="url(#ridges)" opacity=".3"/>
+      <rect x="600" y="0" width="380" height="920" filter="url(#vellum)" opacity=".42"/>
+      <ellipse cx="856" cy="268" rx="86" ry="110" fill="url(#ridges)" opacity=".52"/>
+      <ellipse cx="806" cy="616" rx="78" ry="62"  fill="url(#ridges)" opacity=".46"/>
+      <ellipse cx="760" cy="180" rx="60" ry="70"  fill="url(#woods)"  opacity=".45"/>
     </g>
+
+    <!-- rivers, clipped to the land they run through -->
+    <g class="rivers" fill="none" clip-path="url(#clipWest)">
+      <path d="M 252 392 C 276 424, 296 448, 340 468 C 384 486, 424 480, 470 466"/>
+      <path d="M 268 448 C 292 458, 318 464, 342 470"/>
+      <path d="M 234 414 C 272 434, 310 456, 340 468"/>
+      <path d="M 318 542 C 356 548, 396 549, 442 546"/>
+      <path d="M 316 638 C 274 646, 232 666, 190 690"/>
+      <path d="M 316 638 C 344 660, 372 690, 398 726"/>
+    </g>
+    <g class="rivers" fill="none" clip-path="url(#clipEast)">
+      <path d="M 806 490 C 792 452, 796 414, 814 372"/>
+      <path d="M 806 490 C 838 462, 872 442, 908 430"/>
+    </g>
+
+    <!-- the Wall -->
+    <g class="the-wall" clip-path="url(#clipWest)">
+      <line x1="120" y1="141" x2="486" y2="141"/>
+      <line x1="120" y1="134" x2="486" y2="134" class="wall-cap"/>
+    </g>
+    <text x="168" y="124" class="map-label wall-label">THE WALL · 300 MILES · 700 FEET</text>
+    <text x="196" y="70"  class="map-label region-label">THE LANDS OF ALWAYS WINTER</text>
+    <text x="230" y="300" class="map-label region-label">THE NORTH</text>
+    <text x="238" y="486" class="map-label region-label">THE RIVERLANDS</text>
+    <text x="330" y="700" class="map-label region-label">THE REACH</text>
+    <text x="404" y="806" class="map-label region-label">DORNE</text>
+    <text x="560" y="420" class="map-label sea-label">THE NARROW SEA</text>
+    <text x="700" y="640" class="map-label sea-label">THE SMOKING SEA</text>
+    <text x="800" y="120" class="map-label region-label">ESSOS</text>
 
     <!-- compass rose, out in the Summer Sea where there is room for it -->
     <g class="compass" transform="translate(596 762)">
@@ -226,29 +279,20 @@ function buildMap(host) {
       <text y="-46" class="map-label c-n">N</text>
     </g>
 
-    <!-- the Wall -->
-    <g class="the-wall" clip-path="url(#clipWest)">
-      <line x1="120" y1="140" x2="486" y2="140"/>
-      <line x1="120" y1="134" x2="486" y2="134" class="wall-cap"/>
-    </g>
-    <text x="168" y="122" class="map-label wall-label">THE WALL · 300 MILES · 700 FEET</text>
-    <text x="196" y="70"  class="map-label region-label">THE LANDS OF ALWAYS WINTER</text>
-    <text x="230" y="300" class="map-label region-label">THE NORTH</text>
-    <text x="238" y="486" class="map-label region-label">THE RIVERLANDS</text>
-    <text x="330" y="700" class="map-label region-label">THE REACH</text>
-    <text x="404" y="806" class="map-label region-label">DORNE</text>
-    <text x="560" y="420" class="map-label sea-label">THE NARROW SEA</text>
-    <text x="700" y="640" class="map-label sea-label">THE SMOKING SEA</text>
-    <text x="800" y="120" class="map-label region-label">ESSOS</text>
-
     <path id="ravenPath" d="M 300 262 C 420 300 520 380 660 300 C 760 250 820 340 862 548"
-          fill="none" stroke="rgba(201,162,39,0.16)" stroke-width="1.1"
+          fill="none" stroke="rgba(226,208,170,0.10)" stroke-width="1"
           stroke-dasharray="4 8"/>
     <g class="raven">
       <path d="M -7 0 q 4 -5 8 0 q 4 -5 8 0 q -4 4 -8 1 q -4 3 -8 -1 Z"/>
       <animateMotion dur="30s" repeatCount="indefinite" rotate="auto">
         <mpath href="#ravenPath"/>
       </animateMotion>
+    </g>
+
+    <!-- a ruled border, the way a printed chart is finished -->
+    <g class="map-frame" fill="none">
+      <rect x="97" y="27" width="836" height="846" stroke-width="2.5"/>
+      <rect x="103" y="33" width="824" height="834" stroke-width="1"/>
     </g>
 
     <g class="pins"></g>
@@ -262,9 +306,10 @@ function buildMap(host) {
     g.setAttribute('role', 'button');
     g.setAttribute('aria-label', loc.name);
     g.dataset.id = loc.id;
+    if (loc.sea) g.dataset.sea = '1';
     g.style.setProperty('--i', i);
-    /* labels on the far right would run off the map, so flip them inward */
-    const flip = loc.x > 640;
+    /* flip a label inward only when it would run off the edge of the chart */
+    const flip = loc.x > 858;
     g.innerHTML = `
       <circle cx="${loc.x}" cy="${loc.y}" r="17" class="pin-hit"/>
       <circle cx="${loc.x}" cy="${loc.y}" r="9" class="pin-halo"/>

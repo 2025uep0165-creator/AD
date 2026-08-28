@@ -26,6 +26,7 @@ SCRIPTS = [
     "scenery.js",
     "gl.js",
     "scene-throne.js",
+    "scene-dragons.js",
     "effects.js",
     "map.js",
     "audio.js",

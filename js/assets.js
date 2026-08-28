@@ -9,6 +9,7 @@
 
    {
      "audio":  "theme.mp3",
+     "hero":   "video/kings-landing.mp4",   // loops behind the title
      "throne": "img/iron-throne.png",
 
      "scenes": {                          // full-bleed backdrops
@@ -71,6 +72,7 @@ const Assets = (() => {
     sigil:  k  => from('sigils', k),
     cast:   n  => from('cast', n),
     throne: () => path(data.throne),
+    hero:   () => path(data.hero),
     audio:  () => path(data.audio) || 'assets/theme.mp3',
     has:    group => !!(data[group] && Object.keys(data[group]).length)
   };

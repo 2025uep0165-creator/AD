@@ -299,131 +299,37 @@ function MomentFX(cv, spec) {
 /* ------------------------------------------------------------ dragon flight */
 /* A silhouetted dragon crossing the panel, with a breath of fire on hover.   */
 
-function DragonScene(cv) {
+/* The dragons themselves are geometry now (js/scene-dragons.js). What is left
+   here is the plume: the flame is a particle system, which is the one thing a
+   mesh would be worse at. It is lit from wherever the lead dragon's jaw ended
+   up on screen this frame. */
+function DragonFire(cv) {
   const g = cv.getContext('2d');
-  let W = 0, H = 0, t = 0;
+  let W = 0, H = 0;
   const flames = [];
-  const pointer = { x: -999, y: -999, active: false };
 
   function resize() { fitCanvas(cv); W = cv.clientWidth; H = cv.clientHeight; }
 
-  function wing(cx, cy, sc, flap, dir) {
-    /* membrane between four fingers, folding on the flap phase */
-    const spread = 0.55 + Math.sin(flap) * 0.42;
-    g.beginPath();
-    g.moveTo(cx, cy);
-    const pts = [];
-    for (let i = 0; i < 4; i++) {
-      const a = (-0.35 - i * 0.42) * spread - 0.15;
-      const len = sc * (2.5 - i * 0.32);
-      pts.push([cx + Math.cos(a) * len * dir, cy + Math.sin(a) * len]);
-    }
-    g.moveTo(cx, cy);
-    pts.forEach((p, i) => {
-      const prev = i ? pts[i - 1] : [cx, cy];
-      g.quadraticCurveTo((prev[0] + p[0]) / 2 + dir * sc * 0.2,
-                         (prev[1] + p[1]) / 2 + sc * 0.55, p[0], p[1]);
-    });
-    for (let i = pts.length - 1; i >= 0; i--) {
-      const p = pts[i];
-      g.lineTo(cx + (p[0] - cx) * 0.28, cy + (p[1] - cy) * 0.28);
-    }
-    g.closePath();
-    g.fill();
-    /* finger bones */
-    g.strokeStyle = 'rgba(255,150,60,0.28)';
-    g.lineWidth = 1.1;
-    pts.forEach(p => { g.beginPath(); g.moveTo(cx, cy); g.lineTo(p[0], p[1]); g.stroke(); });
-  }
-
-  function dragon(x, y, sc, flap, dir) {
-    g.save();
-    g.translate(x, y);
-    g.scale(dir, 1);
-    g.fillStyle = '#0b0709';
-
-    /* tail */
-    g.beginPath();
-    g.moveTo(0, 0);
-    g.quadraticCurveTo(-sc * 3.4, sc * (0.5 + Math.sin(flap * 0.8) * 0.6), -sc * 5.6,
-                        sc * (1.2 + Math.sin(flap * 0.8) * 0.9));
-    g.lineTo(-sc * 5.2, sc * (1.5 + Math.sin(flap * 0.8) * 0.9));
-    g.quadraticCurveTo(-sc * 3.2, sc * (0.95 + Math.sin(flap * 0.8) * 0.6), 0, sc * 0.42);
-    g.closePath(); g.fill();
-
-    /* body */
-    g.beginPath();
-    g.ellipse(0, sc * 0.2, sc * 1.5, sc * 0.52, 0.06, 0, 7);
-    g.fill();
-
-    /* neck + head */
-    g.beginPath();
-    g.moveTo(sc * 1.1, sc * 0.05);
-    g.quadraticCurveTo(sc * 2.5, -sc * 0.75, sc * 3.5, -sc * 0.55);
-    g.lineTo(sc * 4.3, -sc * 0.34);
-    g.lineTo(sc * 3.45, -sc * 0.1);
-    g.quadraticCurveTo(sc * 2.5, -sc * 0.2, sc * 1.15, sc * 0.5);
-    g.closePath(); g.fill();
-
-    /* horns */
-    g.beginPath();
-    g.moveTo(sc * 3.4, -sc * 0.55);
-    g.lineTo(sc * 3.0, -sc * 1.25);
-    g.lineTo(sc * 3.5, -sc * 0.62);
-    g.closePath(); g.fill();
-
-    /* eye */
-    g.fillStyle = 'rgba(255,140,40,0.95)';
-    g.beginPath(); g.arc(sc * 3.55, -sc * 0.42, sc * 0.07, 0, 7); g.fill();
-
-    /* wings */
-    g.fillStyle = 'rgba(12,8,10,0.94)';
-    wing(sc * 0.2, -sc * 0.15, sc, flap, 1);
-    g.fillStyle = 'rgba(20,13,16,0.8)';
-    wing(sc * 0.1, sc * 0.05, sc * 0.82, flap + 0.4, -1);
-
-    g.restore();
-    return { mx: x + dir * sc * 4.3, my: y - sc * 0.34 };
-  }
-
-  function breathe(mx, my, tx, ty, power) {
-    const ang = Math.atan2(ty - my, tx - mx);
+  function emit(x, y, dir, power) {
     for (let i = 0; i < power; i++) {
+      const spread = (Math.random() - 0.5) * 0.5;
+      const sp = 260 + Math.random() * 420;
       flames.push({
-        x: mx, y: my,
-        vx: Math.cos(ang) * (180 + Math.random() * 260) + (Math.random() - 0.5) * 60,
-        vy: Math.sin(ang) * (180 + Math.random() * 260) + (Math.random() - 0.5) * 60,
-        life: 0, max: 0.5 + Math.random() * 0.7,
-        r: 3 + Math.random() * 7
+        x, y,
+        vx: Math.cos(spread) * sp * dir,
+        vy: Math.sin(spread) * sp * 0.55 + (Math.random() - 0.5) * 70,
+        life: 0, max: 0.45 + Math.random() * 0.75,
+        r: 3 + Math.random() * 8
       });
     }
   }
 
-  function step(dt, intensity) {
+  function step(dt, muzzle) {
     if (!W) resize();
-    const k = intensity === undefined ? 1 : intensity;
     g.clearRect(0, 0, W, H);
-    if (k <= 0.01) return;
-    t += dt;
 
-    /* three dragons on different loops and depths */
-    const specs = [
-      { sc: H * 0.055, per: 26, yA: 0.30, yB: 0.05, flap: 2.1, dir: 1, lead: true },
-      { sc: H * 0.034, per: 34, yA: 0.55, yB: 0.07, flap: 2.6, dir: 1, off: 0.42 },
-      { sc: H * 0.026, per: 42, yA: 0.20, yB: 0.05, flap: 3.0, dir: -1, off: 0.75 }
-    ];
-
-    let lead = null;
-    specs.forEach(sp => {
-      const u = ((t / sp.per) + (sp.off || 0)) % 1;
-      const x = sp.dir > 0 ? -W * 0.25 + u * W * 1.5 : W * 1.25 - u * W * 1.5;
-      const y = H * sp.yA + Math.sin(t * 0.5 + (sp.off || 0) * 9) * H * sp.yB;
-      const m = dragon(x, y, sp.sc, t * sp.flap, sp.dir);
-      if (sp.lead) lead = m;
-    });
-
-    if (pointer.active && lead && Math.random() < 0.55) {
-      breathe(lead.mx, lead.my, pointer.x, pointer.y, 3);
+    if (muzzle && muzzle.on > 0.05) {
+      emit(muzzle.x, muzzle.y, muzzle.dir, Math.round(2 + muzzle.on * 5));
     }
 
     g.globalCompositeOperation = 'lighter';
@@ -432,10 +338,10 @@ function DragonScene(cv) {
       f.life += dt;
       if (f.life > f.max) { flames.splice(i, 1); continue; }
       f.x += f.vx * dt; f.y += f.vy * dt;
-      f.vx *= 0.96; f.vy = f.vy * 0.96 - 40 * dt;
+      f.vx *= 0.955; f.vy = f.vy * 0.955 - 55 * dt;
       const p = f.life / f.max;
-      const a = (1 - p) * 0.75;
-      const rad = f.r * (1 + p * 4.5);
+      const a = (1 - p) * 0.72;
+      const rad = f.r * (1 + p * 5.0);
       const hue = 44 - p * 34;
       const grad = g.createRadialGradient(f.x, f.y, 0, f.x, f.y, rad);
       grad.addColorStop(0, `hsla(${hue + 14}, 100%, ${78 - p * 26}%, ${a})`);
@@ -447,14 +353,7 @@ function DragonScene(cv) {
     g.globalCompositeOperation = 'source-over';
   }
 
-  cv.addEventListener('pointermove', e => {
-    const r = cv.getBoundingClientRect();
-    pointer.x = e.clientX - r.left; pointer.y = e.clientY - r.top;
-    pointer.active = true;
-  });
-  cv.addEventListener('pointerleave', () => { pointer.active = false; });
-
-  return { step, resize, pointer };
+  return { step, resize };
 }
 
 /* ---------------------------------------------------- global ember cursor  */

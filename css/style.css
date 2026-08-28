@@ -134,7 +134,7 @@ p:last-child { margin-bottom: 0; }
 
 .gate-inner { max-width: 640px; position: relative; z-index: 2; }
 .gate-sigil { width: 92px; margin: 0 auto 2rem; }
-.gate-sigil .sig { width: 92px; height: 92px; }
+.gate-sigil .sig-slot, .gate-sigil .sig { width: 92px; height: 92px; }
 
 .gate-kicker {
   font-family: var(--title); font-size: .68rem; letter-spacing: .46em;
@@ -252,16 +252,49 @@ p:last-child { margin-bottom: 0; }
 #hero { height: 100vh; min-height: 620px; overflow: hidden; background: #05060a; }
 
 /* the plate: a real frame, pushed in slowly, graded cold-to-ember */
-.hero-plate { position: absolute; inset: 0; overflow: hidden; }
-.hero-plate img {
+.hero-plate { position: absolute; inset: 0; overflow: hidden; background: #05060a; }
+
+/* The title sequence: Drogon over the city, then the city burning, on a
+   sixteen-second loop. Each plate keeps moving the whole cycle and returns to
+   where it started, so the crossfade never lands on a jump. */
+.hero-plate .hp-frame, .hero-plate video {
   position: absolute; inset: 0;
   width: 100%; height: 100%;
   object-fit: cover; object-position: center 42%;
-  transform: scale(1.08) translate3d(0,0,0);
-  animation: heroPush 34s ease-out forwards;
-  will-change: transform;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
 }
-@keyframes heroPush { to { transform: scale(1.19) translate(-1.2%, -1.6%); } }
+.hero-plate video { display: none; }
+.hero-plate.has-video video { display: block; }
+.hero-plate.has-video .hp-frame { display: none; }
+
+.hp-a { animation: heroPushA 16s ease-in-out infinite, heroFadeA 16s linear infinite; }
+.hp-b { animation: heroPushB 16s ease-in-out infinite, heroFadeB 16s linear infinite; }
+
+@keyframes heroPushA {
+  0%   { transform: scale(1.05) translate3d(0,0,0); }
+  50%  { transform: scale(1.20) translate(-1.4%, -1.8%); }
+  100% { transform: scale(1.05) translate3d(0,0,0); }
+}
+@keyframes heroPushB {
+  0%   { transform: scale(1.21) translate(1.3%, 1.5%); }
+  50%  { transform: scale(1.06) translate3d(0,0,0); }
+  100% { transform: scale(1.21) translate(1.3%, 1.5%); }
+}
+@keyframes heroFadeA { 0%, 43% { opacity: 1 } 52%, 95% { opacity: 0 } 100% { opacity: 1 } }
+@keyframes heroFadeB { 0%, 43% { opacity: 0 } 52%, 95% { opacity: 1 } 100% { opacity: 0 } }
+
+/* the city burning under it all */
+.hero-fire {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(120% 62% at 50% 108%, rgba(255,124,32,.30), transparent 66%),
+    radial-gradient(70% 40% at 22% 92%, rgba(255,92,20,.20), transparent 70%),
+    radial-gradient(60% 36% at 80% 96%, rgba(255,150,44,.16), transparent 70%);
+  mix-blend-mode: screen;
+  animation: heroBurn 7.5s ease-in-out infinite alternate;
+}
+@keyframes heroBurn { from { opacity: .68 } to { opacity: 1 } }
 
 .hero-grade {
   position: absolute; inset: 0; pointer-events: none;
@@ -344,26 +377,6 @@ p:last-child { margin-bottom: 0; }
 }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
 
-.scroll-cue {
-  position: absolute; bottom: 2.2rem; left: 50%; transform: translateX(-50%);
-  z-index: 4; text-align: center;
-  opacity: 0; animation: fadeUp 1.2s var(--ease) 2.2s forwards;
-}
-.scroll-cue span {
-  font-family: var(--title); font-size: .55rem; letter-spacing: .42em;
-  text-transform: uppercase; color: rgba(216,205,180,.4); display: block; margin-bottom: .55rem;
-}
-.scroll-cue i {
-  display: block; width: 1px; height: 42px; margin: 0 auto;
-  background: linear-gradient(180deg, rgba(201,162,39,.8), transparent);
-  animation: cueDrop 2.6s var(--ease) infinite; transform-origin: top;
-}
-@keyframes cueDrop {
-  0%   { transform: scaleY(0); opacity: 0; }
-  35%  { transform: scaleY(1); opacity: 1; }
-  100% { transform: scaleY(1) translateY(42px); opacity: 0; }
-}
-
 /* ════════════════════════════════ PREMISE ═══════════════════════════════ */
 
 #premise { background:
@@ -409,39 +422,41 @@ p:last-child { margin-bottom: 0; }
 .map-host {
   position: relative;
   border: 1px solid var(--line);
-  background: #05070a;
-  box-shadow: inset 0 0 90px rgba(0,0,0,.9), 0 30px 80px rgba(0,0,0,.6);
+  background: #16252f;
+  box-shadow: inset 0 0 70px rgba(0,0,0,.55), 0 30px 80px rgba(0,0,0,.6);
 }
 .map-host::before {
   content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 2;
-  background: radial-gradient(100% 80% at 50% 50%, transparent 50%, rgba(0,0,0,.7) 100%);
+  background: radial-gradient(110% 90% at 50% 46%, transparent 58%, rgba(3,7,11,.62) 100%);
 }
 .map-svg { display: block; width: 100%; height: auto; }
 
 .landmass {
   fill: url(#landGrad);
-  stroke: rgba(201,162,39,.55);
-  stroke-width: 1.6;
+  stroke: #6d5c39;
+  stroke-width: 1.4;
   stroke-linejoin: round;
 }
-.the-wall line { stroke: rgba(160,225,250,.55); stroke-width: 2.6; stroke-linecap: round; }
-.the-wall .wall-cap { stroke: rgba(220,245,255,.85); stroke-width: 1.2; }
-.the-wall { filter: url(#mapGlow); }
+.shelf g { stroke: #6f95ad; }
+.the-wall line { stroke: #dceaf1; stroke-width: 3.4; stroke-linecap: butt; }
+.the-wall .wall-cap { stroke: #7d9fae; stroke-width: 1; }
 
 .map-label {
-  font-family: var(--title); fill: rgba(216,205,180,.34);
+  font-family: var(--title); fill: #4c3f28;
   font-size: 9px; letter-spacing: .26em;
 }
-.wall-label { fill: rgba(160,225,250,.6); font-size: 8px; }
-.sea-label { fill: rgba(140,175,205,.3); font-style: italic; letter-spacing: .3em; }
-.region-label { fill: rgba(201,162,39,.32); }
+.wall-label { fill: #3f5560; font-size: 8px; letter-spacing: .2em; }
+.sea-label { fill: rgba(168,196,214,.55); font-style: italic; letter-spacing: .3em; }
+.region-label { fill: rgba(62,49,26,.85); font-size: 10px; }
+.rivers path { stroke: #5f8398; stroke-width: 1.5; stroke-linecap: round; opacity: .75; }
+.map-frame rect { stroke: rgba(201,162,39,.34); }
 
-.raven path { fill: rgba(216,205,180,.5); }
+.raven path { fill: rgba(226,214,186,.55); }
 
 .pin { cursor: pointer; }
 .pin-hit { fill: transparent; }
 .pin-halo {
-  fill: none; stroke: rgba(201,162,39,.4); stroke-width: 1;
+  fill: none; stroke: rgba(122,35,24,.55); stroke-width: 1;
   transform-box: fill-box; transform-origin: center;
   animation: pinPulse 3.4s ease-out infinite;
   animation-delay: calc(var(--i) * .14s);
@@ -451,15 +466,19 @@ p:last-child { margin-bottom: 0; }
   70%  { opacity: 0;  transform: scale(1.5); }
   100% { opacity: 0;  transform: scale(1.5); }
 }
-.pin-dot { fill: var(--gold); transition: fill .3s, r .3s; }
+.pin-dot { fill: #7a2318; stroke: #f0e6ce; stroke-width: .9; transition: fill .3s, r .3s; }
 .pin-name {
-  font-family: var(--title); font-size: 10.5px; letter-spacing: .1em;
-  fill: rgba(216,205,180,.62); pointer-events: none;
+  font-family: var(--title); font-size: 10.5px; letter-spacing: .08em;
+  fill: #3b3020; pointer-events: none;
+  paint-order: stroke; stroke: rgba(236,226,201,.85); stroke-width: 2.4;
   transition: fill .3s, font-size .3s;
 }
-.pin:hover .pin-dot, .pin:focus .pin-dot, .pin.on .pin-dot { fill: #fff; r: 5; }
-.pin:hover .pin-name, .pin:focus .pin-name, .pin.on .pin-name { fill: #fff; font-size: 12px; }
-.pin.on .pin-halo { stroke: #fff; }
+/* the pins out at sea sit on slate, not parchment */
+.pin[data-sea="1"] .pin-name { fill: #dfe9ef; stroke: rgba(12,22,30,.8); }
+.pin:hover .pin-dot, .pin:focus .pin-dot, .pin.on .pin-dot { fill: #b8321f; r: 5; }
+.pin:hover .pin-name, .pin:focus .pin-name, .pin.on .pin-name { fill: #14100a; font-size: 12px; }
+.pin[data-sea="1"]:hover .pin-name, .pin[data-sea="1"].on .pin-name { fill: #fff; }
+.pin.on .pin-halo { stroke: #b8321f; }
 .pin:focus { outline: none; }
 .pin:focus-visible .pin-name { fill: var(--ice); }
 
@@ -723,9 +742,9 @@ p:last-child { margin-bottom: 0; }
   font-size: .92rem; color: #aaa393; line-height: 1.55;
 }
 .season-events li::before {
-  content: ''; position: absolute; left: 0; top: .55em;
-  width: 6px; height: 6px; transform: rotate(45deg);
-  background: var(--sc); opacity: .7;
+  content: ''; position: absolute; left: 0; top: .78em;
+  width: 13px; height: 1px;
+  background: var(--sc); opacity: .55;
 }
 .season-foot {
   border-top: 1px solid var(--line-soft); padding-top: 1rem;
@@ -809,10 +828,31 @@ p:last-child { margin-bottom: 0; }
 /* ═════════════════════════════════ DRAGONS ══════════════════════════════ */
 
 #dragons {
-  background: linear-gradient(180deg, #0a0708, #150a06 45%, #0a0708);
+  background: linear-gradient(180deg, #080606, #150a06 45%, #080606);
   overflow: hidden;
 }
-#dragonFx { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; }
+/* the still behind them is weather, so it sits well back */
+#dragonBg { opacity: .26; }
+/* and the copy needs its own ground to stay readable over a flying dragon */
+.dragon-copy .sec-head { position: relative; }
+.dragon-copy .sec-head::before {
+  content: ''; position: absolute; inset: -2rem -3rem -1.5rem -3rem;
+  background: radial-gradient(70% 120% at 22% 50%, rgba(8,6,6,.88), rgba(8,6,6,0) 78%);
+  z-index: -1;
+}
+/* The dragons own the sky above the cards. The canvas stops short of them and
+   fades out rather than cutting, so a dragon leaving the band sinks into haze
+   instead of being sliced off. */
+#dragonGL, #dragonFx {
+  position: absolute; left: 0; right: 0; top: 0;
+  height: 56%; width: 100%;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(180deg, #000 68%, transparent 100%);
+          mask-image: linear-gradient(180deg, #000 68%, transparent 100%);
+}
+#dragonGL { z-index: 1; }
+#dragonFx { z-index: 2; }
+.dragon-copy { z-index: 3; }
 .sec-bg { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
 .dragon-copy { position: relative; z-index: 2; pointer-events: none; }
 .dragon-copy .sec-head, .dragon-grid, .dragon-note { pointer-events: auto; }
@@ -840,7 +880,7 @@ p:last-child { margin-bottom: 0; }
   text-transform: uppercase; color: var(--muted);
   display: flex; align-items: center; gap: .55rem; margin-bottom: 1rem;
 }
-.dragon-col i { width: 12px; height: 12px; transform: rotate(45deg); background: var(--c); display: block; }
+.dragon-col i { width: 22px; height: 3px; background: var(--c); display: block; }
 .dragon-card p { font-size: .94rem; color: #b0a897; }
 .dragon-fate {
   margin-top: 1rem; padding-top: .9rem; border-top: 1px solid rgba(216,205,180,.08);
@@ -1004,16 +1044,15 @@ p:last-child { margin-bottom: 0; }
   border-left: 2px solid var(--cc); padding-left: .9rem; margin-bottom: 1rem;
 }
 .cast-fate {
-  display: flex; align-items: flex-start; gap: .55rem;
+  display: flex; align-items: stretch; gap: .7rem;
   border-top: 1px solid var(--line-soft); padding-top: .9rem;
   font-size: .84rem; color: #8f8879;
 }
 .cast-fate i {
-  flex: 0 0 auto; width: 8px; height: 8px; margin-top: .45rem;
-  transform: rotate(45deg);
-  background: var(--blood-lt); box-shadow: 0 0 10px var(--blood-lt);
+  flex: 0 0 auto; width: 2px; margin: .15rem 0;
+  background: #5c1a18;
 }
-.cast-card.alive .cast-fate i { background: #4ade80; box-shadow: 0 0 10px #4ade80; }
+.cast-card.alive .cast-fate i { background: #b9b19c; }
 
 /* ═══════════════════════════════ ARYA'S LIST ════════════════════════════ */
 
@@ -1128,11 +1167,14 @@ p:last-child { margin-bottom: 0; }
 
 .stat-grid {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1px; background: var(--line-soft);
-  border: 1px solid var(--line-soft);
+  gap: 1px;
+  /* the rules are drawn by the cells, not by a container background showing
+     through the gaps — otherwise a short last row leaves a lit empty block */
+  background: none;
 }
 .stat {
   background: var(--ink); padding: 2.2rem 1.6rem; text-align: center;
+  box-shadow: 0 0 0 1px var(--line-soft);
   transition: background .5s;
 }
 .stat:hover { background: var(--panel); }
@@ -1161,6 +1203,8 @@ p:last-child { margin-bottom: 0; }
 #endEmbers { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 .end-wrap { position: relative; z-index: 2; text-align: center; }
 .sig-end { width: 96px; height: 96px; margin: 0 auto 2.4rem; opacity: .9; }
+.sig-slot { display: block; }
+.sig-slot svg, .sig-slot img { display: block; width: 100%; height: 100%; object-fit: contain; }
 .end-title {
   font-family: var(--title); font-weight: 400;
   font-size: clamp(1.7rem, 5vw, 3.2rem); line-height: 1.34;
@@ -1311,12 +1355,12 @@ p:last-child { margin-bottom: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   .moment::before, #hero::before { animation: none; }
-  .hero-plate img { animation: none; transform: scale(1.04); }
+  .hero-plate .hp-frame { animation: none; transform: scale(1.04); }
+  .hp-b { display: none; }
+  .hero-fire { animation: none; }
 }
 
 /* ────────────────────────────── the atlas ─────────────────────────────── */
-.landmass { fill: url(#landGrad); stroke: rgba(214,182,112,.62); stroke-width: 1.5;
-            stroke-linejoin: round; }
 .map-svg { cursor: grab; touch-action: none; }
 .map-svg.dragging { cursor: grabbing; }
 .map-scene { transition: transform .18s cubic-bezier(.2,.8,.3,1); }
@@ -1342,24 +1386,22 @@ p:last-child { margin-bottom: 0; }
   padding: .42rem .9rem; cursor: pointer; transition: all .3s var(--ease);
 }
 #mapReset:hover { border-color: var(--gold); background: rgba(201,162,39,.12); }
-.map-label { fill: rgba(226,208,170,.42); }
-.region-label { fill: rgba(214,182,112,.4); }
 
 /* --- map: compass rose and the outer isles ------------------------------ */
 .compass { pointer-events: none; }
 .compass .c-ring {
   fill: none;
-  stroke: rgba(201, 162, 39, .20);
+  stroke: rgba(190, 214, 228, .28);
   stroke-width: 1;
 }
 .compass .c-star {
-  fill: rgba(201, 162, 39, .13);
-  stroke: rgba(201, 162, 39, .34);
+  fill: rgba(190, 214, 228, .14);
+  stroke: rgba(206, 226, 238, .46);
   stroke-width: .7;
 }
-.compass .c-in { fill: rgba(201, 162, 39, .22); }
+.compass .c-in { fill: rgba(214, 230, 240, .30); }
 .compass .c-n {
-  fill: rgba(201, 162, 39, .5);
+  fill: rgba(206, 226, 238, .6);
   font-size: 11px;
   letter-spacing: .12em;
   text-anchor: middle;

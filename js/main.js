@@ -20,10 +20,20 @@ function sigilSVG(key, c1, c2) {
   return `<svg viewBox="0 0 100 100" class="sig" aria-hidden="true"
     style="--sigc:${c1 || 'var(--gold)'};--sigc2:${c2 || c1 || 'var(--gold-lt)'}">${body}</svg>`;
 }
-function paintSigil(el, key, c1, c2) {
-  el.innerHTML = SIGILS[key] || SIGILS.watch;
-  el.style.setProperty('--sigc', c1 || 'var(--gold)');
-  el.style.setProperty('--sigc2', c2 || c1 || 'var(--gold-lt)');
+
+/* Real emblems replace the drawn ones once the manifest has loaded. Panels and
+   cards can be built at any time, so this runs over whatever root it is given
+   rather than only over the document at startup. */
+let sigilsReady = false;
+function dropInSigils(root) {
+  if (!sigilsReady || !root) return;
+  const els = root.querySelectorAll ? Array.from(root.querySelectorAll('[data-sigil]')) : [];
+  if (root.dataset && root.dataset.sigil) els.push(root);
+  els.forEach(el => {
+    if (el.querySelector('.sig-img')) return;
+    const url = Assets.sigil(el.dataset.sigil);
+    if (url) el.innerHTML = `<img class="sig-img" src="${url}" alt="">`;
+  });
 }
 
 const houseByKey = {};
@@ -45,8 +55,10 @@ const watchAll = sel => $$(sel).forEach(watchReveal);
 /* ═══════════════════════════════ 0 · CHROME ═══════════════════════════════ */
 
 /* gate sigils */
-paintSigil($('.sig-gate'), 'targaryen', '#c9a227', '#e8d9a0');
-paintSigil($('.sig-end'), 'stark', '#c9a227', '#e8d9a0');
+/* drawn now, replaced by the real emblem the moment the manifest lands */
+$$('.sig-slot').forEach(el => {
+  el.innerHTML = sigilSVG(el.dataset.sigil, '#c9a227', '#e8d9a0');
+});
 
 /* production table */
 $('.prod-table').innerHTML = PRODUCTION
@@ -122,6 +134,7 @@ function openHouse(key) {
   const insertAfter = cards[Math.min(cards.length - 1,
     Math.floor(idx / perRow) * perRow + perRow - 1)];
   insertAfter.after(panel);
+  dropInSigils(panel);
   openPanel = panel;
 
   panel.querySelector('.hp-close').addEventListener('click', () => {
@@ -149,9 +162,11 @@ $('#houseMinor').innerHTML = MINOR_HOUSES.map(h => `
 
 /* ══════════════════════════════ 2 · SEASONS ═══════════════════════════════ */
 
+/* Kept in one narrow band — pewter, bone, gold, dried blood — so the eight
+   cards read as one set of objects instead of eight highlighter pens. */
 const MOOD_COLOR = {
-  stark: '#cfd8dc', wildfire: '#2fe08a', blood: '#d33b34', lannister: '#e0b23c',
-  ice: '#7fd3f0', green: '#4ade80', fire: '#ff8a2b', night: '#8fd3f4'
+  stark: '#b6bcc0', wildfire: '#7f9c74', blood: '#96382f', lannister: '#c2a04a',
+  ice: '#9cb6c4', green: '#8a9c73', fire: '#b5702f', night: '#93a6b4'
 };
 
 const rail = $('#seasonRail');
@@ -253,11 +268,9 @@ Assets.ready.then(() => {
     if (url) BACKDROPS[id].setImage(url);
   });
 
-  /* house emblems, wherever they appear */
-  $$('[data-sigil]').forEach(el => {
-    const url = Assets.sigil(el.dataset.sigil);
-    if (url) el.innerHTML = `<img class="sig-img" src="${url}" alt="">`;
-  });
+  /* house emblems, wherever they appear — including anything built later */
+  sigilsReady = true;
+  dropInSigils(document);
 
   /* cast portraits */
   $$('[data-portrait]').forEach(el => {
@@ -267,6 +280,18 @@ Assets.ready.then(() => {
     el.classList.add('has-img');
     el.closest('.cast-card').classList.add('has-photo');
   });
+
+  /* a clip supplied as "hero" replaces the still sequence behind the title */
+  const heroClip = Assets.hero();
+  if (heroClip) {
+    const v = $('#heroVideo');
+    v.src = heroClip;
+    v.addEventListener('canplay', () => {
+      $('.hero-plate').classList.add('has-video');
+      v.play().catch(() => $('.hero-plate').classList.remove('has-video'));
+    }, { once: true });
+    v.addEventListener('error', () => $('.hero-plate').classList.remove('has-video'), { once: true });
+  }
 
   /* a photographed throne stands in for the model */
   const throneShot = Assets.throne();
@@ -490,7 +515,8 @@ const throne  = ThroneScene($('#throneGL'));
 const embers  = reduced ? null : EmberField($('#heroEmbers'), { count: 46 });
 const endEmb  = reduced ? null : EmberField($('#endEmbers'), { count: 80 });
 const snow    = reduced ? null : SnowField($('#snowFx'), { count: 240 });
-const dragons = reduced ? null : DragonScene($('#dragonFx'));
+const dragons  = reduced ? null : DragonGL($('#dragonGL'));
+const dragonFire = reduced ? null : DragonFire($('#dragonFx'));
 
 /* Painted backdrops for the two big atmospheric sections. They run
    backdrop-only, since each already has its own particle system on top. */
@@ -647,9 +673,10 @@ function frame(now) {
   if (throne && isVis('#throne')) throne.render(t);
 
   /* dragons + snow + end embers */
-  if (dragons && isVis('#dragons')) {
+  if (isVis('#dragons')) {
     BACKDROPS.dragons.step(dt, 1);
-    dragons.step(dt, 1);
+    if (dragons) dragons.step(dt);
+    if (dragonFire) dragonFire.step(dt, dragons && dragons.muzzle);
   }
   if (snow && isVis('#longnight')) {
     BACKDROPS.thewall.step(dt, 1);
@@ -679,7 +706,7 @@ function frame(now) {
 requestAnimationFrame(frame);
 
 window.addEventListener('resize', () => {
-  [throne, embers, endEmb, snow, dragons, cursor].forEach(o => o && o.resize && o.resize());
+  [throne, embers, endEmb, snow, dragons, dragonFire, cursor].forEach(o => o && o.resize && o.resize());
   Object.keys(BACKDROPS).forEach(k => BACKDROPS[k].resize());
   momentFx.forEach(m => m.fx.resize());
 }, { passive: true });
@@ -710,9 +737,7 @@ function enter(withSound) {
 function updateScoreState() {
   const el = $('#scoreState');
   if (!el) return;
-  el.textContent = Score.isSynth
-    ? 'Playing now: an original score, generated live in your browser.'
-    : 'Playing now: your own file from assets/theme.mp3.';
+  el.textContent = Score.playing ? 'Now playing — Main Title.' : 'Main Title.';
 }
 
 $('#enterBtn').addEventListener('click', () => enter(true));

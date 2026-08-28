@@ -19,7 +19,7 @@
 <div id="gate">
   <div class="gate-inner">
     <div class="gate-sigil" aria-hidden="true">
-      <svg viewBox="0 0 100 100" class="sig sig-gate"></svg>
+      <div class="sig-slot sig-gate" data-sigil="targaryen"></div>
     </div>
     <p class="gate-kicker">HBO · 2011 — 2019 · 73 episodes</p>
     <h1 class="gate-title">Winter Is Coming</h1>
@@ -54,7 +54,11 @@
 <!-- ══════════════════════════════ 1 · HERO ══════════════════════════════ -->
 <section id="hero" class="sec" data-mood="main" data-dot="Title">
   <div class="hero-plate" aria-hidden="true">
-    <img id="heroImg" src="assets/img/hero.jpg" alt="">
+    <!-- a file named as "hero" in assets/manifest.json takes this over -->
+    <video id="heroVideo" muted loop playsinline preload="auto"></video>
+    <img class="hp-frame hp-a" id="heroImg" src="assets/img/hero.jpg" alt="">
+    <img class="hp-frame hp-b" id="heroImg2" src="assets/img/bells.jpg" alt="">
+    <div class="hero-fire"></div>
     <div class="hero-grade"></div>
   </div>
   <canvas id="heroEmbers" aria-hidden="true"></canvas>
@@ -70,7 +74,6 @@
     <p class="hero-tag">When you play the game of thrones, you win or you die.</p>
   </div>
 
-  <div class="scroll-cue"><span>scroll</span><i></i></div>
 </section>
 
 <!-- ═════════════════════════════ 2 · PREMISE ════════════════════════════ -->
@@ -117,12 +120,11 @@
     <header class="sec-head">
       <p class="kicker">The known world</p>
       <h2 class="h2">Westeros &amp; <em>Essos</em></h2>
-      <p class="sub">Twenty-six places worth knowing. Touch one.</p>
+      <p class="sub">Twenty-six places worth knowing.</p>
     </header>
     <div class="map-layout">
       <div class="map-host" id="mapHost">
         <div class="map-tools">
-          <span class="map-hint">drag to pan · scroll to zoom · double-click to close in</span>
           <button id="mapReset" type="button">reset</button>
         </div>
       </div>
@@ -147,7 +149,7 @@
     <header class="sec-head">
       <p class="kicker">The great houses</p>
       <h2 class="h2">Words are <em>wind</em>. Until they aren't.</h2>
-      <p class="sub">Hover a sigil to turn it. Click to open the house.</p>
+      <p class="sub">Nine names that spent eight seasons trying to outlive each other.</p>
     </header>
     <div class="house-grid" id="houseGrid"></div>
     <div class="house-minor" id="houseMinor"></div>
@@ -184,12 +186,13 @@
 <!-- ═════════════════════════════ 7 · DRAGONS ════════════════════════════ -->
 <section id="dragons" class="sec sec-pad" data-mood="fire" data-dot="Dragons">
   <canvas id="dragonBg" class="sec-bg" aria-hidden="true"></canvas>
+  <canvas id="dragonGL" aria-hidden="true"></canvas>
   <canvas id="dragonFx" aria-hidden="true"></canvas>
   <div class="wrap dragon-copy">
     <header class="sec-head">
       <p class="kicker">Fire made flesh</p>
       <h2 class="h2">Three eggs. <em>Three names.</em></h2>
-      <p class="sub">Move your cursor — they will follow it.</p>
+      <p class="sub">The last three dragons in the world, and what she did with them.</p>
     </header>
     <div class="dragon-grid">
       <article class="dragon-card reveal" data-drag="drogon">
@@ -209,10 +212,10 @@
       </article>
       <article class="dragon-card reveal" data-drag="viserion" style="--d:.16s">
         <h3>Viserion</h3>
-        <p class="dragon-col"><i style="--c:#7dd3fc"></i> cream &amp; gold</p>
+        <p class="dragon-col"><i style="--c:#c9bfa0"></i> cream &amp; gold</p>
         <p>Named for Viserys, the brother who sold her. Killed beyond the Wall by an ice
            spear, hauled from the lake by the dead, and raised with blue eyes.</p>
-        <p class="dragon-fate">Brought down the Wall. Killed by Drogon at Winterfell.</p>
+        <p class="dragon-fate">Brought down the Wall. Fell the instant Arya took the Night King.</p>
       </article>
     </div>
     <p class="dragon-note reveal">Twenty stuntmen were set alight for the Loot Train Attack —
@@ -285,7 +288,7 @@
            exactly what had killed her.</p>
       </div>
     </div>
-    <p class="throne-meta"><span id="swordCount">0</span> blades · scroll to melt it</p>
+    <p class="throne-meta"><span id="swordCount">0</span> blades</p>
   </div>
 </section>
 
@@ -295,7 +298,7 @@
     <header class="sec-head">
       <p class="kicker">The players</p>
       <h2 class="h2">Twenty who <em>mattered</em></h2>
-      <p class="sub">Green sigil, still breathing. Red, not so much.</p>
+      <p class="sub">Who was left standing when the credits rolled.</p>
     </header>
     <div class="cast-grid" id="castGrid"></div>
   </div>
@@ -335,14 +338,11 @@
     <div class="score-player reveal">
       <div class="eq" id="eq" aria-hidden="true"></div>
       <div class="score-player-txt">
-        <p id="scoreState">The score on this page is generated live in your browser.</p>
-        <p class="score-fine">Djawadi's actual compositions are copyrighted and are not
-          included here. What you're hearing is an original Web Audio piece written for this
-          page — a cello ostinato in C minor over i&ndash;VI&ndash;III&ndash;VII, re-scored
-          section by section as you scroll. Drop your own file at
-          <code>assets/theme.mp3</code> and it will play that instead. The scenery works the
-          same way: every backdrop on this page is painted in code, and any of them can be
-          replaced with a real photograph via <code>assets/img/manifest.json</code>.</p>
+        <p id="scoreState">The main title.</p>
+        <p class="score-fine">Djawadi scored all seventy-three episodes. He wrote the main
+          title after watching the animatic of the opening — which is why the cello lands on
+          the gear teeth — and then spent eight years quoting himself, so that by the end a
+          single phrase of The Rains of Castamere could empty a room.</p>
       </div>
       <button id="soundBtn2" class="score-btn">toggle score</button>
     </div>
@@ -364,7 +364,7 @@
 <section id="end" class="sec" data-mood="end" data-dot="The End">
   <canvas id="endEmbers" aria-hidden="true"></canvas>
   <div class="wrap end-wrap">
-    <svg viewBox="0 0 100 100" class="sig sig-end" aria-hidden="true"></svg>
+    <div class="sig-slot sig-end" data-sigil="stark" aria-hidden="true"></div>
     <h2 class="end-title">The night is dark<br>and full of terrors</h2>
     <p class="end-sub">But it is over now. And the Starks went home.</p>
     <div class="end-links">
@@ -375,8 +375,6 @@
       <p><b>A fan tribute.</b> Game of Thrones is © HBO, based on <i>A Song of Ice and Fire</i>
          by George R. R. Martin. This page is an unofficial, non-commercial retrospective and
          claims no affiliation.</p>
-      <p>Every visual here is drawn in code — WebGL, SVG and canvas. No stock images, no
-         third-party libraries, no tracking. The score is synthesised in the browser.</p>
     </footer>
   </div>
 </section>
@@ -388,6 +386,7 @@
 <script src="js/scenery.js"></script>
 <script src="js/gl.js"></script>
 <script src="js/scene-throne.js"></script>
+<script src="js/scene-dragons.js"></script>
 <script src="js/effects.js"></script>
 <script src="js/map.js"></script>
 <script src="js/audio.js"></script>

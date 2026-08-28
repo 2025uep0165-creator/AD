@@ -347,6 +347,7 @@ const Score = (() => {
   return {
     start, toggle, setMood,
     get on() { return started && !muted; },
-    get isSynth() { return started && !usingFile; }
+    get isSynth() { return started && !usingFile; },
+    get playing() { return started && !muted; }
   };
 })();

@@ -511,7 +511,9 @@ const STATS = [
   { n: 19,  label: 'Million Viewers',      suffix: '.3M', raw: true, note: 'US audience for the series finale' },
   { n: 10,  label: 'Countries Filmed',     suffix: '',  note: 'N. Ireland · Croatia · Iceland · Spain · Malta · Morocco' },
   { n: 55,  label: 'Night Shoots',         suffix: '',  note: 'To film The Long Night — a record' },
-  { n: 4000, label: 'Crew & Cast',         suffix: '+', note: 'At the production\'s peak' }
+  { n: 4000, label: 'Crew & Cast',         suffix: '+', note: 'At the production\'s peak' },
+  { n: 4,   label: 'Best Drama Emmys',     suffix: '',  note: '2015 · 2016 · 2018 · 2019' },
+  { n: 5,   label: 'Novels So Far',        suffix: '',  note: 'A Song of Ice and Fire, still unfinished' }
 ];
 
 const MUSIC_NOTES = [
