@@ -3,5 +3,4 @@ dist/
 .fetch/
 collection.html
 __pycache__/
-grom/
 .dtest.html

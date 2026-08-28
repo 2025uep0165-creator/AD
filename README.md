@@ -54,9 +54,12 @@ over. Anything you don't supply keeps what the code draws.
 the formats.
 
 **Bring your own media.** Put files in a folder called `grom/` at the root and
-run `python3 tools/install-grom.py --apply`: it works out what each file is from
-its name and extension, files it into `assets/`, keys the background out of any
-emblem, and updates the manifest. Audio lands as the score. Video loops behind
+run `python3 tools/install-grom.py --apply` (it takes a path too, if the files
+live somewhere else: `python3 tools/install-grom.py ~/Downloads --apply`).
+`grom/` is deliberately not git-ignored — a cloud session only ever sees what
+has been committed and pushed, so the folder has to be able to travel. It
+works out what each file is from its name and extension, files it into
+`assets/`, keys the background out of any emblem, and updates the manifest. Audio lands as the score. Video loops behind
 the title. Images matched to one of the fourteen moments replace that backdrop.
 Anything it can't place is listed rather than guessed at.
 

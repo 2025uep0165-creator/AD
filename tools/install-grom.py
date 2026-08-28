@@ -3,8 +3,11 @@
 
     python3 tools/install-grom.py            # see what it would do
     python3 tools/install-grom.py --apply    # actually do it
+    python3 tools/install-grom.py ~/Downloads --apply     # or any other folder
 
 Drop files into a folder called grom/ at the root of the repo and run this.
+grom/ is deliberately NOT git-ignored: a cloud session only ever sees what has
+been committed and pushed, so the folder has to be able to travel.
 It works out what each file is from its extension and its name:
 
   audio (.mp3 .m4a .ogg .wav .flac)
@@ -75,6 +78,13 @@ SIGILS = {
 }
 # the manifest key differs from the filename for the watch
 SIGIL_KEY = {"nights-watch": "watch"}
+
+
+def rel_to_root(p):
+    try:
+        return p.relative_to(ROOT)
+    except ValueError:
+        return p
 
 
 def norm(name):
@@ -153,18 +163,21 @@ def install_image(src, dest, max_w=1800, quality=82):
 
 
 def main():
-    apply = "--apply" in sys.argv
-    if not GROM.is_dir():
-        sys.exit(f"no {GROM} — create it and drop the files in, then run this again")
+    argv = sys.argv[1:]
+    apply = "--apply" in argv
+    paths = [a for a in argv if not a.startswith("-")]
+    src_dir = pathlib.Path(paths[0]).expanduser() if paths else GROM
+    if not src_dir.is_dir():
+        sys.exit(f"no {src_dir} — create it and drop the files in, then run this again")
 
     manifest_path = ASSETS / "manifest.json"
     man = json.loads(manifest_path.read_text()) if manifest_path.exists() else {}
     man.setdefault("scenes", {})
     man.setdefault("sigils", {})
 
-    plan, unplaced = [], []
+    plan, unplaced, audio_from_video = [], [], []
 
-    for f in sorted(GROM.rglob("*")):
+    for f in sorted(src_dir.rglob("*")):
         if not f.is_file() or f.name.startswith("."):
             continue
         ext = f.suffix.lower()
@@ -173,6 +186,9 @@ def main():
         if ext in AUDIO:
             plan.append(("audio", f, ASSETS / "theme.mp3", None))
         elif ext in VIDEO:
+            if any(w in norm(stem) for w in
+                   ("theme", "music", "soundtrack", "song", "score", "credits")):
+                audio_from_video.append(f)
             plan.append(("video", f, ASSETS / "video" / "hero.mp4", None))
         elif ext in IMAGE:
             sig = match(stem, SIGILS)
@@ -189,7 +205,7 @@ def main():
 
     for kind, src, dest, key in plan:
         rel = dest.relative_to(ASSETS).as_posix()
-        print(f"  {kind:6s} {src.relative_to(ROOT)}  ->  assets/{rel}")
+        print(f"  {kind:6s} {rel_to_root(src)}  ->  assets/{rel}")
         if not apply:
             continue
         if kind == "audio":
@@ -206,10 +222,17 @@ def main():
             install_image(src, dest)
             man["scenes"][key] = rel
 
+    if audio_from_video:
+        print("\n  note: these are video files, so they go to the title slot, not the"
+              "\n  score. If you meant them as music, export the audio track first"
+              "\n  (any converter will do) and drop the .mp3 in instead:")
+        for f in audio_from_video:
+            print(f"    {rel_to_root(f)}")
+
     if unplaced:
         print("\n  could not place — rename these after what they show and re-run:")
         for f in unplaced:
-            print(f"    {f.relative_to(ROOT)}")
+            print(f"    {rel_to_root(f)}")
         print("    moments: " + ", ".join(sorted(MOMENTS)))
         print("    sigils:  " + ", ".join(sorted(SIGILS)))
 
