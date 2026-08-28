@@ -78,10 +78,8 @@ h1, h2, h3, h4 { font-family: var(--title); font-weight: 600; margin: 0; line-he
 }
 .h2 em {
   font-style: normal;
-  color: var(--gold);
-  background: linear-gradient(180deg, #f6e6a8 0%, var(--gold) 48%, #8a6b12 100%);
-  -webkit-background-clip: text; background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #d9b64a;                      /* one flat gold, not a gradient */
+  box-shadow: inset 0 -2px 0 rgba(201,162,39,.28);
 }
 .h4 {
   font-size: 1.02rem; letter-spacing: .18em; text-transform: uppercase;
@@ -143,17 +141,11 @@ p:last-child { margin-bottom: 0; }
   text-transform: uppercase; color: var(--gold-dp); margin-bottom: 1.4rem;
 }
 .gate-title {
-  font-family: var(--deco); font-weight: 900;
-  font-size: clamp(2.6rem, 8vw, 4.6rem);
-  background: linear-gradient(180deg, #fbf1cd, var(--gold) 55%, #7a5f10);
-  -webkit-background-clip: text; background-clip: text;
-  -webkit-text-fill-color: transparent;
+  font-family: var(--title); font-weight: 400;
+  font-size: clamp(2rem, 6.4vw, 3.6rem);
+  letter-spacing: .14em; text-transform: uppercase;
+  color: #f2ecdc;
   margin-bottom: 1.2rem;
-  animation: gateGlow 5s ease-in-out infinite;
-}
-@keyframes gateGlow {
-  0%,100% { filter: drop-shadow(0 0 22px rgba(201,162,39,.16)); }
-  50%     { filter: drop-shadow(0 0 40px rgba(201,162,39,.34)); }
 }
 .gate-sub { color: #a29c8c; font-size: 1.02rem; margin-bottom: 2.4rem; }
 
@@ -257,94 +249,119 @@ p:last-child { margin-bottom: 0; }
 
 /* ═══════════════════════════════════ HERO ═══════════════════════════════ */
 
-#hero { height: 100vh; min-height: 620px; overflow: hidden; }
-#heroGL, #heroEmbers {
-  position: absolute; inset: 0; width: 100%; height: 100%;
+#hero { height: 100vh; min-height: 620px; overflow: hidden; background: #05060a; }
+
+/* the plate: a real frame, pushed in slowly, graded cold-to-ember */
+.hero-plate { position: absolute; inset: 0; overflow: hidden; }
+.hero-plate img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center 42%;
+  transform: scale(1.08) translate3d(0,0,0);
+  animation: heroPush 34s ease-out forwards;
+  will-change: transform;
 }
-#heroEmbers { pointer-events: none; }
-#hero::after {
-  content: ''; position: absolute; inset: 0; pointer-events: none;
-  background: linear-gradient(180deg, rgba(7,8,10,.72) 0%, transparent 24%,
-              rgba(7,8,10,.30) 50%, rgba(7,8,10,.86) 74%, rgba(7,8,10,.98) 100%);
+@keyframes heroPush { to { transform: scale(1.19) translate(-1.2%, -1.6%); } }
+
+.hero-grade {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(78% 58% at 62% 34%, rgba(255,150,70,.18), transparent 62%),
+    linear-gradient(180deg, rgba(5,6,10,.82) 0%, rgba(5,6,10,.16) 26%,
+                    rgba(5,6,10,.34) 52%, rgba(5,6,10,.93) 88%, #05060a 100%),
+    linear-gradient(90deg, rgba(5,6,10,.6), transparent 34%, transparent 70%, rgba(5,6,10,.55));
 }
+/* a soft pool of dark under the wordmark so small caps stay legible over
+   whatever happens to be bright in the plate */
+.hero-copy::before {
+  content: ''; position: absolute; left: 50%; top: 50%;
+  width: min(1180px, 96vw); height: 132%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(58% 52% at 50% 50%, rgba(5,6,10,.78), rgba(5,6,10,.4) 58%, transparent 78%);
+  pointer-events: none; z-index: -1;
+}
+.hero-copy { position: absolute; }
+#heroEmbers { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 
 .hero-copy {
-  position: absolute; left: 0; right: 0; bottom: 16vh; z-index: 3;
-  text-align: center; padding: 0 1.5rem;
-  pointer-events: none;
-}
-.eyebrow {
-  font-family: var(--title); font-size: .68rem; letter-spacing: .46em;
-  text-transform: uppercase; color: rgba(201,162,39,.75); margin-bottom: 1.3rem;
+  position: absolute; left: 0; right: 0; bottom: 13vh; z-index: 3;
+  text-align: center; padding: 0 1.5rem; pointer-events: none;
 }
 
+.hero-kicker {
+  font-family: var(--title);
+  font-size: .58rem; letter-spacing: .46em; text-transform: uppercase;
+  color: rgba(228,218,196,.72); margin-bottom: 1.9rem;
+  text-shadow: 0 1px 12px rgba(0,0,0,.95), 0 0 26px rgba(0,0,0,.8);
+  opacity: 0; animation: fadeUp 1.3s var(--ease) .45s forwards;
+}
+
+/* Bone-white cut letterforms rather than a gold gradient — the wordmark reads
+   as carved stone, and the only gold on screen is the hairline beneath it. */
 .megatitle {
-  font-family: var(--deco); font-weight: 900;
-  font-size: clamp(2.1rem, 8.4vw, 7rem);
-  letter-spacing: .06em;
-  display: flex; justify-content: center; align-items: baseline; gap: .04em;
-  flex-wrap: wrap;
-  margin-bottom: 1.5rem;
+  font-family: var(--title);
+  font-weight: 400;
+  font-size: clamp(2.6rem, 9.6vw, 8.4rem);
+  line-height: .92;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: #f4efe2;
+  margin: 0 0 1.5rem;
+  display: flex; flex-direction: column; align-items: center;
+  text-shadow: 0 2px 0 rgba(0,0,0,.55), 0 14px 46px rgba(0,0,0,.75);
 }
-/* Two clipped layers per letter: the gold below, a specular sweep above.
-   Doing the sheen per-letter keeps it aligned with the flex-laid-out
-   wordmark — a single overlay copy drifts out of register. */
-.megatitle span, .megatitle em {
-  display: inline-block;
-  background-image:
-    linear-gradient(100deg, transparent 42%, rgba(255,255,255,.55) 50%, transparent 58%),
-    linear-gradient(180deg, #fdf6dd 0%, #e6cf86 32%, var(--gold) 58%, #6f5510 100%);
-  background-size: 300% 100%, 100% 100%;
-  background-position: 190% 0, 0 0;
-  -webkit-background-clip: text; background-clip: text;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 3px 18px rgba(0,0,0,.85));
-  opacity: 0; transform: translateY(34px) rotateX(-55deg);
-  animation-name: letterIn, sheen;
-  animation-duration: .95s, 7s;
-  animation-timing-function: var(--ease), ease-in-out;
-  animation-delay: calc(var(--i) * .052s + .3s), calc(var(--i) * .05s + 2.2s);
-  animation-fill-mode: forwards, none;
-  animation-iteration-count: 1, infinite;
+.megatitle .mt-line {
+  display: block;
+  opacity: 0; transform: translateY(26px);
+  animation: cutIn 1.5s var(--ease) forwards;
 }
-.megatitle em {
-  font-family: var(--serif); font-style: italic; font-weight: 400;
-  font-size: .42em; letter-spacing: .04em; margin: 0 .38em;
-  text-transform: lowercase;
+.megatitle .mt-line:nth-of-type(1) { animation-delay: .65s; }
+.megatitle .mt-line:last-of-type   { animation-delay: .82s; }
+.megatitle .mt-of {
+  font-family: var(--serif); font-style: italic; text-transform: lowercase;
+  font-size: .2em; letter-spacing: .06em; color: rgba(216,205,180,.62);
+  margin: .28em 0 .18em;
+  opacity: 0; animation: fadeUp 1.2s var(--ease) 1.0s forwards;
 }
-@keyframes letterIn { to { opacity: 1; transform: none; } }
+@keyframes cutIn {
+  from { opacity: 0; transform: translateY(26px); letter-spacing: .22em; }
+  to   { opacity: 1; transform: none; letter-spacing: .1em; }
+}
 
-@keyframes sheen {
-  0%, 55%   { background-position: 190% 0, 0 0; }
-  75%, 100% { background-position: -90% 0, 0 0; }
+.hero-rule {
+  display: flex; align-items: center; justify-content: center; gap: .8rem;
+  margin: 0 auto 1.5rem; width: min(320px, 62vw);
+  opacity: 0; animation: fadeUp 1.2s var(--ease) 1.25s forwards;
 }
+.hero-rule i { height: 1px; flex: 1; background: linear-gradient(90deg, transparent, var(--gold-dp)); }
+.hero-rule i:last-child { background: linear-gradient(270deg, transparent, var(--gold-dp)); }
+.hero-rule b { width: 5px; height: 5px; transform: rotate(45deg); background: var(--gold); }
 
 .hero-tag {
-  font-style: italic; color: #b3aa96; font-size: clamp(.95rem, 1.7vw, 1.22rem);
-  letter-spacing: .03em;
-  opacity: 0; animation: fadeUp 1.4s var(--ease) 1.5s forwards;
+  font-style: italic; color: rgba(200,192,176,.78);
+  font-size: clamp(.92rem, 1.5vw, 1.12rem); letter-spacing: .02em;
+  opacity: 0; animation: fadeUp 1.4s var(--ease) 1.45s forwards;
 }
-@keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
 
 .scroll-cue {
-  position: absolute; bottom: 2.4rem; left: 50%; transform: translateX(-50%);
+  position: absolute; bottom: 2.2rem; left: 50%; transform: translateX(-50%);
   z-index: 4; text-align: center;
-  opacity: 0; animation: fadeUp 1.2s var(--ease) 2.4s forwards;
+  opacity: 0; animation: fadeUp 1.2s var(--ease) 2.2s forwards;
 }
 .scroll-cue span {
-  font-family: var(--title); font-size: .58rem; letter-spacing: .4em;
-  text-transform: uppercase; color: var(--muted); display: block; margin-bottom: .6rem;
+  font-family: var(--title); font-size: .55rem; letter-spacing: .42em;
+  text-transform: uppercase; color: rgba(216,205,180,.4); display: block; margin-bottom: .55rem;
 }
 .scroll-cue i {
-  display: block; width: 1px; height: 46px; margin: 0 auto;
-  background: linear-gradient(180deg, var(--gold), transparent);
-  animation: cueDrop 2.4s var(--ease) infinite;
-  transform-origin: top;
+  display: block; width: 1px; height: 42px; margin: 0 auto;
+  background: linear-gradient(180deg, rgba(201,162,39,.8), transparent);
+  animation: cueDrop 2.6s var(--ease) infinite; transform-origin: top;
 }
 @keyframes cueDrop {
   0%   { transform: scaleY(0); opacity: 0; }
   35%  { transform: scaleY(1); opacity: 1; }
-  100% { transform: scaleY(1) translateY(46px); opacity: 0; }
+  100% { transform: scaleY(1) translateY(42px); opacity: 0; }
 }
 
 /* ════════════════════════════════ PREMISE ═══════════════════════════════ */
@@ -762,7 +779,8 @@ p:last-child { margin-bottom: 0; }
   text-transform: uppercase; color: var(--mc); margin-bottom: 1.2rem;
 }
 .moment-title {
-  font-family: var(--deco); font-weight: 700;
+  font-family: var(--title); font-weight: 400;
+  letter-spacing: .04em;
   font-size: clamp(1.9rem, 6vw, 4rem);
   color: #f6f0e0; margin-bottom: 1.4rem;
   text-shadow: 0 6px 40px rgba(0,0,0,.9);
@@ -774,7 +792,7 @@ p:last-child { margin-bottom: 0; }
   text-shadow: 0 2px 20px rgba(0,0,0,.9);
 }
 .moment-quote {
-  font-family: var(--deco); font-size: clamp(1.1rem, 2.6vw, 1.9rem);
+  font-family: var(--serif); font-style: italic; font-size: clamp(1.1rem, 2.6vw, 1.9rem);
   color: var(--mc); margin-bottom: .5rem;
   text-shadow: 0 0 34px color-mix(in srgb, var(--mc) 40%, transparent);
 }
@@ -1120,11 +1138,10 @@ p:last-child { margin-bottom: 0; }
 .stat:hover { background: var(--panel); }
 .stat b {
   display: block;
-  font-family: var(--deco); font-weight: 900;
+  font-family: var(--title); font-weight: 400;
   font-size: clamp(2.4rem, 5vw, 3.6rem); line-height: 1;
-  background: linear-gradient(180deg, #f6e6a8, var(--gold) 55%, #7a5f10);
-  -webkit-background-clip: text; background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #e9dcb4; letter-spacing: .02em;
+  font-variant-numeric: tabular-nums;
   margin-bottom: .7rem;
 }
 .stat em {
@@ -1145,11 +1162,10 @@ p:last-child { margin-bottom: 0; }
 .end-wrap { position: relative; z-index: 2; text-align: center; }
 .sig-end { width: 96px; height: 96px; margin: 0 auto 2.4rem; opacity: .9; }
 .end-title {
-  font-family: var(--deco); font-weight: 700;
-  font-size: clamp(1.9rem, 6vw, 4rem); line-height: 1.2;
-  background: linear-gradient(180deg, #fbf1cd, var(--gold) 55%, #6f5510);
-  -webkit-background-clip: text; background-clip: text;
-  -webkit-text-fill-color: transparent;
+  font-family: var(--title); font-weight: 400;
+  font-size: clamp(1.7rem, 5vw, 3.2rem); line-height: 1.34;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: #efe7d3;
   margin-bottom: 1.4rem;
 }
 .end-sub { font-style: italic; color: var(--muted); margin-bottom: 3rem; }
@@ -1218,3 +1234,134 @@ p:last-child { margin-bottom: 0; }
   .throne-step { position: relative; opacity: 1; transform: none; margin-bottom: 2rem; }
   .throne-meta { position: relative; right: auto; bottom: auto; text-align: center; margin-top: 2rem; }
 }
+
+/* ═════════════════════════ PHOTOGRAPHIC FURNITURE ═══════════════════════ */
+/* Plates behind cards: a real place under the type, held right back so the
+   card still reads as a card and not as a photo with words on it. */
+
+.house-plate, .season-plate {
+  position: absolute; inset: 0; overflow: hidden; z-index: 0;
+  pointer-events: none;
+}
+.house-plate img, .season-plate img {
+  width: 100%; height: 100%; object-fit: cover;
+  filter: grayscale(.35) contrast(1.06) brightness(.62);
+  transform: scale(1.06);
+  transition: transform 1.1s var(--ease), filter .8s var(--ease), opacity .8s;
+  opacity: .85;
+}
+.house-plate::after, .season-plate::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(10,12,15,.28) 0%, rgba(10,12,15,.68) 44%,
+              rgba(16,19,23,.95) 82%, var(--panel) 100%);
+}
+/* season posters carry their own title lettering — pushed out of frame and
+   knocked back so it reads as texture, not a competing headline */
+.season-plate img {
+  filter: grayscale(.55) contrast(1.04) brightness(.38);
+  opacity: .55;
+  transform: scale(1.3);
+  object-position: center 42%;
+}
+.season-plate::after {
+  background: linear-gradient(180deg, rgba(10,12,15,.62) 0%, rgba(10,12,15,.82) 40%,
+              rgba(16,19,23,.96) 78%, var(--panel) 100%);
+}
+.house:hover .house-plate img {
+  transform: scale(1.13); filter: grayscale(0) contrast(1.1) brightness(.8); opacity: 1;
+}
+.season:hover .season-plate img {
+  transform: scale(1.36); filter: grayscale(.2) contrast(1.06) brightness(.5); opacity: .72;
+}
+/* card content has to sit above the plate */
+.house > :not(.house-plate), .season > :not(.season-plate) { position: relative; z-index: 1; }
+
+/* the throne now stands in a real hall */
+.throne-hall { position: absolute; inset: 0; overflow: hidden; z-index: 0; }
+.throne-hall img {
+  width: 100%; height: 100%; object-fit: cover; object-position: center 38%;
+  filter: grayscale(.28) brightness(.72) contrast(1.06);
+  transform: scale(1.12);
+}
+.throne-hall::after {
+  content: ''; position: absolute; inset: 0;
+  background:
+    radial-gradient(62% 52% at 50% 56%, rgba(3,4,5,.06), rgba(3,4,5,.74) 76%),
+    linear-gradient(180deg, rgba(3,4,5,.72), transparent 32%, rgba(3,4,5,.92));
+}
+#throneGL { z-index: 1; }
+.throne-copy, .throne-meta { z-index: 3; }
+
+/* a light film pass over every photographic panel: grain plus a slow gate
+   weave, which is what keeps a still from reading as a flat JPEG */
+.moment::before, #hero::before {
+  content: ''; position: absolute; inset: -2%;
+  pointer-events: none; z-index: 2;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)' opacity='.5'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay; opacity: .28;
+  animation: weave 5.6s steps(6) infinite;
+}
+@keyframes weave {
+  0%   { transform: translate(0,0); }
+  20%  { transform: translate(-1.2%, .7%); }
+  40%  { transform: translate(.9%, -1%); }
+  60%  { transform: translate(-.7%, -.6%); }
+  80%  { transform: translate(1%, .9%); }
+  100% { transform: translate(0,0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .moment::before, #hero::before { animation: none; }
+  .hero-plate img { animation: none; transform: scale(1.04); }
+}
+
+/* ────────────────────────────── the atlas ─────────────────────────────── */
+.landmass { fill: url(#landGrad); stroke: rgba(214,182,112,.62); stroke-width: 1.5;
+            stroke-linejoin: round; }
+.map-svg { cursor: grab; touch-action: none; }
+.map-svg.dragging { cursor: grabbing; }
+.map-scene { transition: transform .18s cubic-bezier(.2,.8,.3,1); }
+.map-svg.dragging .map-scene { transition: none; }
+.map-svg.zoomed .pin-name { font-size: 9px; }
+
+.map-tools {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 4;
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  padding: .7rem .95rem;
+  background: linear-gradient(0deg, rgba(5,7,10,.92), transparent);
+  pointer-events: none;
+}
+.map-hint {
+  font-family: var(--title); font-size: .54rem; letter-spacing: .2em;
+  text-transform: uppercase; color: rgba(216,205,180,.4);
+}
+#mapReset {
+  pointer-events: auto;
+  font-family: var(--title); font-size: .54rem; letter-spacing: .2em;
+  text-transform: uppercase; color: var(--gold-lt);
+  background: rgba(9,11,14,.85); border: 1px solid var(--line);
+  padding: .42rem .9rem; cursor: pointer; transition: all .3s var(--ease);
+}
+#mapReset:hover { border-color: var(--gold); background: rgba(201,162,39,.12); }
+.map-label { fill: rgba(226,208,170,.42); }
+.region-label { fill: rgba(214,182,112,.4); }
+
+/* --- map: compass rose and the outer isles ------------------------------ */
+.compass { pointer-events: none; }
+.compass .c-ring {
+  fill: none;
+  stroke: rgba(201, 162, 39, .20);
+  stroke-width: 1;
+}
+.compass .c-star {
+  fill: rgba(201, 162, 39, .13);
+  stroke: rgba(201, 162, 39, .34);
+  stroke-width: .7;
+}
+.compass .c-in { fill: rgba(201, 162, 39, .22); }
+.compass .c-n {
+  fill: rgba(201, 162, 39, .5);
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-anchor: middle;
+}
+.landmass.isle { stroke-width: 1; }

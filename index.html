@@ -53,17 +53,23 @@
 
 <!-- ══════════════════════════════ 1 · HERO ══════════════════════════════ -->
 <section id="hero" class="sec" data-mood="main" data-dot="Title">
-  <canvas id="heroGL" aria-hidden="true"></canvas>
+  <div class="hero-plate" aria-hidden="true">
+    <img id="heroImg" src="assets/img/hero.jpg" alt="">
+    <div class="hero-grade"></div>
+  </div>
   <canvas id="heroEmbers" aria-hidden="true"></canvas>
+
   <div class="hero-copy">
-    <p class="eyebrow">From the novels of George R. R. Martin</p>
+    <p class="hero-kicker">HBO&nbsp;&nbsp;·&nbsp;&nbsp;2011&nbsp;—&nbsp;2019&nbsp;&nbsp;·&nbsp;&nbsp;73 episodes</p>
     <h1 class="megatitle">
-      <span>G</span><span>A</span><span>M</span><span>E</span>
-      <em>of</em>
-      <span>T</span><span>H</span><span>R</span><span>O</span><span>N</span><span>E</span><span>S</span>
+      <span class="mt-line">Game</span>
+      <span class="mt-of">of</span>
+      <span class="mt-line">Thrones</span>
     </h1>
+    <div class="hero-rule"><i></i><b></b><i></i></div>
     <p class="hero-tag">When you play the game of thrones, you win or you die.</p>
   </div>
+
   <div class="scroll-cue"><span>scroll</span><i></i></div>
 </section>
 
@@ -114,7 +120,12 @@
       <p class="sub">Twenty-six places worth knowing. Touch one.</p>
     </header>
     <div class="map-layout">
-      <div class="map-host" id="mapHost"></div>
+      <div class="map-host" id="mapHost">
+        <div class="map-tools">
+          <span class="map-hint">drag to pan · scroll to zoom · double-click to close in</span>
+          <button id="mapReset" type="button">reset</button>
+        </div>
+      </div>
       <aside class="map-card" id="mapCard">
         <div class="map-card-inner">
           <p class="map-card-region">Pick a location</p>
@@ -246,6 +257,9 @@
 <!-- ══════════════════════════════ 9 · THRONE ════════════════════════════ -->
 <section id="throne" class="sec" data-mood="end" data-dot="The Throne">
   <div class="throne-sticky">
+    <div class="throne-hall" aria-hidden="true">
+      <img src="assets/img/throne-room.jpg" alt="" onerror="this.parentNode.remove()">
+    </div>
     <canvas id="throneGL" aria-hidden="true"></canvas>
     <div id="throneShot" hidden aria-hidden="true"><img alt=""><i class="throne-heat"></i></div>
     <div class="throne-copy">
@@ -373,7 +387,6 @@
 <script src="js/data.js"></script>
 <script src="js/scenery.js"></script>
 <script src="js/gl.js"></script>
-<script src="js/scene-hero.js"></script>
 <script src="js/scene-throne.js"></script>
 <script src="js/effects.js"></script>
 <script src="js/map.js"></script>

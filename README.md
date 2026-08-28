@@ -18,12 +18,12 @@ python3 -m http.server 8000    # then visit http://localhost:8000
 
 | Section | What it does |
 | --- | --- |
-| **Title** | A WebGL clockwork orrery — sun, gears, armillary rings and seven castles riding the outer band — that orbits under the cursor and dollies away as you scroll |
+| **Title** | A full-bleed still of King's Landing under the parallax, embers drifting over it, the title cut in a letter at a time |
 | **The Game** | The premise in three columns, plus the production facts |
-| **The Map** | Hand-plotted SVG map of Westeros and western Essos. 26 selectable locations, a drifting raven, the Wall across the top |
-| **The Houses** | Nine great houses as 3D-tilting cards with hand-drawn heraldic sigils; click one to expand its history, seat, and a fact |
+| **The Map** | A drawn SVG atlas of Westeros and western Essos — curved coastlines roughened by a fractal displacement filter, relief hatching and woodland clipped to the land, the Iron Islands and Dragonstone offshore, a compass rose, a drifting raven, and the Wall clipped to the northern coast. 26 selectable locations; drag to pan, scroll to zoom, double-click to close in |
+| **The Houses** | Nine great houses as 3D-tilting cards — the real heraldic emblem over a still of the house's own seat; click one to expand its history, seat, and a fact |
 | **8 Seasons** | A drag/scroll/arrow-key rail — every season, its key events, and how it closed |
-| **Moments** | Fourteen full-screen panels that stack over one another as you scroll. Each sits in a painted scene — a burning King's Landing, the Wall, a godswood, a hall of columns — graded to its own palette, with matching particles over the top |
+| **Moments** | Fourteen full-screen panels that stack over one another as you scroll. Each sits on the still from its own scene, graded to its own palette, with matching particles — embers, ash, snow, blood — over the top |
 | **Dragons** | Drogon, Rhaegal and Viserion crossing the panel — the lead one breathes fire at your cursor |
 | **The Long Night** | Snowfall, the White Walkers, dragonglass and Valyrian steel |
 | **The Throne** | ~200 procedural swords baked into one mesh. Scroll and it melts, in the vertex shader |
@@ -36,13 +36,15 @@ drives the season rail when it's focused.
 
 ---
 
-## Two things worth knowing
+## Three things worth knowing
 
-**There are no photographs — but there's a slot for them.** Every visual is
-generated in code: WebGL for the orrery and the throne, canvas matte paintings
-for the scenery behind each moment, hand-authored SVG for the sigils and the
-map, particle systems for embers, snow, fire and blood. Official stills belong
-to HBO, so none ship here.
+**Photographs where a photograph is the right answer; code everywhere else.**
+Sixty-nine images ship in `assets/` — the moment backdrops, the house seats, the
+season posters, the cast, the heraldic emblems — pulled from the show's own
+material and re-encoded small. Around them, everything is still generated: WebGL
+for the Iron Throne, canvas matte paintings as the fallback scenery, the SVG
+atlas, and the particle systems for embers, snow, fire and blood. There is no
+video: HBO's footage isn't something this repo can carry.
 
 **Every drawn thing has a slot.** Backdrops, house sigils, cast portraits, the
 Iron Throne and the score can each be replaced by a real file without touching
@@ -69,13 +71,19 @@ js/assets.js          the drop-in layer — reads assets/manifest.json
 js/data.js            all the lore: houses, seasons, moments, cast, quotes, sigil SVG
 js/scenery.js         the matte paintings — skyline, wall, godswood, hall, pyre, crowd, battlefield
 js/gl.js              tiny WebGL helper — mat4 maths, shaders, procedural meshes
-js/scene-hero.js      the clockwork orrery
 js/scene-throne.js    the Iron Throne, and the shader that melts it
 js/effects.js         embers, snow, per-moment atmospheres, dragons, cursor sparks
 js/map.js             the map geometry and its 26 locations
 js/audio.js           the synthesised score
 js/main.js            builds every section from the data, runs one rAF loop
+assets/               the images, and manifest.json that names them
+tools/                the sourcing and re-encoding scripts
+build.py              flattens the whole thing into one self-contained file
 ```
+
+`python3 build.py` writes `dist/winter-is-coming.html`: the markup, the CSS, all
+nine scripts and every image re-encoded and inlined as a data URI — one file,
+about 4.5 MB, that opens anywhere with no server and no `assets/` folder.
 
 No dependencies. No CDN, apart from an optional Google Fonts link for Cinzel and
 EB Garamond — if it's blocked, the fallback serif stack takes over and the page

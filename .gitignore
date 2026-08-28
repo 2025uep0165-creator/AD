@@ -2,3 +2,4 @@ dist/
 .bundle-preview.html
 .fetch/
 collection.html
+__pycache__/

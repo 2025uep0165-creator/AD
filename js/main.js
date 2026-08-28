@@ -44,9 +44,6 @@ const watchAll = sel => $$(sel).forEach(watchReveal);
 
 /* ═══════════════════════════════ 0 · CHROME ═══════════════════════════════ */
 
-/* stagger the hero wordmark */
-$$('.megatitle span, .megatitle em').forEach((el, i) => el.style.setProperty('--i', i));
-
 /* gate sigils */
 paintSigil($('.sig-gate'), 'targaryen', '#c9a227', '#e8d9a0');
 paintSigil($('.sig-end'), 'stark', '#c9a227', '#e8d9a0');
@@ -79,6 +76,10 @@ HOUSES.forEach((h, i) => {
   el.setAttribute('tabindex', '0');
   el.setAttribute('role', 'button');
   el.innerHTML = `
+    <div class="house-plate" aria-hidden="true">
+      <img src="${(window.assetURL || (x=>x))(`assets/houses/${h.key}.jpg`)}" alt="" loading="lazy"
+           onerror="this.parentNode.remove()">
+    </div>
     <div class="house-sig" data-sigil="${h.key}">${sigilSVG(h.key, h.c1, h.accent)}</div>
     <h3 class="house-name">${h.name}</h3>
     <p class="house-words">${h.words}</p>
@@ -156,6 +157,10 @@ const MOOD_COLOR = {
 const rail = $('#seasonRail');
 rail.innerHTML = SEASONS.map(s => `
   <article class="season" style="--sc:${MOOD_COLOR[s.mood] || '#c9a227'}">
+    <div class="season-plate" aria-hidden="true">
+      <img src="${(window.assetURL || (x=>x))(`assets/seasons/s${s.n}.jpg`)}" alt="" loading="lazy"
+           onerror="this.parentNode.remove()">
+    </div>
     <div class="season-n">0${s.n}</div>
     <p class="season-yr">${s.year} · ${s.eps} episodes</p>
     <h3 class="season-title">${s.title}</h3>
@@ -277,6 +282,83 @@ Assets.ready.then(() => {
 
 const mapSvg = buildMap($('#mapHost'));
 const mapCard = $('#mapCard');
+
+/* ---- pan and zoom, the way an atlas wants to be handled ---------------- */
+(() => {
+  const scene = mapSvg.querySelector('.map-scene');
+  if (!scene) return;
+  const view = { x: 0, y: 0, k: 1 };
+  const MINK = 1, MAXK = 4.5;
+  let drag = null, moved = 0;
+
+  const apply = () => {
+    scene.setAttribute('transform',
+      `translate(${view.x.toFixed(2)} ${view.y.toFixed(2)}) scale(${view.k.toFixed(3)})`);
+    mapSvg.classList.toggle('zoomed', view.k > 1.02);
+  };
+
+  /* keep the map from being dragged off its own frame */
+  function clampView() {
+    const span = 920 * (view.k - 1);
+    view.x = clamp(view.x, -span, span * 0.15);
+    view.y = clamp(view.y, -span, span * 0.15);
+  }
+
+  function zoomAt(cx, cy, factor) {
+    const k2 = clamp(view.k * factor, MINK, MAXK);
+    const f = k2 / view.k;
+    view.x = cx - (cx - view.x) * f;
+    view.y = cy - (cy - view.y) * f;
+    view.k = k2;
+    if (view.k <= MINK + 0.001) { view.x = 0; view.y = 0; view.k = MINK; }
+    clampView(); apply();
+  }
+
+  /* pointer position in the svg's own units */
+  function local(e) {
+    const r = mapSvg.getBoundingClientRect();
+    const vb = mapSvg.viewBox.baseVal;
+    return { x: vb.x + (e.clientX - r.left) / r.width * vb.width,
+             y: vb.y + (e.clientY - r.top) / r.height * vb.height };
+  }
+
+  mapSvg.addEventListener('wheel', e => {
+    e.preventDefault();
+    const p = local(e);
+    zoomAt(p.x, p.y, e.deltaY < 0 ? 1.16 : 1 / 1.16);
+  }, { passive: false });
+
+  mapSvg.addEventListener('pointerdown', e => {
+    drag = { sx: e.clientX, sy: e.clientY, vx: view.x, vy: view.y };
+    moved = 0;
+    mapSvg.setPointerCapture(e.pointerId);
+    mapSvg.classList.add('dragging');
+  });
+  mapSvg.addEventListener('pointermove', e => {
+    if (!drag) return;
+    const r = mapSvg.getBoundingClientRect();
+    const sc = mapSvg.viewBox.baseVal.width / r.width;
+    const dx = (e.clientX - drag.sx) * sc, dy = (e.clientY - drag.sy) * sc;
+    moved = Math.max(moved, Math.abs(dx) + Math.abs(dy));
+    view.x = drag.vx + dx; view.y = drag.vy + dy;
+    clampView(); apply();
+  });
+  const endDrag = () => { drag = null; mapSvg.classList.remove('dragging'); };
+  mapSvg.addEventListener('pointerup', endDrag);
+  mapSvg.addEventListener('pointercancel', endDrag);
+
+  /* a click that was really a drag shouldn't also select a location */
+  mapSvg.addEventListener('click', e => { if (moved > 6) e.stopPropagation(); }, true);
+
+  const reset = $('#mapReset');
+  if (reset) reset.addEventListener('click', () => {
+    view.x = 0; view.y = 0; view.k = 1; apply();
+  });
+  /* double-click zooms in on the spot, like every map ever */
+  mapSvg.addEventListener('dblclick', e => {
+    e.preventDefault(); const p = local(e); zoomAt(p.x, p.y, 1.9);
+  });
+})();
 
 function showLocation(loc) {
   $$('.pin', mapSvg).forEach(p => p.classList.toggle('on', p.dataset.id === loc.id));
@@ -404,9 +486,8 @@ watchAll('.reveal');
 
 /* ══════════════════════════════ 10 · CANVASES ═════════════════════════════ */
 
-const hero    = reduced ? null : HeroScene($('#heroGL'));
 const throne  = ThroneScene($('#throneGL'));
-const embers  = reduced ? null : EmberField($('#heroEmbers'), { count: 110 });
+const embers  = reduced ? null : EmberField($('#heroEmbers'), { count: 46 });
 const endEmb  = reduced ? null : EmberField($('#endEmbers'), { count: 80 });
 const snow    = reduced ? null : SnowField($('#snowFx'), { count: 240 });
 const dragons = reduced ? null : DragonScene($('#dragonFx'));
@@ -426,11 +507,16 @@ const cursor  = (reduced || matchMedia('(pointer: coarse)').matches)
 if (throne) $('#swordCount').textContent = '1,000';
 
 /* pointer parallax for the two GL scenes */
+const heroPlate = $('#heroImg');
 window.addEventListener('pointermove', e => {
   const nx = (e.clientX / window.innerWidth) * 2 - 1;
   const ny = (e.clientY / window.innerHeight) * 2 - 1;
-  if (hero)   { hero.state.pointerX = nx; hero.state.pointerY = -ny * 0.6; }
   if (throne) { throne.state.pointerX = nx * 0.4; throne.state.pointerY = -ny * 0.5; }
+  /* a hand's width of drift on the hero plate, so it never sits dead still */
+  if (heroPlate && !reduced) {
+    heroPlate.style.setProperty('--px', (nx * -14).toFixed(1) + 'px');
+    heroPlate.style.setProperty('--py', (ny * -10).toFixed(1) + 'px');
+  }
 }, { passive: true });
 
 /* which sections are on screen — so we only animate what is visible */
@@ -541,11 +627,20 @@ function frame(now) {
   }
   updateThrone();
 
-  /* hero */
-  if (hero && isVis('#hero')) {
+  /* hero: embers over the plate, and the plate lifts away as you leave */
+  if (isVis('#hero')) {
     const hp = clamp(scrollY / Math.max(window.innerHeight, 1), 0, 1);
-    hero.render(t, hp);
-    if (embers) embers.step(dt, 1 - hp * 0.7);
+    if (embers) embers.step(dt, 1 - hp * 0.75);
+    const plate = $('.hero-plate');
+    if (plate && !reduced) {
+      plate.style.transform = `translate3d(0, ${(hp * 12).toFixed(2)}%, 0)`;
+      plate.style.opacity = String(1 - hp * 0.35);
+    }
+    const copy = $('.hero-copy');
+    if (copy && !reduced) {
+      copy.style.transform = `translate3d(0, ${(hp * -34).toFixed(1)}px, 0)`;
+      copy.style.opacity = String(clamp(1 - hp * 1.5, 0, 1));
+    }
   }
 
   /* throne */
@@ -584,7 +679,7 @@ function frame(now) {
 requestAnimationFrame(frame);
 
 window.addEventListener('resize', () => {
-  [hero, throne, embers, endEmb, snow, dragons, cursor].forEach(o => o && o.resize && o.resize());
+  [throne, embers, endEmb, snow, dragons, cursor].forEach(o => o && o.resize && o.resize());
   Object.keys(BACKDROPS).forEach(k => BACKDROPS[k].resize());
   momentFx.forEach(m => m.fx.resize());
 }, { passive: true });

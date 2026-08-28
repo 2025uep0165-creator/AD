@@ -35,20 +35,34 @@
 const Assets = (() => {
   let data = {};
 
-  const ready = fetch('assets/manifest.json')
-    .then(r => (r.ok ? r.json() : null))
-    .catch(() => null)
-    .then(j => { data = j || {}; return data; });
+  /* The single-file build inlines every asset as a data URI and drops the
+     manifest in alongside them, so there is nothing to fetch. */
+  const inline = (typeof window !== 'undefined' && window.INLINE_ASSETS) || null;
+
+  const ready = inline
+    ? Promise.resolve((data = inline.manifest || {}))
+    : fetch('assets/manifest.json')
+        .then(r => (r.ok ? r.json() : null))
+        .catch(() => null)
+        .then(j => { data = j || {}; return data; });
 
   /* keep everything inside assets/ — a manifest shouldn't be able to point
      the page at an arbitrary path */
   const path = p => {
     if (!p || typeof p !== 'string') return null;
     const clean = p.replace(/^[/\\]+/, '').replace(/\.\.[/\\]/g, '');
-    return 'assets/' + clean;
+    const rel = 'assets/' + clean;
+    return (inline && inline.files && inline.files[rel]) || rel;
   };
 
   const from = (group, key) => path((data[group] || {})[key]);
+
+  /* Resolve a literal repo path (used by markup the page builds itself).
+     In the single-file build this hands back the inlined data URI. */
+  if (typeof window !== 'undefined') {
+    window.assetURL = rel =>
+      (inline && inline.files && inline.files[rel]) || rel;
+  }
 
   return {
     ready,

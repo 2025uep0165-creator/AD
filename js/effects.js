@@ -60,7 +60,7 @@ function EmberField(cv, opts) {
       p.y += p.vy * dt;
       if (p.life > p.max || p.y < -20) spawn(p, false);
       const fade = Math.sin(Math.min(p.life / p.max, 1) * Math.PI);
-      const a = fade * (0.5 + Math.sin(p.flick) * 0.28) * k;
+      const a = fade * (0.30 + Math.sin(p.flick) * 0.18) * k;
       if (a <= 0) continue;
       const r = p.r * (1 + Math.sin(p.flick) * 0.16);
       const grad = g.createRadialGradient(p.x, p.y, 0, p.x, p.y, r * 5);

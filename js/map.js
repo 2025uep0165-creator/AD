@@ -88,30 +88,59 @@ const LOCATIONS = [
     tag: 'The Undying burned' }
 ];
 
-/* Westeros: wide in the north, pinched hard at the Neck around y≈375, then
-   broadening again through the Reach and out into Dorne in the south-east. */
-/* The steps are deliberately uneven — a few deep bays and long capes rather
-   than a regular zigzag, which would read as a sawtooth instead of a coast. */
-const WESTEROS_PATH = `M 138 54
-  L 182 40 L 228 52 L 268 36 L 312 48 L 358 34 L 402 46 L 448 60
-  L 468 92 L 452 124 L 474 150 L 458 182 L 486 206 L 462 238
-  L 492 266 L 470 296 L 492 322 L 452 342 L 400 354 L 352 366
-  L 334 384 L 376 400 L 428 412 L 458 436 L 492 466 L 472 494
-  L 500 522 L 472 550 L 494 578 L 518 612 L 490 646 L 510 684
-  L 486 722 L 514 758 L 480 796 L 436 830 L 382 850 L 322 846
-  L 266 856 L 210 826 L 180 790 L 192 756 L 168 722 L 196 690
-  L 172 664 L 188 636 L 150 612 L 178 584 L 156 558 L 172 530
-  L 140 506 L 152 478 L 170 452 L 140 430 L 166 404 L 214 392
-  L 262 376 L 232 362 L 170 348 L 128 326 L 150 300 L 158 272
-  L 140 252 L 126 218 L 152 188 L 138 146 L 146 108 L 130 80 Z`;
+/* The coastlines are drawn as cubic curves rather than line segments: a coast
+   is made of long sweeps and a few deep bays, and a chain of straight steps
+   reads as a sawtooth no matter how the amplitudes are varied. The SVG
+   displacement filter below roughens them again at the pixel level, which is
+   where the fractal detail belongs.
 
-/* Essos: only the western coast is on this map — the rest runs off the edge. */
-const ESSOS_PATH = `M 612 40
-  L 668 28 L 704 58 L 678 98 L 720 124 L 692 160 L 742 190
-  L 704 226 L 760 252 L 728 296 L 778 322 L 746 360 L 794 392
-  L 758 428 L 814 454 L 782 496 L 838 520 L 798 562 L 858 588
-  L 822 632 L 880 656 L 844 700 L 902 726 L 868 770 L 920 798
-  L 936 798 L 936 28 Z`;
+   Westeros, clockwise from the north-west: the wide North, the Bite biting in
+   above the Neck, the Vale bulging back out, Blackwater Bay, the Stormlands,
+   and Dorne running away to the south-east. */
+const WESTEROS_PATH = `M 152 66
+  C 198 44, 258 54, 302 46   C 352 38, 406 58, 452 76
+  C 472 112, 458 142, 468 178   C 480 212, 462 240, 470 270
+  C 476 300, 440 306, 424 332   C 400 358, 352 366, 336 390
+  C 330 412, 380 414, 420 428   C 470 442, 500 452, 494 480
+  C 488 508, 442 518, 438 542   C 436 566, 466 578, 476 600
+  C 486 626, 472 652, 478 680   C 500 714, 530 744, 514 784
+  C 500 814, 456 834, 412 836   C 356 846, 302 830, 254 812
+  C 216 800, 184 778, 176 748   C 168 716, 190 688, 184 660
+  C 178 632, 156 606, 164 578   C 172 548, 150 524, 158 498
+  C 164 468, 142 444, 150 418   C 156 402, 200 394, 244 382
+  C 250 362, 206 344, 172 322   C 146 296, 162 262, 150 232
+  C 140 200, 158 160, 146 122   C 138 96, 144 76, 152 66 Z`;
+
+/* Essos: only the western seaboard is on this map — Braavos and the lagoon,
+   the Pentoshi coast, the long run south to Volantis, and the drowned
+   Valyrian peninsula. Everything east of that runs off the edge. */
+const ESSOS_PATH = `M 596 38
+  C 636 24, 664 44, 652 76   C 640 108, 616 128, 630 158
+  C 646 190, 690 200, 706 230   C 722 258, 700 286, 716 316
+  C 732 348, 776 358, 786 392   C 796 426, 764 452, 776 486
+  C 788 520, 830 528, 836 560   C 842 592, 812 604, 820 636
+  C 828 668, 866 682, 862 716   C 858 752, 878 786, 890 824
+  L 944 824 L 944 24 Z`;
+
+/* The islands that matter, each one a place on the map above. */
+const ISLES = [
+  /* Bear Island */
+  `M 120 218 C 140 210, 156 220, 152 236 C 148 252, 126 258, 114 246
+   C 104 236, 108 222, 120 218 Z`,
+  /* the Iron Islands — Pyke and its neighbours, a broken little archipelago */
+  `M 98 424 C 116 414, 134 424, 130 442 C 126 460, 104 466, 92 454
+   C 82 444, 86 430, 98 424 Z`,
+  `M 136 402 C 148 396, 158 404, 154 414 C 149 424, 135 426, 130 416 Z`,
+  `M 138 466 C 150 460, 160 468, 155 478 C 150 488, 136 489, 132 479 Z`,
+  /* Dragonstone */
+  `M 508 500 C 528 492, 546 504, 542 522 C 538 540, 514 546, 502 532
+   C 492 521, 496 505, 508 500 Z`,
+  /* Skagos, off the north-east shoulder */
+  `M 494 250 C 512 244, 526 254, 521 268 C 516 282, 496 285, 488 273
+   C 482 264, 485 253, 494 250 Z`,
+  /* Tarth and the Sapphire Isle chain in the narrow sea */
+  `M 500 616 C 514 610, 524 620, 519 632 C 514 644, 498 645, 493 634 Z`
+];
 
 function buildMap(host) {
   const NS = 'http://www.w3.org/2000/svg';
@@ -124,58 +153,100 @@ function buildMap(host) {
   svg.innerHTML = `
     <defs>
       <linearGradient id="landGrad" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%"  stop-color="#22201c"/>
-        <stop offset="55%" stop-color="#191712"/>
-        <stop offset="100%" stop-color="#14120f"/>
+        <stop offset="0%"   stop-color="#2a2318"/>
+        <stop offset="42%"  stop-color="#221d15"/>
+        <stop offset="100%" stop-color="#191510"/>
       </linearGradient>
-      <linearGradient id="seaGrad" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%"  stop-color="#080a0e"/>
-        <stop offset="100%" stop-color="#05070a"/>
-      </linearGradient>
+      <radialGradient id="seaGrad" cx="50%" cy="45%" r="75%">
+        <stop offset="0%"   stop-color="#0b1420"/>
+        <stop offset="70%"  stop-color="#070d16"/>
+        <stop offset="100%" stop-color="#04070c"/>
+      </radialGradient>
       <filter id="mapGlow" x="-60%" y="-60%" width="220%" height="220%">
-        <feGaussianBlur stdDeviation="5" result="b"/>
+        <feGaussianBlur stdDeviation="4" result="b"/>
         <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
       </filter>
       <filter id="rough">
-        <feTurbulence type="fractalNoise" baseFrequency="0.028" numOctaves="3" seed="7"/>
-        <feDisplacementMap in="SourceGraphic" scale="5" xChannelSelector="R" yChannelSelector="G"/>
+        <feTurbulence type="fractalNoise" baseFrequency="0.022" numOctaves="4" seed="11"/>
+        <feDisplacementMap in="SourceGraphic" scale="7" xChannelSelector="R" yChannelSelector="G"/>
       </filter>
-      <pattern id="waves" width="46" height="26" patternUnits="userSpaceOnUse">
-        <path d="M0 18 q 11 -9 23 0 t 23 0" fill="none"
-              stroke="rgba(140,175,205,0.10)" stroke-width="1.1"/>
+      <!-- aged vellum: fibre noise burnt in over the land -->
+      <filter id="vellum" x="0" y="0" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" seed="3" result="n"/>
+        <feColorMatrix in="n" type="saturate" values="0"/>
+        <feComponentTransfer><feFuncA type="linear" slope=".26"/></feComponentTransfer>
+      </filter>
+      <pattern id="waves" width="52" height="30" patternUnits="userSpaceOnUse">
+        <path d="M0 20 q 13 -10 26 0 t 26 0" fill="none"
+              stroke="rgba(150,185,215,0.085)" stroke-width="1"/>
       </pattern>
+      <!-- relief hatching for the mountain belts -->
+      <pattern id="ridges" width="14" height="10" patternUnits="userSpaceOnUse">
+        <path d="M1 9 L7 2 L13 9" fill="none" stroke="rgba(226,208,170,.30)" stroke-width="1.2"/>
+      </pattern>
+      <pattern id="woods" width="16" height="14" patternUnits="userSpaceOnUse">
+        <circle cx="8" cy="8" r="2.6" fill="none" stroke="rgba(150,180,140,.24)" stroke-width="1"/>
+      </pattern>
+      <clipPath id="clipWest"><path d="${WESTEROS_PATH}"/></clipPath>
+      <clipPath id="clipEast"><path d="${ESSOS_PATH}"/></clipPath>
     </defs>
 
-    <rect x="90" y="20" width="850" height="860" fill="url(#seaGrad)"/>
-    <rect x="90" y="20" width="850" height="860" fill="url(#waves)"/>
+    <rect x="60" y="0" width="920" height="920" fill="url(#seaGrad)"/>
+    <rect x="60" y="0" width="920" height="920" fill="url(#waves)"/>
 
     <g filter="url(#rough)">
       <path d="${WESTEROS_PATH}" class="landmass"/>
       <path d="${ESSOS_PATH}" class="landmass"/>
+      ${ISLES.map(d => `<path d="${d}" class="landmass isle"/>`).join('')}
+    </g>
+
+    <!-- terrain, clipped to the coastlines -->
+    <g clip-path="url(#clipWest)">
+      <rect x="60" y="0" width="920" height="920" filter="url(#vellum)" opacity=".5"/>
+      <!-- relief laid down as soft masses, so no rectangle edges show -->
+      <ellipse cx="212" cy="300" rx="52" ry="118" fill="url(#ridges)" opacity=".5"/>
+      <ellipse cx="238" cy="470" rx="46" ry="96"  fill="url(#ridges)" opacity=".42"/>
+      <ellipse cx="392" cy="440" rx="58" ry="74"  fill="url(#ridges)" opacity=".5"/>
+      <ellipse cx="384" cy="250" rx="66" ry="88"  fill="url(#woods)"  opacity=".46"/>
+      <ellipse cx="300" cy="640" rx="104" ry="72" fill="url(#woods)"  opacity=".4"/>
+      <ellipse cx="436" cy="770" rx="72" ry="56"  fill="url(#ridges)" opacity=".32"/>
+    </g>
+    <g clip-path="url(#clipEast)">
+      <rect x="600" y="0" width="380" height="920" filter="url(#vellum)" opacity=".5"/>
+      <ellipse cx="852" cy="272" rx="84" ry="112" fill="url(#ridges)" opacity=".38"/>
+      <ellipse cx="800" cy="620" rx="76" ry="64"  fill="url(#ridges)" opacity=".3"/>
+    </g>
+
+    <!-- compass rose, out in the Summer Sea where there is room for it -->
+    <g class="compass" transform="translate(596 762)">
+      <circle r="40" class="c-ring"/>
+      <circle r="27" class="c-ring"/>
+      <path d="M 0 -38 L 7 -7 L 38 0 L 7 7 L 0 38 L -7 7 L -38 0 L -7 -7 Z" class="c-star"/>
+      <path d="M 0 -26 L 4 -4 L 26 0 L 4 4 L 0 26 L -4 4 L -26 0 L -4 -4 Z" class="c-star c-in"/>
+      <text y="-46" class="map-label c-n">N</text>
     </g>
 
     <!-- the Wall -->
-    <g class="the-wall">
-      <line x1="140" y1="140" x2="462" y2="140"/>
-      <line x1="140" y1="134" x2="462" y2="134" class="wall-cap"/>
+    <g class="the-wall" clip-path="url(#clipWest)">
+      <line x1="120" y1="140" x2="486" y2="140"/>
+      <line x1="120" y1="134" x2="486" y2="134" class="wall-cap"/>
     </g>
-    <text x="150" y="122" class="map-label wall-label">THE WALL · 300 MILES · 700 FEET</text>
-    <text x="196" y="70" class="map-label region-label">THE LANDS OF ALWAYS WINTER</text>
+    <text x="168" y="122" class="map-label wall-label">THE WALL · 300 MILES · 700 FEET</text>
+    <text x="196" y="70"  class="map-label region-label">THE LANDS OF ALWAYS WINTER</text>
     <text x="230" y="300" class="map-label region-label">THE NORTH</text>
     <text x="238" y="486" class="map-label region-label">THE RIVERLANDS</text>
     <text x="330" y="700" class="map-label region-label">THE REACH</text>
-    <text x="392" y="812" class="map-label region-label">DORNE</text>
+    <text x="404" y="806" class="map-label region-label">DORNE</text>
     <text x="560" y="420" class="map-label sea-label">THE NARROW SEA</text>
     <text x="700" y="640" class="map-label sea-label">THE SMOKING SEA</text>
-    <text x="770" y="120" class="map-label region-label">ESSOS</text>
+    <text x="800" y="120" class="map-label region-label">ESSOS</text>
 
-    <!-- raven flight path, animated -->
     <path id="ravenPath" d="M 300 262 C 420 300 520 380 660 300 C 760 250 820 340 862 548"
-          fill="none" stroke="rgba(201,162,39,0.20)" stroke-width="1.2"
-          stroke-dasharray="5 7"/>
+          fill="none" stroke="rgba(201,162,39,0.16)" stroke-width="1.1"
+          stroke-dasharray="4 8"/>
     <g class="raven">
       <path d="M -7 0 q 4 -5 8 0 q 4 -5 8 0 q -4 4 -8 1 q -4 3 -8 -1 Z"/>
-      <animateMotion dur="26s" repeatCount="indefinite" rotate="auto">
+      <animateMotion dur="30s" repeatCount="indefinite" rotate="auto">
         <mpath href="#ravenPath"/>
       </animateMotion>
     </g>
@@ -203,6 +274,17 @@ function buildMap(host) {
     `;
     pins.appendChild(g);
   });
+
+  /* everything except the sea sits in one group so pan/zoom is a transform */
+  const NSV = 'http://www.w3.org/2000/svg';
+  const scene = document.createElementNS(NSV, 'g');
+  scene.setAttribute('class', 'map-scene');
+  while (svg.children.length > 1) {                 /* keep <defs> at the top */
+    const n = svg.children[1];
+    if (n.tagName === 'defs') break;
+    scene.appendChild(n);
+  }
+  svg.appendChild(scene);
 
   host.appendChild(svg);
   return svg;

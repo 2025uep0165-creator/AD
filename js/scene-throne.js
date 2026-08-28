@@ -69,7 +69,7 @@ void main() {
   vec3 warm = vec3(1.00, 0.52, 0.20);
 
   /* blades are steel; the dais under them is dark, matte stone */
-  vec3 steel = mix(vec3(0.30, 0.31, 0.35), vec3(0.075, 0.072, 0.080), vStone);
+  vec3 steel = mix(vec3(0.20, 0.205, 0.23), vec3(0.045, 0.044, 0.050), vStone);
 
   vec3 H1 = normalize(L1 + V);
   float s1 = pow(max(dot(N, H1), 0.0), 64.0);
@@ -83,12 +83,18 @@ void main() {
   float floorGlow = exp(-max(vPos.y + 1.0, 0.0) * 1.35);
   float shine = 1.0 - vStone * 0.75;   /* stone barely specs */
 
-  vec3 col = steel * (0.16 + d1 * 0.95)
-           + cool * s1 * 1.15 * shine
-           + warm * d2 * 0.34
-           + warm * s2 * 0.55 * shine
-           + warm * floorGlow * (0.10 + uMelt * 0.45 * (1.0 - vStone))
-           + cool * fres * 0.42 * shine;
+  vec3 col = steel * (0.10 + d1 * 0.86)
+           + cool * s1 * 1.05 * shine
+           + warm * d2 * 0.13
+           + warm * s2 * 0.26 * shine
+           + warm * floorGlow * (0.06 + uMelt * 0.45 * (1.0 - vStone))
+           + cool * fres * 0.34 * shine;
+
+  /* sit it in the plate: crush the blacks and pull the saturation back so the
+     model reads as part of the photograph rather than a render on top of it */
+  float lum = dot(col, vec3(0.299, 0.587, 0.114));
+  col = mix(vec3(lum), col, 0.62);
+  col = pow(max(col, 0.0), vec3(1.16));
 
   /* molten: the metal starts emitting from the inside out */
   float heat = vMelt;
