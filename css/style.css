@@ -700,20 +700,25 @@ p:last-child { margin-bottom: 0; }
 /* The deck is pinned for the length of the section and walked across by the
    page's own vertical scroll, so there is no second scroll surface to get
    caught in and no horizontal gesture to discover. */
+.rail-track { position: relative; }
 .rail-pin {
   position: sticky; top: 0;
-  height: 100vh; min-height: 620px;
-  display: grid; grid-template-rows: auto minmax(0, 1fr) auto;
+  height: 100vh; min-height: 520px;
+  display: grid; grid-template-rows: minmax(0, 1fr) auto;
   align-content: center;
-  padding: 4vh 0 3vh;
+  padding: 2.5vh 0 2vh;
   overflow: hidden;
 }
-/* the heading is compact here: it has to share the frame with the deck */
-.rail-pin .sec-head { margin-bottom: clamp(1.2rem, 3vh, 2.2rem); }
-.rail-pin .sec-head .h2 { font-size: clamp(1.7rem, 3.4vw, 2.7rem); }
-.rail-pin .sec-head .sub { margin-top: .5rem; }
 
-.rail-outer { position: relative; min-height: 0; min-width: 0; overflow: hidden; }
+/* The cards keep the size they were designed at. When the frame is shorter
+   than the deck, the whole deck is scaled down to fit rather than the type
+   being squeezed — so nothing reflows, nothing collides, and every card looks
+   the same on every screen. */
+.rail-outer {
+  position: relative; min-width: 0; overflow: hidden;
+  display: grid; place-items: center start;
+}
+.rail-stage { transform: scale(var(--rs, 1)); transform-origin: left center; }
 .rail-outer::before, .rail-outer::after {
   content: ''; position: absolute; top: 0; bottom: 0; width: 9vw; z-index: 3;
   pointer-events: none;
@@ -722,7 +727,7 @@ p:last-child { margin-bottom: 0; }
 .rail-outer::after  { right: 0; background: linear-gradient(270deg, var(--ink), transparent); }
 
 .rail {
-  display: flex; align-items: stretch; gap: 1.4rem; height: 100%;
+  display: flex; align-items: flex-start; gap: 1.6rem;
   padding: 0 max(2rem, calc((100vw - var(--wrap)) / 2));
   will-change: transform;
 }
@@ -737,13 +742,13 @@ p:last-child { margin-bottom: 0; }
 }
 
 .season {
-  flex: 0 0 min(500px, 84vw);
+  flex: 0 0 min(460px, 84vw);
   border: 1px solid var(--line-soft);
   background: linear-gradient(170deg, var(--panel-2), #0a0c0f);
-  padding: clamp(1.2rem, 2.4vh, 1.9rem) 1.7rem;
+  padding: 2rem 1.8rem;
   position: relative;
   transition: border-color .5s, box-shadow .5s;
-  min-height: 0;
+  min-height: 480px;
   display: flex; flex-direction: column;
 }
 .season::before {
@@ -754,23 +759,23 @@ p:last-child { margin-bottom: 0; }
 .season:hover { border-color: var(--sc); box-shadow: 0 30px 70px rgba(0,0,0,.7); }
 .season-n {
   font-family: var(--deco); font-weight: 900;
-  font-size: clamp(2.6rem, 5vh, 3.9rem); line-height: .85; color: transparent;
+  font-size: 4.4rem; line-height: .85; color: transparent;
   -webkit-text-stroke: 1px var(--sc);
-  opacity: .55; margin-bottom: .3rem;
+  opacity: .55; margin-bottom: .4rem;
 }
 .season-yr {
   font-family: var(--title); font-size: .6rem; letter-spacing: .3em;
-  text-transform: uppercase; color: var(--muted); margin-bottom: .8rem;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 1.1rem;
 }
 .season-title {
-  font-family: var(--title); font-size: clamp(1.1rem, 2.4vh, 1.35rem);
-  letter-spacing: .05em; color: #f2ecdc; margin-bottom: .4rem;
+  font-family: var(--title); font-size: 1.35rem; letter-spacing: .05em;
+  color: #f2ecdc; margin-bottom: .5rem;
 }
-.season-tag { font-style: italic; color: var(--sc); font-size: .92rem; margin-bottom: .9rem; }
-.season-events { list-style: none; padding: 0; margin: 0 0 1rem; flex: 1 1 auto; min-height: 0; }
+.season-tag { font-style: italic; color: var(--sc); font-size: .95rem; margin-bottom: 1.3rem; }
+.season-events { list-style: none; padding: 0; margin: 0 0 1.4rem; flex: 1; }
 .season-events li {
-  position: relative; padding-left: 1.4rem; margin-bottom: .52rem;
-  font-size: .89rem; color: #aaa393; line-height: 1.48;
+  position: relative; padding-left: 1.5rem; margin-bottom: .78rem;
+  font-size: .92rem; color: #aaa393; line-height: 1.55;
 }
 .season-events li::before {
   content: ''; position: absolute; left: 0; top: .78em;
@@ -778,16 +783,16 @@ p:last-child { margin-bottom: 0; }
   background: var(--sc); opacity: .55;
 }
 .season-foot {
-  border-top: 1px solid var(--line-soft); padding-top: .8rem;
+  border-top: 1px solid var(--line-soft); padding-top: 1rem;
   display: flex; justify-content: space-between; gap: 1rem; align-items: baseline;
-  font-size: .82rem; flex: 0 0 auto;
+  font-size: .82rem;
 }
 .season-foot b {
   font-family: var(--title); font-size: .58rem; letter-spacing: .2em;
   text-transform: uppercase; color: var(--muted); display: block;
 }
 .season-foot span { color: var(--gold-lt); }
-.season-close { font-style: italic; color: #8f8879; font-size: .85rem; margin-top: .7rem; flex: 0 0 auto; }
+.season-close { font-style: italic; color: #8f8879; font-size: .88rem; margin-top: .9rem; }
 
 /* ═════════════════════════════════ MOMENTS ══════════════════════════════ */
 
@@ -1287,6 +1292,7 @@ p:last-child { margin-bottom: 0; }
   }
   .rail::-webkit-scrollbar { height: 3px; }
   .rail::-webkit-scrollbar-thumb { background: var(--gold-dp); }
+  .rail-stage { transform: none !important; }
   .season { scroll-snap-align: center; }
   .rail-progress { display: none; }
 }
@@ -1392,6 +1398,7 @@ p:last-child { margin-bottom: 0; }
   .rail-pin { position: static; height: auto; min-height: 0; display: block;
               overflow: visible; padding: 6rem 0; }
   .rail { overflow-x: auto; transform: none !important; }
+  .rail-stage { transform: none !important; }
   .rail-progress { display: none; }
   .hero-plate .hp-frame { animation: none; transform: scale(1.04); opacity: 0; }
   .hero-plate .hp-frame:first-of-type { opacity: 1; }

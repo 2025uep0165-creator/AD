@@ -193,35 +193,52 @@ rail.innerHTML = SEASONS.map(s => `
    what walks the cards across. When the last one lands, the section ends and
    the page carries on down as normal.
 
-   The section's height is set from the real track width, so it is exactly as
-   tall as the distance the cards have to travel — no dead scrolling at either
-   end. */
+   The cards stay the size they were designed at. If the pinned frame is
+   shorter than a card, the whole deck is scaled to fit rather than the type
+   being squeezed — the layout never reflows, so nothing can collide. */
 const seasonsSec = $('#seasons');
+const railTrack = $('#railTrack');
 const railOuter = $('.rail-outer');
+const railStage = $('.rail-stage');
 const railBar = $('.rail-progress i');
-let railSpan = 0;
+let railSpan = 0, railScale = 1, railAt = 0;
 
 function measureRail() {
-  if (window.matchMedia('(max-width: 760px)').matches || reduced) {
-    seasonsSec.style.height = '';
+  const off = window.matchMedia('(max-width: 760px)').matches || reduced;
+  if (off) {
+    railTrack.style.height = '';
+    railStage.style.removeProperty('--rs');
     rail.style.transform = '';
     railSpan = 0;
     return;
   }
-  railSpan = Math.max(0, rail.scrollWidth - railOuter.clientWidth);
-  seasonsSec.style.height = (window.innerHeight + railSpan) + 'px';
+  /* offsetHeight/scrollWidth are layout values, so the transform already on
+     the stage does not feed back into the measurement */
+  const deckH = rail.offsetHeight;
+  const availH = railOuter.clientHeight;
+  railScale = clamp(availH / Math.max(deckH, 1), 0.7, 1);
+  railStage.style.setProperty('--rs', railScale.toFixed(4));
+
+  /* travel is in screen pixels, so one pixel of scroll is one pixel of card */
+  railSpan = Math.max(0, rail.scrollWidth * railScale - railOuter.clientWidth);
+  railTrack.style.height = (window.innerHeight + railSpan) + 'px';
 }
 
-function updateRail() {
+function updateRail(dt) {
   if (!railSpan) return;
-  const top = seasonsSec.getBoundingClientRect().top;
-  const p = clamp(-top / railSpan, 0, 1);
-  rail.style.transform = `translate3d(${(-p * railSpan).toFixed(1)}px,0,0)`;
-  if (railBar) railBar.style.transform = `scaleX(${p.toFixed(4)})`;
+  const top = railTrack.getBoundingClientRect().top;
+  const target = clamp(-top / railSpan, 0, 1) * railSpan;
+  /* a wheel notch is a jump of a hundred-odd pixels; easing toward the target
+     turns that into a glide without ever losing sync with the scrollbar */
+  railAt += (target - railAt) * (1 - Math.exp(-dt * 11));
+  if (Math.abs(target - railAt) < 0.15) railAt = target;
+  rail.style.transform =
+    `translate3d(${(-railAt / railScale).toFixed(2)}px,0,0)`;
+  if (railBar) railBar.style.transform = `scaleX(${(railAt / railSpan).toFixed(4)})`;
 }
 
 measureRail();
-/* card images land after first paint and change the track width */
+/* card images land after first paint and change the deck's size */
 window.addEventListener('load', measureRail);
 
 /* ══════════════════════════════ 3 · MOMENTS ═══════════════════════════════ */
@@ -592,10 +609,14 @@ function updateMoments() {
 const throneSec = $('#throne');
 const throneSteps = $$('.throne-step');
 const thronePlates = $$('#throneShot .ts');
-function updateThrone() {
+let throneAt = 0;
+function updateThrone(dt) {
   const r = throneSec.getBoundingClientRect();
   const total = r.height - window.innerHeight;
-  const p = clamp(-r.top / Math.max(total, 1), 0, 1);
+  const target = clamp(-r.top / Math.max(total, 1), 0, 1);
+  throneAt += (target - throneAt) * (1 - Math.exp(-dt * 9));
+  if (Math.abs(target - throneAt) < 0.0004) throneAt = target;
+  const p = throneAt;
   /* a slow push into the chair, then the heat coming up under it */
   const shot = $('#throneShot');
   if (shot) {
@@ -641,8 +662,8 @@ function frame(now) {
     updateMoments();
     updateList();
   }
-  updateThrone();
-  updateRail();
+  updateThrone(dt);
+  updateRail(dt);
 
   /* hero: embers over the plate, and the plate lifts away as you leave */
   if (isVis('#hero')) {
