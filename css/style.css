@@ -254,35 +254,49 @@ p:last-child { margin-bottom: 0; }
 /* the plate: a real frame, pushed in slowly, graded cold-to-ember */
 .hero-plate { position: absolute; inset: 0; overflow: hidden; background: #05060a; }
 
-/* The title sequence: Drogon over the city, then the city burning, on a
-   sixteen-second loop. Each plate keeps moving the whole cycle and returns to
-   where it started, so the crossfade never lands on a jump. */
-.hero-plate .hp-frame, .hero-plate video {
-  position: absolute; inset: 0;
-  width: 100%; height: 100%;
-  object-fit: cover; object-position: center 42%;
-  will-change: transform, opacity;
-  backface-visibility: hidden;
-}
-.hero-plate video { display: none; }
-.hero-plate.has-video video { display: block; }
-.hero-plate.has-video .hp-frame { display: none; }
+/* The title sequence: five plates over forty seconds — Drogon over King's
+   Landing, the Red Keep in cloud, the gate burning, the city under green fire,
+   and the chair going with it.
 
-.hp-a { animation: heroPushA 16s ease-in-out infinite, heroFadeA 16s linear infinite; }
-.hp-b { animation: heroPushB 16s ease-in-out infinite, heroFadeB 16s linear infinite; }
+   One shared pair of keyframes does all five. Each plate is on for a fifth of
+   the cycle and is handed its slot by a negative animation-delay, so adding or
+   removing a frame is a matter of changing --n and the markup. Each plate also
+   returns to where it started while it is invisible, so the loop never lands
+   on a transform jump. */
+.hero-plate { --cycle: 40s; --n: 5; }
+.hero-plate .hp-frame {
+  opacity: 0;
+  animation: heroFade var(--cycle) linear infinite,
+             heroPush var(--cycle) ease-in-out infinite;
+  animation-delay: calc(var(--i) * var(--cycle) / var(--n) * -1);
+}
+.hero-plate .hp-frame:nth-child(2) { --i: 4 }   /* 1st is the <video> */
+.hero-plate .hp-frame:nth-child(3) { --i: 3 }
+.hero-plate .hp-frame:nth-child(4) { --i: 2 }
+.hero-plate .hp-frame:nth-child(5) { --i: 1 }
+.hero-plate .hp-frame:nth-child(6) { --i: 0 }
+/* alternate the push so the montage breathes in and out rather than only in */
+.hero-plate .hp-frame:nth-child(even) { animation-name: heroFade, heroPull; }
 
-@keyframes heroPushA {
-  0%   { transform: scale(1.05) translate3d(0,0,0); }
-  50%  { transform: scale(1.20) translate(-1.4%, -1.8%); }
-  100% { transform: scale(1.05) translate3d(0,0,0); }
+@keyframes heroFade {
+  0%   { opacity: 0 }
+  3%   { opacity: 1 }
+  20%  { opacity: 1 }
+  23%  { opacity: 0 }
+  100% { opacity: 0 }
 }
-@keyframes heroPushB {
-  0%   { transform: scale(1.21) translate(1.3%, 1.5%); }
-  50%  { transform: scale(1.06) translate3d(0,0,0); }
-  100% { transform: scale(1.21) translate(1.3%, 1.5%); }
+@keyframes heroPush {
+  0%   { transform: scale(1.05) translate3d(0,0,0) }
+  24%  { transform: scale(1.18) translate(-1.3%, -1.5%) }
+  62%  { transform: scale(1.05) translate3d(0,0,0) }
+  100% { transform: scale(1.05) translate3d(0,0,0) }
 }
-@keyframes heroFadeA { 0%, 43% { opacity: 1 } 52%, 95% { opacity: 0 } 100% { opacity: 1 } }
-@keyframes heroFadeB { 0%, 43% { opacity: 0 } 52%, 95% { opacity: 1 } 100% { opacity: 0 } }
+@keyframes heroPull {
+  0%   { transform: scale(1.19) translate(1.2%, 1.4%) }
+  24%  { transform: scale(1.06) translate3d(0,0,0) }
+  62%  { transform: scale(1.19) translate(1.2%, 1.4%) }
+  100% { transform: scale(1.19) translate(1.2%, 1.4%) }
+}
 
 /* the city burning under it all */
 .hero-fire {
@@ -681,38 +695,55 @@ p:last-child { margin-bottom: 0; }
 
 /* ═════════════════════════════════ SEASONS ══════════════════════════════ */
 
-#seasons { background: linear-gradient(180deg, var(--ink), #08090c 50%, var(--ink)); padding-bottom: 6rem; }
+#seasons { background: linear-gradient(180deg, var(--ink), #08090c 50%, var(--ink)); }
 
-.rail-outer { position: relative; margin-top: 1rem; }
+/* The deck is pinned for the length of the section and walked across by the
+   page's own vertical scroll, so there is no second scroll surface to get
+   caught in and no horizontal gesture to discover. */
+.rail-pin {
+  position: sticky; top: 0;
+  height: 100vh; min-height: 620px;
+  display: grid; grid-template-rows: auto minmax(0, 1fr) auto;
+  align-content: center;
+  padding: 4vh 0 3vh;
+  overflow: hidden;
+}
+/* the heading is compact here: it has to share the frame with the deck */
+.rail-pin .sec-head { margin-bottom: clamp(1.2rem, 3vh, 2.2rem); }
+.rail-pin .sec-head .h2 { font-size: clamp(1.7rem, 3.4vw, 2.7rem); }
+.rail-pin .sec-head .sub { margin-top: .5rem; }
+
+.rail-outer { position: relative; min-height: 0; min-width: 0; overflow: hidden; }
 .rail-outer::before, .rail-outer::after {
-  content: ''; position: absolute; top: 0; bottom: 0; width: 12vw; z-index: 3;
+  content: ''; position: absolute; top: 0; bottom: 0; width: 9vw; z-index: 3;
   pointer-events: none;
 }
 .rail-outer::before { left: 0;  background: linear-gradient(90deg, var(--ink), transparent); }
 .rail-outer::after  { right: 0; background: linear-gradient(270deg, var(--ink), transparent); }
 
 .rail {
-  display: flex; gap: 1.6rem;
-  overflow-x: auto; overflow-y: hidden;
-  scroll-snap-type: x mandatory;
-  padding: 1rem max(2rem, calc((100vw - var(--wrap)) / 2)) 2.4rem;
-  scrollbar-width: thin; scrollbar-color: var(--gold-dp) transparent;
-  cursor: grab;
+  display: flex; align-items: stretch; gap: 1.4rem; height: 100%;
+  padding: 0 max(2rem, calc((100vw - var(--wrap)) / 2));
+  will-change: transform;
 }
-.rail.dragging { cursor: grabbing; scroll-snap-type: none; }
-.rail::-webkit-scrollbar { height: 3px; }
-.rail::-webkit-scrollbar-thumb { background: var(--gold-dp); }
-.rail::-webkit-scrollbar-track { background: rgba(255,255,255,.04); }
+
+.rail-progress {
+  height: 1px; margin: 1.6rem max(2rem, calc((100vw - var(--wrap)) / 2)) 0;
+  background: rgba(216,205,180,.10);
+}
+.rail-progress i {
+  display: block; height: 100%; background: var(--gold);
+  transform: scaleX(0); transform-origin: left;
+}
 
 .season {
-  flex: 0 0 min(420px, 82vw);
-  scroll-snap-align: center;
+  flex: 0 0 min(500px, 84vw);
   border: 1px solid var(--line-soft);
   background: linear-gradient(170deg, var(--panel-2), #0a0c0f);
-  padding: 2rem 1.8rem;
+  padding: clamp(1.2rem, 2.4vh, 1.9rem) 1.7rem;
   position: relative;
-  transition: transform .6s var(--ease), border-color .5s, box-shadow .5s;
-  min-height: 480px;
+  transition: border-color .5s, box-shadow .5s;
+  min-height: 0;
   display: flex; flex-direction: column;
 }
 .season::before {
@@ -723,23 +754,23 @@ p:last-child { margin-bottom: 0; }
 .season:hover { border-color: var(--sc); box-shadow: 0 30px 70px rgba(0,0,0,.7); }
 .season-n {
   font-family: var(--deco); font-weight: 900;
-  font-size: 4.4rem; line-height: .85; color: transparent;
+  font-size: clamp(2.6rem, 5vh, 3.9rem); line-height: .85; color: transparent;
   -webkit-text-stroke: 1px var(--sc);
-  opacity: .55; margin-bottom: .4rem;
+  opacity: .55; margin-bottom: .3rem;
 }
 .season-yr {
   font-family: var(--title); font-size: .6rem; letter-spacing: .3em;
-  text-transform: uppercase; color: var(--muted); margin-bottom: 1.1rem;
+  text-transform: uppercase; color: var(--muted); margin-bottom: .8rem;
 }
 .season-title {
-  font-family: var(--title); font-size: 1.35rem; letter-spacing: .05em;
-  color: #f2ecdc; margin-bottom: .5rem;
+  font-family: var(--title); font-size: clamp(1.1rem, 2.4vh, 1.35rem);
+  letter-spacing: .05em; color: #f2ecdc; margin-bottom: .4rem;
 }
-.season-tag { font-style: italic; color: var(--sc); font-size: .95rem; margin-bottom: 1.3rem; }
-.season-events { list-style: none; padding: 0; margin: 0 0 1.4rem; flex: 1; }
+.season-tag { font-style: italic; color: var(--sc); font-size: .92rem; margin-bottom: .9rem; }
+.season-events { list-style: none; padding: 0; margin: 0 0 1rem; flex: 1 1 auto; min-height: 0; }
 .season-events li {
-  position: relative; padding-left: 1.5rem; margin-bottom: .78rem;
-  font-size: .92rem; color: #aaa393; line-height: 1.55;
+  position: relative; padding-left: 1.4rem; margin-bottom: .52rem;
+  font-size: .89rem; color: #aaa393; line-height: 1.48;
 }
 .season-events li::before {
   content: ''; position: absolute; left: 0; top: .78em;
@@ -747,21 +778,16 @@ p:last-child { margin-bottom: 0; }
   background: var(--sc); opacity: .55;
 }
 .season-foot {
-  border-top: 1px solid var(--line-soft); padding-top: 1rem;
+  border-top: 1px solid var(--line-soft); padding-top: .8rem;
   display: flex; justify-content: space-between; gap: 1rem; align-items: baseline;
-  font-size: .82rem;
+  font-size: .82rem; flex: 0 0 auto;
 }
 .season-foot b {
   font-family: var(--title); font-size: .58rem; letter-spacing: .2em;
   text-transform: uppercase; color: var(--muted); display: block;
 }
 .season-foot span { color: var(--gold-lt); }
-.season-close { font-style: italic; color: #8f8879; font-size: .88rem; margin-top: .9rem; }
-
-.rail-hint {
-  text-align: center; font-family: var(--title); font-size: .58rem;
-  letter-spacing: .3em; text-transform: uppercase; color: #55504a;
-}
+.season-close { font-style: italic; color: #8f8879; font-size: .85rem; margin-top: .7rem; flex: 0 0 auto; }
 
 /* ═════════════════════════════════ MOMENTS ══════════════════════════════ */
 
@@ -950,16 +976,16 @@ p:last-child { margin-bottom: 0; }
   overflow: hidden;
   display: grid; place-items: center;
 }
-#throneGL { position: absolute; inset: 0; width: 100%; height: 100%; }
-
-/* a photographed throne, when one is supplied, in place of the model */
+/* the throne itself — a still of the hall, pushed into as the section runs */
 #throneShot { position: absolute; inset: 0; overflow: hidden; }
-#throneShot img {
+#throneShot .ts {
   position: absolute; inset: 0; width: 100%; height: 100%;
-  object-fit: contain; object-position: center 46%;
+  object-fit: cover; object-position: center 44%;
   transform: scale(var(--z, 1)) translateY(var(--dy, 0));
-  transition: none;
+  opacity: 0;
+  transition: opacity .9s var(--ease);
 }
+#throneShot .ts.on { opacity: 1; }
 #throneShot .throne-heat {
   position: absolute; inset: 0; pointer-events: none;
   opacity: var(--melt, 0);
@@ -1243,6 +1269,28 @@ p:last-child { margin-bottom: 0; }
   .throne-meta { right: 1.5rem; bottom: 8vh; }
 }
 
+/* On a narrow screen a pinned deck costs more than it gives: a thumb already
+   swipes sideways, so the rail goes back to being an ordinary scroller. This
+   matches the width measureRail() bails out at. */
+@media (max-width: 760px) {
+  .rail-pin {
+    position: static; height: auto; min-height: 0;
+    display: block; overflow: visible;
+    padding: clamp(5rem, 11vh, 8rem) 0;
+  }
+  .rail {
+    overflow-x: auto; overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    transform: none !important;
+    scrollbar-width: thin; scrollbar-color: var(--gold-dp) transparent;
+  }
+  .rail::-webkit-scrollbar { height: 3px; }
+  .rail::-webkit-scrollbar-thumb { background: var(--gold-dp); }
+  .season { scroll-snap-align: center; }
+  .rail-progress { display: none; }
+}
+
 @media (max-width: 680px) {
   body { font-size: 17px; }
   .wrap { width: calc(100% - 2.2rem); }
@@ -1272,7 +1320,7 @@ p:last-child { margin-bottom: 0; }
   .moment { position: relative; height: auto; padding: 6rem 0; }
   #throne { height: auto; }
   .throne-sticky { position: relative; height: auto; padding: 4rem 0; display: block; }
-  #throneGL { position: relative; height: 60vh; }
+  #throneShot { position: relative; height: 60vh; }
   .throne-copy { position: relative; left: auto; bottom: auto; width: auto;
                  margin: 2rem auto 0; padding: 0 1.5rem; }
   .throne-step { position: relative; opacity: 1; transform: none; margin-bottom: 2rem; }
@@ -1320,20 +1368,6 @@ p:last-child { margin-bottom: 0; }
 /* card content has to sit above the plate */
 .house > :not(.house-plate), .season > :not(.season-plate) { position: relative; z-index: 1; }
 
-/* the throne now stands in a real hall */
-.throne-hall { position: absolute; inset: 0; overflow: hidden; z-index: 0; }
-.throne-hall img {
-  width: 100%; height: 100%; object-fit: cover; object-position: center 38%;
-  filter: grayscale(.28) brightness(.72) contrast(1.06);
-  transform: scale(1.12);
-}
-.throne-hall::after {
-  content: ''; position: absolute; inset: 0;
-  background:
-    radial-gradient(62% 52% at 50% 56%, rgba(3,4,5,.06), rgba(3,4,5,.74) 76%),
-    linear-gradient(180deg, rgba(3,4,5,.72), transparent 32%, rgba(3,4,5,.92));
-}
-#throneGL { z-index: 1; }
 .throne-copy, .throne-meta { z-index: 3; }
 
 /* a light film pass over every photographic panel: grain plus a slow gate
@@ -1355,8 +1389,12 @@ p:last-child { margin-bottom: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   .moment::before, #hero::before { animation: none; }
-  .hero-plate .hp-frame { animation: none; transform: scale(1.04); }
-  .hp-b { display: none; }
+  .rail-pin { position: static; height: auto; min-height: 0; display: block;
+              overflow: visible; padding: 6rem 0; }
+  .rail { overflow-x: auto; transform: none !important; }
+  .rail-progress { display: none; }
+  .hero-plate .hp-frame { animation: none; transform: scale(1.04); opacity: 0; }
+  .hero-plate .hp-frame:first-of-type { opacity: 1; }
   .hero-fire { animation: none; }
 }
 

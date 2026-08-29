@@ -187,41 +187,42 @@ rail.innerHTML = SEASONS.map(s => `
     <p class="season-close">${s.close}</p>
   </article>`).join('');
 
-/* drag-to-scroll + wheel + arrow keys on the rail */
-(() => {
-  let down = false, startX = 0, startL = 0, moved = 0;
-  rail.addEventListener('pointerdown', e => {
-    down = true; moved = 0;
-    startX = e.clientX; startL = rail.scrollLeft;
-    rail.classList.add('dragging');
-    rail.setPointerCapture(e.pointerId);
-  });
-  rail.addEventListener('pointermove', e => {
-    if (!down) return;
-    const dx = e.clientX - startX;
-    moved = Math.max(moved, Math.abs(dx));
-    rail.scrollLeft = startL - dx;
-  });
-  const up = () => { down = false; rail.classList.remove('dragging'); };
-  rail.addEventListener('pointerup', up);
-  rail.addEventListener('pointercancel', up);
+/* The deck reads left to right, but nobody should have to find a horizontal
+   scrollbar to get past it. So the section is made tall enough to hold the
+   whole run, the deck is pinned inside it, and ordinary downward scrolling is
+   what walks the cards across. When the last one lands, the section ends and
+   the page carries on down as normal.
 
-  rail.addEventListener('wheel', e => {
-    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;   /* trackpad already h-scrolls */
-    const atStart = rail.scrollLeft <= 1;
-    const atEnd = rail.scrollLeft >= rail.scrollWidth - rail.clientWidth - 1;
-    if ((e.deltaY < 0 && atStart) || (e.deltaY > 0 && atEnd)) return;  /* let the page take over */
-    e.preventDefault();
-    rail.scrollLeft += e.deltaY;
-  }, { passive: false });
+   The section's height is set from the real track width, so it is exactly as
+   tall as the distance the cards have to travel — no dead scrolling at either
+   end. */
+const seasonsSec = $('#seasons');
+const railOuter = $('.rail-outer');
+const railBar = $('.rail-progress i');
+let railSpan = 0;
 
-  rail.setAttribute('tabindex', '0');
-  rail.addEventListener('keydown', e => {
-    const step = rail.clientWidth * 0.7;
-    if (e.key === 'ArrowRight') { rail.scrollLeft += step; e.preventDefault(); }
-    if (e.key === 'ArrowLeft')  { rail.scrollLeft -= step; e.preventDefault(); }
-  });
-})();
+function measureRail() {
+  if (window.matchMedia('(max-width: 760px)').matches || reduced) {
+    seasonsSec.style.height = '';
+    rail.style.transform = '';
+    railSpan = 0;
+    return;
+  }
+  railSpan = Math.max(0, rail.scrollWidth - railOuter.clientWidth);
+  seasonsSec.style.height = (window.innerHeight + railSpan) + 'px';
+}
+
+function updateRail() {
+  if (!railSpan) return;
+  const top = seasonsSec.getBoundingClientRect().top;
+  const p = clamp(-top / railSpan, 0, 1);
+  rail.style.transform = `translate3d(${(-p * railSpan).toFixed(1)}px,0,0)`;
+  if (railBar) railBar.style.transform = `scaleX(${p.toFixed(4)})`;
+}
+
+measureRail();
+/* card images land after first paint and change the track width */
+window.addEventListener('load', measureRail);
 
 /* ══════════════════════════════ 3 · MOMENTS ═══════════════════════════════ */
 
@@ -294,14 +295,9 @@ Assets.ready.then(() => {
     v.addEventListener('error', () => $('.hero-plate').classList.remove('has-video'), { once: true });
   }
 
-  /* a photographed throne stands in for the model */
+  /* the manifest can point the throne section's opening plate elsewhere */
   const throneShot = Assets.throne();
-  if (throneShot) {
-    const host = $('#throneShot');
-    host.querySelector('img').src = throneShot;
-    host.hidden = false;
-    $('#throneGL').style.display = 'none';
-  }
+  if (throneShot) $('#throneShot .ts').src = throneShot;
 });
 
 /* ════════════════════════════════ 4 · MAP ═════════════════════════════════ */
@@ -512,7 +508,6 @@ watchAll('.reveal');
 
 /* ══════════════════════════════ 10 · CANVASES ═════════════════════════════ */
 
-const throne  = ThroneScene($('#throneGL'));
 const embers  = reduced ? null : EmberField($('#heroEmbers'), { count: 46 });
 const endEmb  = reduced ? null : EmberField($('#endEmbers'), { count: 80 });
 const snow    = reduced ? null : SnowField($('#snowFx'), { count: 240 });
@@ -531,14 +526,13 @@ if (!reduced) {
 const cursor  = (reduced || matchMedia('(pointer: coarse)').matches)
   ? null : CursorTrail($('#cursorFx'));
 
-if (throne) $('#swordCount').textContent = '1,000';
+$('#swordCount').textContent = '1,000';
 
 /* pointer parallax for the two GL scenes */
 const heroPlate = $('#heroImg');
 window.addEventListener('pointermove', e => {
   const nx = (e.clientX / window.innerWidth) * 2 - 1;
   const ny = (e.clientY / window.innerHeight) * 2 - 1;
-  if (throne) { throne.state.pointerX = nx * 0.4; throne.state.pointerY = -ny * 0.5; }
   /* a hand's width of drift on the hero plate, so it never sits dead still */
   if (heroPlate && !reduced) {
     heroPlate.style.setProperty('--px', (nx * -14).toFixed(1) + 'px');
@@ -597,20 +591,14 @@ function updateMoments() {
 /* throne: spin through the section, melt across the last stretch */
 const throneSec = $('#throne');
 const throneSteps = $$('.throne-step');
+const thronePlates = $$('#throneShot .ts');
 function updateThrone() {
   const r = throneSec.getBoundingClientRect();
   const total = r.height - window.innerHeight;
   const p = clamp(-r.top / Math.max(total, 1), 0, 1);
-  if (throne) {
-    /* stay near a frontal three-quarter view — a pure side profile of the
-       chair reads as a fan of sticks rather than a throne */
-    throne.state.spin = -0.55 + p * 1.15;
-    throne.state.melt = smooth(clamp((p - 0.45) / 0.35, 0, 1));
-  }
-  /* a supplied photograph gets the same choreography: a slow push-in, then
-     the heat overlay coming up as the melt does */
+  /* a slow push into the chair, then the heat coming up under it */
   const shot = $('#throneShot');
-  if (shot && !shot.hidden) {
+  if (shot) {
     const melt = smooth(clamp((p - 0.45) / 0.35, 0, 1));
     shot.style.setProperty('--z', (1.02 + p * 0.16).toFixed(3));
     shot.style.setProperty('--dy', (p * -2.5).toFixed(2) + '%');
@@ -619,6 +607,7 @@ function updateThrone() {
 
   const step = p < 0.34 ? 0 : p < 0.62 ? 1 : 2;
   throneSteps.forEach(s => s.classList.toggle('on', +s.dataset.step === step));
+  thronePlates.forEach(i => i.classList.toggle('on', +i.dataset.step === step));
   const meta = $('.throne-meta');
   if (meta) meta.style.opacity = String(1 - clamp((p - 0.9) / 0.1, 0, 1));
 }
@@ -653,6 +642,7 @@ function frame(now) {
     updateList();
   }
   updateThrone();
+  updateRail();
 
   /* hero: embers over the plate, and the plate lifts away as you leave */
   if (isVis('#hero')) {
@@ -670,8 +660,6 @@ function frame(now) {
     }
   }
 
-  /* throne */
-  if (throne && isVis('#throne')) throne.render(t);
 
   /* dragons + snow + end embers */
   if (isVis('#dragons')) {
@@ -707,7 +695,8 @@ function frame(now) {
 requestAnimationFrame(frame);
 
 window.addEventListener('resize', () => {
-  [throne, embers, endEmb, snow, dragons, dragonFire, cursor].forEach(o => o && o.resize && o.resize());
+  measureRail();
+  [embers, endEmb, snow, dragons, dragonFire, cursor].forEach(o => o && o.resize && o.resize());
   Object.keys(BACKDROPS).forEach(k => BACKDROPS[k].resize());
   momentFx.forEach(m => m.fx.resize());
 }, { passive: true });

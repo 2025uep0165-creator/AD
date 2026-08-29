@@ -1,4 +1,27 @@
 {
+  "audio": "theme.mp3",
+  "cast": {
+    "Arya Stark": "cast/arya-stark.jpg",
+    "Bran Stark": "cast/bran-stark.jpg",
+    "Brienne of Tarth": "cast/brienne-of-tarth.jpg",
+    "Cersei Lannister": "cast/cersei-lannister.jpg",
+    "Daenerys Targaryen": "cast/daenerys-targaryen.jpg",
+    "Eddard Stark": "cast/ned-stark.jpg",
+    "Jaime Lannister": "cast/jaime-lannister.jpg",
+    "Joffrey Baratheon": "cast/joffrey-baratheon.jpg",
+    "Jon Snow": "cast/jon-snow.jpg",
+    "Melisandre": "cast/melisandre.jpg",
+    "Oberyn Martell": "cast/oberyn-martell.jpg",
+    "Olenna Tyrell": "cast/olenna-tyrell.jpg",
+    "Samwell Tarly": "cast/samwell-tarly.jpg",
+    "Sansa Stark": "cast/sansa-stark.jpg",
+    "The Hound": "cast/sandor-clegane.jpg",
+    "The Night King": "cast/night-king.jpg",
+    "Theon Greyjoy": "cast/theon-greyjoy.jpg",
+    "Tyrion Lannister": "cast/tyrion-lannister.jpg",
+    "Tywin Lannister": "cast/tywin-lannister.jpg",
+    "Ygritte": "cast/ygritte.jpg"
+  },
   "scenes": {
     "bastards": "img/bastards.jpg",
     "bells": "img/bells.jpg",
@@ -25,32 +48,10 @@
     "lannister": "sigils/lannister.png",
     "martell": "sigils/martell.png",
     "mormont": "sigils/mormont.png",
-    "watch": "sigils/nights-watch.png",
     "stark": "sigils/stark.png",
     "targaryen": "sigils/targaryen.png",
     "tully": "sigils/tully.png",
-    "tyrell": "sigils/tyrell.png"
-  },
-  "cast": {
-    "Arya Stark": "cast/arya-stark.jpg",
-    "Bran Stark": "cast/bran-stark.jpg",
-    "Brienne of Tarth": "cast/brienne-of-tarth.jpg",
-    "Cersei Lannister": "cast/cersei-lannister.jpg",
-    "Daenerys Targaryen": "cast/daenerys-targaryen.jpg",
-    "Jaime Lannister": "cast/jaime-lannister.jpg",
-    "Joffrey Baratheon": "cast/joffrey-baratheon.jpg",
-    "Jon Snow": "cast/jon-snow.jpg",
-    "Melisandre": "cast/melisandre.jpg",
-    "Eddard Stark": "cast/ned-stark.jpg",
-    "The Night King": "cast/night-king.jpg",
-    "Oberyn Martell": "cast/oberyn-martell.jpg",
-    "Olenna Tyrell": "cast/olenna-tyrell.jpg",
-    "Samwell Tarly": "cast/samwell-tarly.jpg",
-    "The Hound": "cast/sandor-clegane.jpg",
-    "Sansa Stark": "cast/sansa-stark.jpg",
-    "Theon Greyjoy": "cast/theon-greyjoy.jpg",
-    "Tyrion Lannister": "cast/tyrion-lannister.jpg",
-    "Tywin Lannister": "cast/tywin-lannister.jpg",
-    "Ygritte": "cast/ygritte.jpg"
+    "tyrell": "sigils/tyrell.png",
+    "watch": "sigils/nights-watch.png"
   }
 }

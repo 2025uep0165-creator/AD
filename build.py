@@ -7,9 +7,9 @@ Artifact, a gist, an email attachment).
 
     python3 build.py            -> dist/winter-is-coming.html
 
-Every image in assets/ is re-encoded smaller and inlined as a data URI, so
-the single file carries its own media. Audio is not inlined — a bundled copy
-always plays the synthesised score.
+Every image in assets/ is re-encoded smaller and inlined as a data URI, and
+the score and any title clip ride along untouched, so the single file carries
+all of its own media and needs nothing alongside it.
 """
 
 import json
@@ -25,7 +25,6 @@ SCRIPTS = [
     "data.js",
     "scenery.js",
     "gl.js",
-    "scene-throne.js",
     "scene-dragons.js",
     "effects.js",
     "map.js",

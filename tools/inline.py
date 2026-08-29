@@ -58,6 +58,20 @@ def build():
     mf = ASSETS / "manifest.json"
     if mf.exists():
         manifest = json.loads(mf.read_text())
+
+    # audio and video ride along as-is — there is nothing useful to re-encode
+    # them with here, and the single file has to be able to play on its own
+    for key, mime in (("audio", "audio/mpeg"), ("hero", "video/mp4")):
+        rel = manifest.get(key)
+        if not rel:
+            continue
+        src = ASSETS / rel
+        if not src.exists():
+            continue
+        blob = src.read_bytes()
+        raw += len(blob)
+        files[f"assets/{rel}"] = f"data:{mime};base64," + base64.b64encode(blob).decode()
+
     return {"files": files, "manifest": manifest}, raw
 
 

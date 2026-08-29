@@ -56,8 +56,11 @@
   <div class="hero-plate" aria-hidden="true">
     <!-- a file named as "hero" in assets/manifest.json takes this over -->
     <video id="heroVideo" muted loop playsinline preload="auto"></video>
-    <img class="hp-frame hp-a" id="heroImg" src="assets/img/hero.jpg" alt="">
-    <img class="hp-frame hp-b" id="heroImg2" src="assets/img/bells.jpg" alt="">
+    <img class="hp-frame" id="heroImg" src="assets/img/hero.jpg" alt="">
+    <img class="hp-frame" src="assets/img/redkeep.jpg" alt="">
+    <img class="hp-frame" src="assets/img/bells.jpg" alt="">
+    <img class="hp-frame" src="assets/img/sept.jpg" alt="">
+    <img class="hp-frame" src="assets/img/throne.jpg" alt="">
     <div class="hero-fire"></div>
     <div class="hero-grade"></div>
   </div>
@@ -158,17 +161,19 @@
 
 <!-- ═════════════════════════════ 5 · SEASONS ════════════════════════════ -->
 <section id="seasons" class="sec" data-mood="war" data-dot="8 Seasons">
-  <div class="wrap">
-    <header class="sec-head sec-pad-t">
-      <p class="kicker">2011 — 2019</p>
-      <h2 class="h2">Eight seasons, <em>seventy-three hours</em></h2>
-      <p class="sub">The whole story, in the order it broke us.</p>
-    </header>
+  <div class="rail-pin">
+    <div class="wrap">
+      <header class="sec-head">
+        <p class="kicker">2011 — 2019</p>
+        <h2 class="h2">Eight seasons, <em>seventy-three hours</em></h2>
+        <p class="sub">The whole story, in the order it broke us.</p>
+      </header>
+    </div>
+    <div class="rail-outer">
+      <div class="rail" id="seasonRail"></div>
+    </div>
+    <div class="rail-progress" aria-hidden="true"><i></i></div>
   </div>
-  <div class="rail-outer">
-    <div class="rail" id="seasonRail"></div>
-  </div>
-  <div class="wrap rail-hint"><span>drag, scroll or use ← →</span></div>
 </section>
 
 <!-- ═════════════════════════════ 6 · MOMENTS ════════════════════════════ -->
@@ -260,11 +265,12 @@
 <!-- ══════════════════════════════ 9 · THRONE ════════════════════════════ -->
 <section id="throne" class="sec" data-mood="end" data-dot="The Throne">
   <div class="throne-sticky">
-    <div class="throne-hall" aria-hidden="true">
-      <img src="assets/img/throne-room.jpg" alt="" onerror="this.parentNode.remove()">
+    <div id="throneShot" aria-hidden="true">
+      <img class="ts on" data-step="0" src="assets/img/throne-room.jpg" alt="">
+      <img class="ts"    data-step="1" src="assets/img/iron-throne.jpg" alt="">
+      <img class="ts"    data-step="2" src="assets/img/throne.jpg" alt="">
+      <i class="throne-heat"></i>
     </div>
-    <canvas id="throneGL" aria-hidden="true"></canvas>
-    <div id="throneShot" hidden aria-hidden="true"><img alt=""><i class="throne-heat"></i></div>
     <div class="throne-copy">
       <div class="throne-step" data-step="0">
         <p class="kicker">The prize</p>
@@ -297,7 +303,7 @@
   <div class="wrap">
     <header class="sec-head">
       <p class="kicker">The players</p>
-      <h2 class="h2">Twenty who <em>mattered</em></h2>
+      <h2 class="h2">Those who <em>mattered</em></h2>
       <p class="sub">Who was left standing when the credits rolled.</p>
     </header>
     <div class="cast-grid" id="castGrid"></div>
@@ -385,7 +391,6 @@
 <script src="js/data.js"></script>
 <script src="js/scenery.js"></script>
 <script src="js/gl.js"></script>
-<script src="js/scene-throne.js"></script>
 <script src="js/scene-dragons.js"></script>
 <script src="js/effects.js"></script>
 <script src="js/map.js"></script>
