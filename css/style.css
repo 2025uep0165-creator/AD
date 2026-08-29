@@ -254,49 +254,29 @@ p:last-child { margin-bottom: 0; }
 /* the plate: a real frame, pushed in slowly, graded cold-to-ember */
 .hero-plate { position: absolute; inset: 0; overflow: hidden; background: #05060a; }
 
-/* The title sequence: five plates over forty seconds — Drogon over King's
-   Landing, the Red Keep in cloud, the gate burning, the city under green fire,
-   and the chair going with it.
+/* The title sequence: five plates, each held for a few seconds while it
+   drifts in or out, crossfading into the next.
 
-   One shared pair of keyframes does all five. Each plate is on for a fifth of
-   the cycle and is handed its slot by a negative animation-delay, so adding or
-   removing a frame is a matter of changing --n and the markup. Each plate also
-   returns to where it started while it is invisible, so the loop never lands
-   on a transform jump. */
-.hero-plate { --cycle: 40s; --n: 5; }
-.hero-plate .hp-frame {
-  opacity: 0;
-  animation: heroFade var(--cycle) linear infinite,
-             heroPush var(--cycle) ease-in-out infinite;
-  animation-delay: calc(var(--i) * var(--cycle) / var(--n) * -1);
+   The timing is driven from js/main.js, not from a chain of CSS animation
+   delays. Five plates keyed off one shared keyframe by negative delay is
+   fragile: if the delay fails to resolve on even one of them they all land on
+   the same offset, and what you get is a single image that vanishes for most
+   of the loop. A timer that moves one class cannot go subtly wrong, and it is
+   far easier to check. */
+/* every plate covers the whole hero, stacked, and only the active one is lit */
+.hero-plate .hp-frame, .hero-plate video {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center 42%;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
 }
-.hero-plate .hp-frame:nth-child(2) { --i: 4 }   /* 1st is the <video> */
-.hero-plate .hp-frame:nth-child(3) { --i: 3 }
-.hero-plate .hp-frame:nth-child(4) { --i: 2 }
-.hero-plate .hp-frame:nth-child(5) { --i: 1 }
-.hero-plate .hp-frame:nth-child(6) { --i: 0 }
-/* alternate the push so the montage breathes in and out rather than only in */
-.hero-plate .hp-frame:nth-child(even) { animation-name: heroFade, heroPull; }
+.hero-plate video { display: none; }
+.hero-plate.has-video video { display: block; }
+.hero-plate.has-video .hp-frame { display: none; }
 
-@keyframes heroFade {
-  0%   { opacity: 0 }
-  3%   { opacity: 1 }
-  20%  { opacity: 1 }
-  23%  { opacity: 0 }
-  100% { opacity: 0 }
-}
-@keyframes heroPush {
-  0%   { transform: scale(1.05) translate3d(0,0,0) }
-  24%  { transform: scale(1.18) translate(-1.3%, -1.5%) }
-  62%  { transform: scale(1.05) translate3d(0,0,0) }
-  100% { transform: scale(1.05) translate3d(0,0,0) }
-}
-@keyframes heroPull {
-  0%   { transform: scale(1.19) translate(1.2%, 1.4%) }
-  24%  { transform: scale(1.06) translate3d(0,0,0) }
-  62%  { transform: scale(1.19) translate(1.2%, 1.4%) }
-  100% { transform: scale(1.19) translate(1.2%, 1.4%) }
-}
+.hero-plate .hp-frame { opacity: 0; }
+.hero-plate .hp-frame.on { opacity: 1; }
 
 /* the city burning under it all */
 .hero-fire {
@@ -861,6 +841,7 @@ p:last-child { margin-bottom: 0; }
 #dragons {
   background: linear-gradient(180deg, #080606, #150a06 45%, #080606);
   overflow: hidden;
+  padding-top: clamp(3rem, 7vh, 5rem);
 }
 /* the still behind them is weather, so it sits well back */
 #dragonBg { opacity: .26; }
@@ -871,19 +852,31 @@ p:last-child { margin-bottom: 0; }
   background: radial-gradient(70% 120% at 22% 50%, rgba(8,6,6,.88), rgba(8,6,6,0) 78%);
   z-index: -1;
 }
-/* The dragons own the sky above the cards. The canvas stops short of them and
-   fades out rather than cutting, so a dragon leaving the band sinks into haze
-   instead of being sliced off. */
-#dragonGL, #dragonFx {
-  position: absolute; left: 0; right: 0; top: 0;
-  height: 56%; width: 100%;
+/* The dragons get a strip of sky of their own above the copy, rather than
+   crossing behind the headline. It fades into the section at the bottom, so a
+   dragon leaving the band sinks into haze instead of being sliced off. */
+.dragon-sky {
+  position: relative; z-index: 1;
+  /* Dragons are black. They only read against something brighter than they
+     are, which is why every shot of them in the show is against sky. */
+  background:
+    radial-gradient(130% 95% at 76% 100%, rgba(255,150,60,.42), transparent 64%),
+    radial-gradient(80% 60% at 20% 6%, rgba(150,180,210,.16), transparent 72%),
+    linear-gradient(180deg, #263646 0%, #35424f 36%, #55412e 74%, #422c1d 100%);
+  height: clamp(300px, 38vh, 440px);
+  margin-bottom: clamp(1.5rem, 4vh, 3rem);
   pointer-events: none;
-  -webkit-mask-image: linear-gradient(180deg, #000 68%, transparent 100%);
-          mask-image: linear-gradient(180deg, #000 68%, transparent 100%);
+  -webkit-mask-image: linear-gradient(180deg, #000 62%, transparent 100%);
+          mask-image: linear-gradient(180deg, #000 62%, transparent 100%);
+}
+.dragon-sky canvas {
+  position: absolute; inset: 0; width: 100%; height: 100%;
 }
 #dragonGL { z-index: 1; }
 #dragonFx { z-index: 2; }
 .dragon-copy { z-index: 3; }
+/* the copy no longer has a dragon behind it, so it does not need its own pool */
+.dragon-copy .sec-head::before { display: none; }
 .sec-bg { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
 .dragon-copy { position: relative; z-index: 2; pointer-events: none; }
 .dragon-copy .sec-head, .dragon-grid, .dragon-note { pointer-events: auto; }
@@ -1400,8 +1393,7 @@ p:last-child { margin-bottom: 0; }
   .rail { overflow-x: auto; transform: none !important; }
   .rail-stage { transform: none !important; }
   .rail-progress { display: none; }
-  .hero-plate .hp-frame { animation: none; transform: scale(1.04); opacity: 0; }
-  .hero-plate .hp-frame:first-of-type { opacity: 1; }
+  .hero-plate .hp-frame { transition: none !important; transform: scale(1.04) !important; }
   .hero-fire { animation: none; }
 }
 

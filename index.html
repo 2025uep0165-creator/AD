@@ -56,11 +56,11 @@
   <div class="hero-plate" aria-hidden="true">
     <!-- a file named as "hero" in assets/manifest.json takes this over -->
     <video id="heroVideo" muted loop playsinline preload="auto"></video>
-    <img class="hp-frame" id="heroImg" src="assets/img/hero.jpg" alt="">
-    <img class="hp-frame" src="assets/img/redkeep.jpg" alt="">
-    <img class="hp-frame" src="assets/img/bells.jpg" alt="">
-    <img class="hp-frame" src="assets/img/sept.jpg" alt="">
-    <img class="hp-frame" src="assets/img/throne.jpg" alt="">
+    <img class="hp-frame" id="heroImg" src="assets/img/hero1.jpg" alt="">
+    <img class="hp-frame" src="assets/img/hero2.jpg" alt="">
+    <img class="hp-frame" src="assets/img/hero3.jpg" alt="">
+    <img class="hp-frame" src="assets/img/hero4.jpg" alt="">
+    <img class="hp-frame" src="assets/img/hero5.jpg" alt="">
     <div class="hero-fire"></div>
     <div class="hero-grade"></div>
   </div>
@@ -195,8 +195,10 @@
 <!-- ═════════════════════════════ 7 · DRAGONS ════════════════════════════ -->
 <section id="dragons" class="sec sec-pad" data-mood="fire" data-dot="Dragons">
   <canvas id="dragonBg" class="sec-bg" aria-hidden="true"></canvas>
-  <canvas id="dragonGL" aria-hidden="true"></canvas>
-  <canvas id="dragonFx" aria-hidden="true"></canvas>
+  <div class="dragon-sky" aria-hidden="true">
+    <canvas id="dragonGL"></canvas>
+    <canvas id="dragonFx"></canvas>
+  </div>
   <div class="wrap dragon-copy">
     <header class="sec-head">
       <p class="kicker">Fire made flesh</p>

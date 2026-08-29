@@ -52,6 +52,50 @@ const revealObs = new IntersectionObserver(entries => {
 const watchReveal = el => revealObs.observe(el);
 const watchAll = sel => $$(sel).forEach(watchReveal);
 
+/* ═════════════════════════════ 0 · THE TITLE ══════════════════════════════ */
+
+/* Five plates behind the title. Each is held while it drifts in or out, then
+   crossfades into the next.
+
+   This is driven here rather than from CSS animation delays. Five plates
+   sharing one keyframe, each offset by a negative delay, is fragile: if the
+   delay fails to resolve on even one of them they all land on the same offset
+   and the montage collapses to a single plate that vanishes for most of the
+   loop. Moving one class on a timer cannot go wrong in that way, and the
+   transform is restarted explicitly so every plate begins its push from the
+   same place however long the page has been open. */
+
+const HERO_HOLD = 5200;                       /* how long a plate holds the frame */
+const HERO_FADE = 1300;                       /* crossfade between plates          */
+const HERO_DRIFT = (HERO_HOLD + HERO_FADE * 2) / 1000;
+
+const heroFrames = $$('.hero-plate .hp-frame');
+let heroAt = 0;
+
+function heroShow(i) {
+  heroFrames.forEach((f, k) => {
+    const on = k === i;
+    f.classList.toggle('on', on);
+    if (!on) return;
+    /* alternate: odd plates pull back out while even ones push in */
+    const from = k % 2 ? 1.17 : 1.02;
+    const to   = k % 2 ? 1.02 : 1.17;
+    f.style.transition = 'none';
+    f.style.transform = `scale(${from})`;
+    void f.offsetWidth;                       /* commit the reset before animating */
+    f.style.transition =
+      `transform ${HERO_DRIFT}s linear, opacity ${HERO_FADE}ms ease`;
+    f.style.transform = `scale(${to})`;
+  });
+}
+
+if (heroFrames.length) {
+  heroShow(0);
+  if (!reduced) {
+    setInterval(() => heroShow(heroAt = (heroAt + 1) % heroFrames.length), HERO_HOLD);
+  }
+}
+
 /* ═══════════════════════════════ 0 · CHROME ═══════════════════════════════ */
 
 /* gate sigils */
