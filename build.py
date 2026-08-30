@@ -25,9 +25,7 @@ SCRIPTS = [
     "data.js",
     "scenery.js",
     "gl.js",
-    "scene-dragons.js",
     "effects.js",
-    "map.js",
     "audio.js",
     "main.js",
 ]
@@ -78,8 +76,12 @@ def build():
 <script>{inline_js}</script>
 
 <script>
-/* the host supplies <body>, so the pre-enter lock is applied here */
-document.body.classList.add('pre-enter');
+/* The host supplies <body>, so index.html's class attribute is not carried
+   over and the pre-enter lock has to be applied here. Opened straight off
+   disk this script is parsed inside the head, where document.body is still
+   null, so the lock goes on <html> in that case and the stylesheet honours
+   either. */
+(document.body || document.documentElement).classList.add('pre-enter');
 </script>
 {body}
 <script>

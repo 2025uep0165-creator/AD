@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Winter Is Coming — A Game of Thrones Retrospective</title>
-<meta name="description" content="An animated, three-dimensional tribute to Game of Thrones: the houses, the map, all eight seasons, the moments that broke television, and the throne that melted.">
+<meta name="description" content="An animated, three-dimensional tribute to Game of Thrones: the houses, all eight seasons, the moments that broke television, and the throne that melted.">
 <meta name="theme-color" content="#07080a">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,7 +23,7 @@
     </div>
     <p class="gate-kicker">HBO · 2011 — 2019 · 73 episodes</p>
     <h1 class="gate-title">Winter Is Coming</h1>
-    <p class="gate-sub">A scroll through the Seven Kingdoms — the houses, the map,
+    <p class="gate-sub">A scroll through the Seven Kingdoms — the houses,
        eight seasons, and every moment that made the world stop talking.</p>
     <button id="enterBtn" class="gate-btn">
       <span class="gate-btn-l"></span>
@@ -117,35 +117,6 @@
   </div>
 </section>
 
-<!-- ═══════════════════════════════ 3 · MAP ══════════════════════════════ -->
-<section id="map" class="sec sec-pad" data-mood="map" data-dot="The Map">
-  <div class="wrap">
-    <header class="sec-head">
-      <p class="kicker">The known world</p>
-      <h2 class="h2">Westeros &amp; <em>Essos</em></h2>
-      <p class="sub">Twenty-six places worth knowing.</p>
-    </header>
-    <div class="map-layout">
-      <div class="map-host" id="mapHost">
-        <div class="map-tools">
-          <button id="mapReset" type="button">reset</button>
-        </div>
-      </div>
-      <aside class="map-card" id="mapCard">
-        <div class="map-card-inner">
-          <p class="map-card-region">Pick a location</p>
-          <h3 class="map-card-name">The Known World</h3>
-          <p class="map-card-tag">Seven kingdoms, nine free cities, one wall</p>
-          <p class="map-card-text">Westeros runs three thousand miles from the Wall to the
-            southern coast of Dorne. Across the Narrow Sea, Essos holds the Free Cities, the
-            Dothraki sea, the slaver bays, and the smoking ruin of Valyria. Select any marker
-            on the map to read what happened there.</p>
-        </div>
-      </aside>
-    </div>
-  </div>
-</section>
-
 <!-- ══════════════════════════════ 4 · HOUSES ════════════════════════════ -->
 <section id="houses" class="sec sec-pad" data-mood="houses" data-dot="The Houses">
   <div class="wrap">
@@ -155,7 +126,6 @@
       <p class="sub">Nine names that spent eight seasons trying to outlive each other.</p>
     </header>
     <div class="house-grid" id="houseGrid"></div>
-    <div class="house-minor" id="houseMinor"></div>
   </div>
 </section>
 
@@ -195,10 +165,6 @@
 <!-- ═════════════════════════════ 7 · DRAGONS ════════════════════════════ -->
 <section id="dragons" class="sec sec-pad" data-mood="fire" data-dot="Dragons">
   <canvas id="dragonBg" class="sec-bg" aria-hidden="true"></canvas>
-  <div class="dragon-sky" aria-hidden="true">
-    <canvas id="dragonGL"></canvas>
-    <canvas id="dragonFx"></canvas>
-  </div>
   <div class="wrap dragon-copy">
     <header class="sec-head">
       <p class="kicker">Fire made flesh</p>
@@ -397,9 +363,7 @@
 <script src="js/data.js"></script>
 <script src="js/scenery.js"></script>
 <script src="js/gl.js"></script>
-<script src="js/scene-dragons.js"></script>
 <script src="js/effects.js"></script>
-<script src="js/map.js"></script>
 <script src="js/audio.js"></script>
 <script src="js/main.js"></script>
 </body>

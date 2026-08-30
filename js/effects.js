@@ -299,63 +299,6 @@ function MomentFX(cv, spec) {
 /* ------------------------------------------------------------ dragon flight */
 /* A silhouetted dragon crossing the panel, with a breath of fire on hover.   */
 
-/* The dragons themselves are geometry now (js/scene-dragons.js). What is left
-   here is the plume: the flame is a particle system, which is the one thing a
-   mesh would be worse at. It is lit from wherever the lead dragon's jaw ended
-   up on screen this frame. */
-function DragonFire(cv) {
-  const g = cv.getContext('2d');
-  let W = 0, H = 0;
-  const flames = [];
-
-  function resize() { fitCanvas(cv); W = cv.clientWidth; H = cv.clientHeight; }
-
-  function emit(x, y, dir, power) {
-    for (let i = 0; i < power; i++) {
-      const spread = (Math.random() - 0.5) * 0.5;
-      const sp = 260 + Math.random() * 420;
-      flames.push({
-        x, y,
-        vx: Math.cos(spread) * sp * dir,
-        vy: Math.sin(spread) * sp * 0.55 + (Math.random() - 0.5) * 70,
-        life: 0, max: 0.45 + Math.random() * 0.75,
-        r: 3 + Math.random() * 8
-      });
-    }
-  }
-
-  function step(dt, muzzle) {
-    if (!W) resize();
-    g.clearRect(0, 0, W, H);
-
-    if (muzzle && muzzle.on > 0.05) {
-      emit(muzzle.x, muzzle.y, muzzle.dir, Math.round(2 + muzzle.on * 5));
-    }
-
-    g.globalCompositeOperation = 'lighter';
-    for (let i = flames.length - 1; i >= 0; i--) {
-      const f = flames[i];
-      f.life += dt;
-      if (f.life > f.max) { flames.splice(i, 1); continue; }
-      f.x += f.vx * dt; f.y += f.vy * dt;
-      f.vx *= 0.955; f.vy = f.vy * 0.955 - 55 * dt;
-      const p = f.life / f.max;
-      const a = (1 - p) * 0.72;
-      const rad = f.r * (1 + p * 5.0);
-      const hue = 44 - p * 34;
-      const grad = g.createRadialGradient(f.x, f.y, 0, f.x, f.y, rad);
-      grad.addColorStop(0, `hsla(${hue + 14}, 100%, ${78 - p * 26}%, ${a})`);
-      grad.addColorStop(0.4, `hsla(${hue}, 100%, 52%, ${a * 0.5})`);
-      grad.addColorStop(1, 'hsla(14, 100%, 40%, 0)');
-      g.fillStyle = grad;
-      g.beginPath(); g.arc(f.x, f.y, rad, 0, 7); g.fill();
-    }
-    g.globalCompositeOperation = 'source-over';
-  }
-
-  return { step, resize };
-}
-
 /* ---------------------------------------------------- global ember cursor  */
 
 function CursorTrail(cv) {

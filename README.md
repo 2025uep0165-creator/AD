@@ -1,9 +1,9 @@
 # Winter Is Coming
 
 An animated, three-dimensional Game of Thrones retrospective — built to be
-scrolled. Fifteen sections covering the houses, the map, all eight seasons,
-fourteen moments that broke television, the dragons, the Long Night, and the
-throne that ends up as slag.
+scrolled. Fourteen sections covering the nine great houses and their
+bannermen, all eight seasons, fourteen moments that broke television, the
+dragons, the Long Night, and the throne that ends up as slag.
 
 **Open `index.html` in a browser.** No build step, no install, no server
 required (though a local server avoids the odd `file://` quirk):
@@ -20,11 +20,10 @@ python3 -m http.server 8000    # then visit http://localhost:8000
 | --- | --- |
 | **Title** | Five plates on a rotation — King's Landing from the air, Drogon in flight, dragonfire on the field, Winterfell under fog, the Wall. Each holds the frame for about five seconds while it drifts in or out, then crossfades into the next. Driven from `js/main.js` rather than a chain of CSS delays, so a plate cannot silently drop out of the rotation. Drop a clip in and it plays that instead |
 | **The Game** | The premise in three columns, plus the production facts |
-| **The Map** | A drawn chart: parchment land on a slate sea, soundings hugging every coast, painted relief for the mountain belts, canopy for the forests and sand for Dorne, the Trident and the Blackwater running through it, a compass rose and a ruled border. Coastlines are cubic curves roughened by a fractal displacement filter. 26 locations; drag to pan, scroll to zoom, double-click to close in |
-| **The Houses** | Nine great houses as 3D-tilting cards — the real heraldic emblem over a still of the house's own seat; click one to expand its history, seat, and a fact |
+| **The Houses** | Nine great houses on an even three-by-three, as 3D-tilting cards — the real heraldic emblem over a still of the house's own seat. Click one to open its history, seat, notable names and the houses sworn to it; click it again to close |
 | **8 Seasons** | The heading scrolls in normally, then the deck pins and scrolling down walks it across — the track is exactly as tall as the distance the cards have to travel, and when the last one lands the page carries on down. The cards keep their designed size; on a frame too short for them the whole deck scales rather than the type being squeezed |
-| **Moments** | Fourteen full-screen panels that stack over one another as you scroll. Each sits on the still from its own scene, graded to its own palette, with matching particles — embers, ash, snow, blood — over the top |
-| **Dragons** | Built to the show's own model sheets — 16m long on a 23m span for Drogon, 15m/22m for the others. The body is one continuous surface swept along a spline, narrow through the neck and broad through the ribcage; the wing is a bat's, with five fingers and a membrane whose trailing edge sags between the tips. Scales are procedural, in the shader. Every vertex carries a rig attribute and the vertex shader does the flapping, so it is one draw call each |
+| **Moments** | Fourteen full-screen panels, one screen each, in ordinary flow — no sticky stack and no scroll-snap, so the page moves the distance you asked it to and a moment holds the whole screen while it is there. Its copy settles as it takes the frame and lifts away as it leaves. Each sits on the still from its own scene, graded to its own palette, with matching particles — embers, ash, snow, blood — over the top |
+| **Dragons** | Drogon, Rhaegal and Viserion in their own section — what they were, what they cost, and how each of them died |
 | **The Long Night** | Snowfall, the White Walkers, dragonglass and Valyrian steel |
 | **The Throne** | Three plates for three beats — Tommen enthroned, Jaime on it after killing the king he served, and the chair inside Drogon's fire — pushed into as the section runs, with the heat coming up under the last |
 | **The Cast** | Twenty characters, their actor, their allegiance, and how they ended |
@@ -41,10 +40,10 @@ drives the season rail when it's focused.
 **Photographs where a photograph is the right answer; code everywhere else.**
 Seventy-odd images ship in `assets/` — the moment backdrops, the house seats,
 the season posters, the cast, the heraldic emblems — pulled from the show's own
-material and re-encoded small. Around them, everything is still generated: the
-dragons are geometry, the atlas is drawn, and embers, snow, fire and blood are
-particle systems. There is no video: HBO's footage isn't something this repo
-can carry.
+material and re-encoded small. Around them, everything is still generated:
+embers, snow, fire and blood are particle systems, and the grading, the
+parallax and the type are all code. There is no video: HBO's footage isn't
+something this repo can carry.
 
 **Every drawn thing has a slot.** Backdrops, house sigils, cast portraits, the
 Iron Throne and the score can each be replaced by a real file without touching
@@ -78,9 +77,7 @@ js/assets.js          the drop-in layer — reads assets/manifest.json
 js/data.js            all the lore: houses, seasons, moments, cast, quotes, sigil SVG
 js/scenery.js         the matte paintings — skyline, wall, godswood, hall, pyre, crowd, battlefield
 js/gl.js              tiny WebGL helper — mat4 maths, shaders, procedural meshes
-js/scene-dragons.js   the dragon mesh, and the shader that flies it
-js/effects.js         embers, snow, per-moment atmospheres, dragons, cursor sparks
-js/map.js             the map geometry and its 26 locations
+js/effects.js         embers, snow, per-moment atmospheres, cursor sparks
 js/audio.js           the synthesised score
 js/main.js            builds every section from the data, runs one rAF loop
 assets/               the images, and manifest.json that names them

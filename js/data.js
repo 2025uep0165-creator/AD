@@ -122,7 +122,7 @@ const SIGILS = {
 
 const HOUSES = [
   {
-    key: 'stark', name: 'Stark', words: 'Winter Is Coming', seat: 'Winterfell',
+    key: 'stark', banners: ['Bolton', 'Karstark', 'Umber', 'Mormont', 'Manderly', 'Reed', 'Glover', 'Hornwood'], name: 'Stark', words: 'Winter Is Coming', seat: 'Winterfell',
     region: 'The North', beast: 'Direwolf',
     c1: '#cfd8dc', c2: '#5b6b74', accent: '#e8f1f5',
     heads: ['Eddard "Ned" Stark', 'Robb Stark, the Young Wolf', 'Sansa, Queen in the North'],
@@ -130,7 +130,7 @@ const HOUSES = [
     fact: 'Six direwolf pups for six Stark children, found beside a dead mother in the snow. An omen nobody read closely enough.'
   },
   {
-    key: 'lannister', name: 'Lannister', words: 'Hear Me Roar!', seat: 'Casterly Rock',
+    key: 'lannister', banners: ['Clegane', 'Payne', 'Marbrand', 'Crakehall', 'Lefford', 'Westerling', 'Swyft'], name: 'Lannister', words: 'Hear Me Roar!', seat: 'Casterly Rock',
     region: 'The Westerlands', beast: 'Lion',
     c1: '#e0b23c', c2: '#8e1220', accent: '#ffd76a',
     heads: ['Tywin Lannister', 'Cersei, First of Her Name', 'Tyrion, Hand of the King'],
@@ -138,7 +138,7 @@ const HOUSES = [
     fact: '"A Lannister always pays his debts" is not the house words at all. It is a family saying — and it cuts both ways.'
   },
   {
-    key: 'targaryen', name: 'Targaryen', words: 'Fire and Blood', seat: 'Dragonstone',
+    key: 'targaryen', banners: ['Velaryon', 'Celtigar', 'Massey', 'Sunglass', 'Bar Emmon'], name: 'Targaryen', words: 'Fire and Blood', seat: 'Dragonstone',
     region: 'The Crownlands', beast: 'Three-Headed Dragon',
     c1: '#d8262f', c2: '#1a1a1e', accent: '#ff6b4a',
     heads: ['Aegon the Conqueror', 'Aerys II, the Mad King', 'Daenerys Stormborn'],
@@ -146,7 +146,7 @@ const HOUSES = [
     fact: 'Drogon, Rhaegal and Viserion — named for a dead husband and two dead brothers. Grief given wings.'
   },
   {
-    key: 'baratheon', name: 'Baratheon', words: 'Ours Is the Fury', seat: "Storm's End",
+    key: 'baratheon', banners: ['Seaworth', 'Tarth', 'Dondarrion', 'Selmy', 'Swann', 'Caron', 'Estermont'], name: 'Baratheon', words: 'Ours Is the Fury', seat: "Storm's End",
     region: 'The Stormlands', beast: 'Crowned Stag',
     c1: '#f0c33c', c2: '#17171b', accent: '#ffe08a',
     heads: ['Robert, First of His Name', 'Stannis, the Rightful King', 'Renly the Charming'],
@@ -154,7 +154,7 @@ const HOUSES = [
     fact: 'Every trueborn Baratheon is born black of hair. That single sentence in a dusty book started a war.'
   },
   {
-    key: 'greyjoy', name: 'Greyjoy', words: 'We Do Not Sow', seat: 'Pyke',
+    key: 'greyjoy', banners: ['Harlaw', 'Botley', 'Blacktyde', 'Drumm', 'Goodbrother', 'Merlyn'], name: 'Greyjoy', words: 'We Do Not Sow', seat: 'Pyke',
     region: 'The Iron Islands', beast: 'Kraken',
     c1: '#c8ad5f', c2: '#101418', accent: '#e5d59a',
     heads: ['Balon Greyjoy', 'Euron Crow\'s Eye', 'Yara Greyjoy'],
@@ -162,7 +162,7 @@ const HOUSES = [
     fact: 'Theon Greyjoy was raised a Stark hostage. That contradiction is the whole tragedy of the Iron Islands in one man.'
   },
   {
-    key: 'tyrell', name: 'Tyrell', words: 'Growing Strong', seat: 'Highgarden',
+    key: 'tyrell', banners: ['Tarly', 'Hightower', 'Redwyne', 'Florent', 'Fossoway', 'Rowan', 'Oakheart'], name: 'Tyrell', words: 'Growing Strong', seat: 'Highgarden',
     region: 'The Reach', beast: 'Golden Rose',
     c1: '#4caf50', c2: '#c9a227', accent: '#a5e8a8',
     heads: ['Olenna, the Queen of Thorns', 'Mace Tyrell', 'Margaery, thrice a queen'],
@@ -170,7 +170,7 @@ const HOUSES = [
     fact: 'Olenna\'s last act was to confess to murdering Joffrey — to the man who would have to carry the news to his sister. "Tell Cersei. I want her to know it was me."'
   },
   {
-    key: 'martell', name: 'Martell', words: 'Unbowed, Unbent, Unbroken', seat: 'Sunspear',
+    key: 'martell', banners: ['Yronwood', 'Dayne', 'Fowler', 'Blackmont', 'Uller', 'Manwoody', 'Wyl'], name: 'Martell', words: 'Unbowed, Unbent, Unbroken', seat: 'Sunspear',
     region: 'Dorne', beast: 'Sun and Spear',
     c1: '#ff8a2b', c2: '#a3231a', accent: '#ffbf6a',
     heads: ['Doran Martell', 'Oberyn, the Red Viper', 'Ellaria Sand'],
@@ -178,7 +178,7 @@ const HOUSES = [
     fact: 'Oberyn had won. He had the Mountain down, the spear in him, a confession on his lips. He just would not stop talking.'
   },
   {
-    key: 'arryn', name: 'Arryn', words: 'As High as Honor', seat: 'The Eyrie',
+    key: 'arryn', banners: ['Royce', 'Corbray', 'Waynwood', 'Templeton', 'Hunter', 'Redfort', 'Belmore'], name: 'Arryn', words: 'As High as Honor', seat: 'The Eyrie',
     region: 'The Vale', beast: 'Falcon and Moon',
     c1: '#8fd3f4', c2: '#1c3b57', accent: '#d6f1ff',
     heads: ['Jon Arryn, Hand of the King', 'Lysa Arryn', 'Robin Arryn'],
@@ -186,7 +186,7 @@ const HOUSES = [
     fact: 'The Moon Door: a hole in the floor of the throne room with six hundred feet of sky beneath it. "Fly."'
   },
   {
-    key: 'tully', name: 'Tully', words: 'Family, Duty, Honor', seat: 'Riverrun',
+    key: 'tully', banners: ['Frey', 'Blackwood', 'Bracken', 'Mallister', 'Piper', 'Vance', 'Darry', 'Mooton'], name: 'Tully', words: 'Family, Duty, Honor', seat: 'Riverrun',
     region: 'The Riverlands', beast: 'Leaping Trout',
     c1: '#4b8ec9', c2: '#9b1c2e', accent: '#a9d6f5',
     heads: ['Hoster Tully', 'Brynden "the Blackfish"', 'Edmure Tully'],

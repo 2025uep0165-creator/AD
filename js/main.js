@@ -38,7 +38,6 @@ function dropInSigils(root) {
 
 const houseByKey = {};
 HOUSES.forEach(h => houseByKey[h.key] = h);
-MINOR_HOUSES.forEach(h => houseByKey[h.key] = h);
 const hc = key => houseByKey[key] || { c1: '#c9a227', c2: '#8a6d16' };
 
 /* ═════════════════════════════════ REVEALS ════════════════════════════════ */
@@ -145,11 +144,23 @@ HOUSES.forEach((h, i) => {
 });
 
 let openPanel = null;
+let openKey = null;
+
+function closeHouse() {
+  if (openPanel) { openPanel.remove(); openPanel = null; }
+  $$('.house').forEach(c => c.classList.remove('open'));
+  openKey = null;
+}
+
 function openHouse(key) {
   const h = houseByKey[key];
   if (!h || !h.blurb) return;
+  /* clicking the open house again closes it */
+  if (openKey === key) { closeHouse(); return; }
   const card = $(`.house[data-key="${key}"]`);
-  if (openPanel) { openPanel.remove(); openPanel = null; }
+  closeHouse();
+  card.classList.add('open');
+  openKey = key;
 
   const panel = document.createElement('div');
   panel.className = 'house-panel';
@@ -168,6 +179,10 @@ function openHouse(key) {
         <div><b>Known by</b><span>${h.heads.join(' · ')}</span></div>
       </div>
       <p class="hp-fact">${h.fact}</p>
+      <div class="hp-banners">
+        <b>Sworn to ${h.name}</b>
+        <p>${(h.banners || []).map(n => `<span>${n}</span>`).join('')}</p>
+      </div>
     </div>`;
 
   /* drop the panel at the end of the card's visual row */
@@ -181,9 +196,7 @@ function openHouse(key) {
   dropInSigils(panel);
   openPanel = panel;
 
-  panel.querySelector('.hp-close').addEventListener('click', () => {
-    panel.remove(); openPanel = null;
-  });
+  panel.querySelector('.hp-close').addEventListener('click', closeHouse);
   panel.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'nearest' });
 }
 
@@ -196,13 +209,6 @@ houseGrid.addEventListener('keydown', e => {
   const card = e.target.closest('.house');
   if (card) { e.preventDefault(); openHouse(card.dataset.key); }
 });
-
-/* minor houses strip */
-$('#houseMinor').innerHTML = MINOR_HOUSES.map(h => `
-  <div class="minor" style="--mc1:${h.c1}">
-    <span class="minor-sig" data-sigil="${h.key}">${sigilSVG(h.key, h.c1, h.c2)}</span>
-    <div><b>${h.name}</b><span>${h.words}</span></div>
-  </div>`).join('');
 
 /* ══════════════════════════════ 2 · SEASONS ═══════════════════════════════ */
 
@@ -282,8 +288,13 @@ function updateRail(dt) {
 }
 
 measureRail();
-/* card images land after first paint and change the deck's size */
+/* The deck's height depends on how the copy wraps, which depends on the
+   webfont — and that can land well after first paint. Measuring only once
+   leaves the cards taller than the frame that was sized for the fallback
+   face, which shows up as the last line of every card being cut off. */
 window.addEventListener('load', measureRail);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(measureRail);
+if (window.ResizeObserver) new ResizeObserver(measureRail).observe(rail);
 
 /* ══════════════════════════════ 3 · MOMENTS ═══════════════════════════════ */
 
@@ -300,7 +311,6 @@ MOMENTS.forEach((m, i) => {
   sec.className = 'moment';
   sec.dataset.moment = m.id;
   sec.style.setProperty('--mc', FX_COLOR[m.fx] || '#c9a227');
-  sec.style.zIndex = i + 1;
   sec.innerHTML = `
     <canvas aria-hidden="true"></canvas>
     <div class="moment-inner">
@@ -359,122 +369,6 @@ Assets.ready.then(() => {
   /* the manifest can point the throne section's opening plate elsewhere */
   const throneShot = Assets.throne();
   if (throneShot) $('#throneShot .ts').src = throneShot;
-});
-
-/* ════════════════════════════════ 4 · MAP ═════════════════════════════════ */
-
-const mapSvg = buildMap($('#mapHost'));
-const mapCard = $('#mapCard');
-
-/* ---- pan and zoom, the way an atlas wants to be handled ---------------- */
-(() => {
-  const scene = mapSvg.querySelector('.map-scene');
-  if (!scene) return;
-  const view = { x: 0, y: 0, k: 1 };
-  const MINK = 1, MAXK = 4.5;
-  let drag = null, moved = 0;
-
-  const apply = () => {
-    scene.setAttribute('transform',
-      `translate(${view.x.toFixed(2)} ${view.y.toFixed(2)}) scale(${view.k.toFixed(3)})`);
-    mapSvg.classList.toggle('zoomed', view.k > 1.02);
-  };
-
-  /* keep the map from being dragged off its own frame */
-  function clampView() {
-    const span = 920 * (view.k - 1);
-    view.x = clamp(view.x, -span, span * 0.15);
-    view.y = clamp(view.y, -span, span * 0.15);
-  }
-
-  function zoomAt(cx, cy, factor) {
-    const k2 = clamp(view.k * factor, MINK, MAXK);
-    const f = k2 / view.k;
-    view.x = cx - (cx - view.x) * f;
-    view.y = cy - (cy - view.y) * f;
-    view.k = k2;
-    if (view.k <= MINK + 0.001) { view.x = 0; view.y = 0; view.k = MINK; }
-    clampView(); apply();
-  }
-
-  /* pointer position in the svg's own units */
-  function local(e) {
-    const r = mapSvg.getBoundingClientRect();
-    const vb = mapSvg.viewBox.baseVal;
-    return { x: vb.x + (e.clientX - r.left) / r.width * vb.width,
-             y: vb.y + (e.clientY - r.top) / r.height * vb.height };
-  }
-
-  mapSvg.addEventListener('wheel', e => {
-    e.preventDefault();
-    const p = local(e);
-    zoomAt(p.x, p.y, e.deltaY < 0 ? 1.16 : 1 / 1.16);
-  }, { passive: false });
-
-  mapSvg.addEventListener('pointerdown', e => {
-    drag = { sx: e.clientX, sy: e.clientY, vx: view.x, vy: view.y };
-    moved = 0;
-    mapSvg.setPointerCapture(e.pointerId);
-    mapSvg.classList.add('dragging');
-  });
-  mapSvg.addEventListener('pointermove', e => {
-    if (!drag) return;
-    const r = mapSvg.getBoundingClientRect();
-    const sc = mapSvg.viewBox.baseVal.width / r.width;
-    const dx = (e.clientX - drag.sx) * sc, dy = (e.clientY - drag.sy) * sc;
-    moved = Math.max(moved, Math.abs(dx) + Math.abs(dy));
-    view.x = drag.vx + dx; view.y = drag.vy + dy;
-    clampView(); apply();
-  });
-  const endDrag = () => { drag = null; mapSvg.classList.remove('dragging'); };
-  mapSvg.addEventListener('pointerup', endDrag);
-  mapSvg.addEventListener('pointercancel', endDrag);
-
-  /* a click that was really a drag shouldn't also select a location */
-  mapSvg.addEventListener('click', e => { if (moved > 6) e.stopPropagation(); }, true);
-
-  const reset = $('#mapReset');
-  if (reset) reset.addEventListener('click', () => {
-    view.x = 0; view.y = 0; view.k = 1; apply();
-  });
-  /* double-click zooms in on the spot, like every map ever */
-  mapSvg.addEventListener('dblclick', e => {
-    e.preventDefault(); const p = local(e); zoomAt(p.x, p.y, 1.9);
-  });
-})();
-
-function showLocation(loc) {
-  $$('.pin', mapSvg).forEach(p => p.classList.toggle('on', p.dataset.id === loc.id));
-  const h = hc(loc.house);
-  mapCard.innerHTML = `
-    <div class="map-card-inner">
-      <p class="map-card-region" style="color:${h.c1}">${loc.region}</p>
-      <h3 class="map-card-name">${loc.name}</h3>
-      <p class="map-card-tag">${loc.tag}</p>
-      <p class="map-card-text">${loc.text}</p>
-    </div>`;
-  mapCard.style.borderColor = h.c1 + '55';
-}
-
-mapSvg.addEventListener('click', e => {
-  const pin = e.target.closest('.pin');
-  if (!pin) return;
-  const loc = LOCATIONS.find(l => l.id === pin.dataset.id);
-  if (loc) showLocation(loc);
-});
-mapSvg.addEventListener('pointerover', e => {
-  const pin = e.target.closest('.pin');
-  if (!pin) return;
-  const loc = LOCATIONS.find(l => l.id === pin.dataset.id);
-  if (loc) showLocation(loc);
-});
-mapSvg.addEventListener('keydown', e => {
-  if (e.key !== 'Enter' && e.key !== ' ') return;
-  const pin = e.target.closest('.pin');
-  if (!pin) return;
-  e.preventDefault();
-  const loc = LOCATIONS.find(l => l.id === pin.dataset.id);
-  if (loc) showLocation(loc);
 });
 
 /* ════════════════════════════════ 5 · CAST ════════════════════════════════ */
@@ -572,8 +466,6 @@ watchAll('.reveal');
 const embers  = reduced ? null : EmberField($('#heroEmbers'), { count: 46 });
 const endEmb  = reduced ? null : EmberField($('#endEmbers'), { count: 80 });
 const snow    = reduced ? null : SnowField($('#snowFx'), { count: 240 });
-const dragons  = reduced ? null : DragonGL($('#dragonGL'));
-const dragonFire = reduced ? null : DragonFire($('#dragonFx'));
 
 /* Painted backdrops for the two big atmospheric sections. They run
    backdrop-only, since each already has its own particle system on top. */
@@ -633,19 +525,24 @@ const moodObs = new IntersectionObserver(entries => {
 }, { threshold: [0.15, 0.4, 0.7] });
 sections.forEach(s => moodObs.observe(s));
 
-/* moments: the outgoing card in the stack recedes as the next slides over it */
+/* Each panel's copy settles as the panel takes the frame and lifts away as it
+   leaves, so the sequence still moves without one panel sliding over another.
+   The falloff is steep on purpose: a moment holds full weight while its centre
+   is within a fifth of a screen of yours and is all but dark by the halfway
+   mark, so you are reading one of them at a time rather than two ghosts. */
 function updateMoments() {
   const vh = window.innerHeight;
   momentFx.forEach(m => {
     if (visible.get(m.el) === false) { m.vis = 0; return; }
     const r = m.el.getBoundingClientRect();
-    /* how far this card has been covered by the next one */
-    const covered = clamp(-r.top / Math.max(r.height, 1), 0, 1);
-    const entering = clamp(1 - r.top / vh, 0, 1);
-    m.vis = entering * (1 - covered * 0.9);
+    /* -1 below the frame, 0 centred, +1 above it */
+    const off = clamp((r.top + r.height / 2 - vh / 2) / vh, -1, 1);
+    const centred = 1 - Math.min(1, Math.abs(off) * 1.8);
+    m.vis = centred;
     const inner = m.el.querySelector('.moment-inner');
-    inner.style.opacity = String(clamp(1 - covered * 1.8, 0, 1));
-    inner.style.transform = `scale(${1 - covered * 0.10}) translateY(${covered * -30}px)`;
+    inner.style.opacity = String(smooth(clamp(centred * 1.6, 0, 1)));
+    inner.style.transform =
+      `translateY(${(off * 52).toFixed(1)}px) scale(${(0.965 + centred * 0.035).toFixed(3)})`;
   });
 }
 
@@ -729,8 +626,6 @@ function frame(now) {
   /* dragons + snow + end embers */
   if (isVis('#dragons')) {
     BACKDROPS.dragons.step(dt, 1);
-    if (dragons) dragons.step(dt);
-    if (dragonFire) dragonFire.step(dt, dragons && dragons.muzzle);
   }
   if (snow && isVis('#longnight')) {
     BACKDROPS.thewall.step(dt, 1);
@@ -761,7 +656,7 @@ requestAnimationFrame(frame);
 
 window.addEventListener('resize', () => {
   measureRail();
-  [embers, endEmb, snow, dragons, dragonFire, cursor].forEach(o => o && o.resize && o.resize());
+  [embers, endEmb, snow, cursor].forEach(o => o && o.resize && o.resize());
   Object.keys(BACKDROPS).forEach(k => BACKDROPS[k].resize());
   momentFx.forEach(m => m.fx.resize());
 }, { passive: true });
@@ -776,6 +671,7 @@ function enter(withSound) {
   entered = true;
   gate.classList.add('gone');
   document.body.classList.remove('pre-enter');
+  document.documentElement.classList.remove('pre-enter');
   setTimeout(() => { gate.style.display = 'none'; }, 1200);
   dotsHost.classList.add('on');
   soundBtn.classList.add('on');
@@ -825,7 +721,7 @@ $$('[data-goto]').forEach(b => b.addEventListener('click', () => {
 /* keyboard: M mutes, Escape closes an open house panel */
 window.addEventListener('keydown', e => {
   if (e.key === 'm' || e.key === 'M') toggleSound();
-  if (e.key === 'Escape' && openPanel) { openPanel.remove(); openPanel = null; }
+  if (e.key === 'Escape' && openPanel) closeHouse();
 });
 
 /* if someone lands mid-page (a refresh at scroll position), skip the gate */
