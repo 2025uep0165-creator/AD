@@ -13,33 +13,6 @@
 </head>
 <body class="pre-enter">
 
-<!-- The wordmark's steel, and the O from the logo — a ring with three bars
-     across its counter. Defined once and used by both the gate and the title,
-     because no webfont carries that glyph. -->
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <defs>
-    <linearGradient id="gotSteel" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%"   stop-color="#ffffff"/>
-      <stop offset="14%"  stop-color="#e3e8ee"/>
-      <stop offset="34%"  stop-color="#9aa4ae"/>
-      <stop offset="49%"  stop-color="#5d666f"/>
-      <stop offset="56%"  stop-color="#8d97a1"/>
-      <stop offset="76%"  stop-color="#dfe5eb"/>
-      <stop offset="90%"  stop-color="#f6f8fa"/>
-      <stop offset="100%" stop-color="#98a2ac"/>
-    </linearGradient>
-    <g id="gotO">
-      <rect x="6" y="29.9" width="88" height="7.2" fill="url(#gotSteel)"/>
-      <rect x="6" y="46.4" width="88" height="7.2" fill="url(#gotSteel)"/>
-      <rect x="6" y="62.9" width="88" height="7.2" fill="url(#gotSteel)"/>
-      <!-- the sides carry more weight than the top and foot, the way a
-           Trajan O is cut -->
-      <path d="M50 3.5a46.5 46.5 0 100 93 46.5 46.5 0 100-93z
-               M50 14a32.5 36 0 100 72 32.5 36 0 100-72z"
-            fill="url(#gotSteel)" fill-rule="evenodd"/>
-    </g>
-  </defs>
-</svg>
 
 <!-- ══════════════════════════════ THE GATE ══════════════════════════════ -->
 <div id="gate">
@@ -51,9 +24,8 @@
 
   <div class="gate-inner">
     <p class="gate-kicker">HBO&nbsp;&nbsp;·&nbsp;&nbsp;2011&nbsp;—&nbsp;2019&nbsp;&nbsp;·&nbsp;&nbsp;73 episodes</p>
-    <h1 class="megatitle gate-mark" aria-label="Game of Thrones">
-      <span class="mt-line" aria-hidden="true">GAME&#8202;<span class="mt-o"><svg viewBox="0 0 100 100"><use href="#gotO"/></svg></span>F</span>
-      <span class="mt-line" aria-hidden="true">THRONES</span>
+    <h1 class="megatitle gate-mark">
+      <img src="assets/img/wordmark.svg" alt="Game of Thrones">
     </h1>
     <div class="gate-rule"><i></i><b></b><i></i></div>
     <p class="gate-sub">A scroll through the Seven Kingdoms — the houses,
@@ -115,9 +87,8 @@
 
   <div class="hero-copy">
     <p class="hero-kicker">HBO&nbsp;&nbsp;·&nbsp;&nbsp;2011&nbsp;—&nbsp;2019&nbsp;&nbsp;·&nbsp;&nbsp;73 episodes</p>
-    <h1 class="megatitle" aria-label="Game of Thrones">
-      <span class="mt-line" aria-hidden="true">GAME&#8202;<span class="mt-o"><svg viewBox="0 0 100 100"><use href="#gotO"/></svg></span>F</span>
-      <span class="mt-line" aria-hidden="true">THRONES</span>
+    <h1 class="megatitle">
+      <img src="assets/img/wordmark.svg" alt="Game of Thrones">
     </h1>
     <div class="hero-rule"><i></i><b></b><i></i></div>
     <p class="hero-tag">When you play the game of thrones, you win or you die.</p>

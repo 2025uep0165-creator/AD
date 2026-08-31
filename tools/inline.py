@@ -47,7 +47,16 @@ def build():
         if not d.is_dir():
             continue
         for p in sorted(d.iterdir()):
-            if p.name.startswith(".") or p.suffix.lower() not in (".jpg", ".jpeg", ".png"):
+            if p.name.startswith("."):
+                continue
+            if p.suffix.lower() == ".svg":
+                # already vector and already small: it rides along as it is
+                blob = p.read_bytes()
+                raw += len(blob)
+                files[f"assets/{folder}/{p.name}"] = (
+                    "data:image/svg+xml;base64," + base64.b64encode(blob).decode())
+                continue
+            if p.suffix.lower() not in (".jpg", ".jpeg", ".png"):
                 continue
             mime, blob = encode(p, folder)
             raw += len(blob)

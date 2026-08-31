@@ -178,10 +178,11 @@ p:last-child { margin-bottom: 0; }
   opacity: 0; animation: fadeUp 1.2s var(--ease) .3s forwards;
 }
 
-/* The same mark as the hero, a size down — the gate has more to say under it.
-   Both selectors, because .megatitle is defined further down the sheet and
-   would otherwise win the tie on specificity. */
-.megatitle.gate-mark { font-size: clamp(1.4rem, 11vw, 4.8rem); margin: 0 0 1.35rem; }
+/* The gate carries more copy under the mark, so it runs a size down. Both
+   class names, because .megatitle is defined further down the sheet and would
+   otherwise win the tie on specificity. */
+.megatitle.gate-mark { margin: 0 0 1.5rem; animation-delay: .5s; }
+.megatitle.gate-mark img { width: min(720px, 76vw); }
 
 .gate-rule {
   display: flex; align-items: center; justify-content: center; gap: .8rem;
@@ -403,55 +404,34 @@ p:last-child { margin-bottom: 0; }
   opacity: 0; animation: fadeUp 1.3s var(--ease) .45s forwards;
 }
 
-/* The wordmark, built to the poster: two lines of plain Trajan capitals in
-   polished steel — GAME OF over THRONES, both lines tracked to the same
-   measure — with the logo's O in place of the letter, a ring with three bars
-   across its counter. No webfont carries that glyph, so it is drawn once as
-   SVG in the markup and used in both places.
+/* The wordmark is a drawing, not type.
 
-   The face is Cinzel rather than Cinzel Decorative: the mark is a clean
-   Trajan, and the decorative cut's swashes are not in it.
+   The mark on screen is not any font — it is one line of Trajan capitals with
+   a small OF set between the words, a rule along the top, a rectangle framing
+   the left end, and the logo's own O, a ring with three bars standing in its
+   counter. Nothing you can install renders that, and every attempt to fake it
+   with a webfont came out as an impression of the mark rather than the mark.
 
-   Nothing dark sits behind it. The letters lie straight over the plate, and
-   what keeps them legible is the edge on the letterform itself — a hairline
-   of cold iron cut around each glyph, the way the real mark is bevelled. */
+   So it is drawn once, as vector, by tools/wordmark.py: the letters are pulled
+   out of Cinzel as outlines and the O and the furniture are constructed. The
+   page just places the file. It is SVG, so it is sharp at any size and weighs
+   21KB, and the glow below is the only thing the stylesheet adds to it. */
 .megatitle {
-  font-family: var(--title);
-  font-weight: 600;
-  font-size: clamp(1.5rem, 13.5vw, 7.4rem);
-  line-height: 1.02;
-  text-transform: uppercase;
-  margin: 0 0 1.5rem;
-  color: #eef2f6;
-  display: flex; flex-direction: column; align-items: center;
-}
-.megatitle .mt-line {
-  display: flex; align-items: baseline; justify-content: center;
-  background: linear-gradient(180deg,
-    #ffffff 0%, #e3e8ee 14%, #9aa4ae 34%, #5d666f 49%,
-    #8d97a1 56%, #dfe5eb 76%, #f6f8fa 90%, #98a2ac 100%);
-  -webkit-background-clip: text; background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -webkit-text-stroke: .9px rgba(10,14,18,.72);
+  margin: 0 0 1.6rem;
+  line-height: 0;
   opacity: 0; transform: translateY(22px);
-  animation: cutIn 1.5s var(--ease) forwards;
+  animation: cutIn 1.6s var(--ease) .6s forwards;
 }
-/* GAME OF is six letters to THRONES's seven, so it carries the wider track
-   and the two lines come out the same measure, as they do on the poster */
-.megatitle .mt-line:first-child { letter-spacing: .158em; animation-delay: .65s; }
-.megatitle .mt-line:last-child  { letter-spacing: .052em; animation-delay: .8s; }
-
-/* the drawn O, set on the cap height and tracked like the letters beside it */
-.megatitle .mt-o {
-  display: inline-block;
-  width: .8em; height: .8em;
-  align-self: center;
-  margin: 0 .1em 0 .02em;
-  transform: translateY(.018em);
+.megatitle img {
+  display: block; margin-inline: auto;
+  width: min(940px, 72vw); height: auto;
+  /* the warm bloom the mark carries in the title sequence */
+  filter: drop-shadow(0 0 26px rgba(255,176,74,.34))
+          drop-shadow(0 0 70px rgba(255,142,40,.22))
+          drop-shadow(0 3px 5px rgba(0,0,0,.6));
 }
-.megatitle .mt-o svg { display: block; width: 100%; height: 100%; overflow: visible; }
 @keyframes cutIn {
-  from { opacity: 0; transform: translateY(22px) scale(.985); }
+  from { opacity: 0; transform: translateY(22px) scale(.978); }
   to   { opacity: 1; transform: none; }
 }
 
