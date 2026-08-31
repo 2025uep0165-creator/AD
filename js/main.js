@@ -251,7 +251,30 @@ const railTrack = $('#railTrack');
 const railOuter = $('.rail-outer');
 const railStage = $('.rail-stage');
 const railBar = $('.rail-progress i');
+const railPin = $('.rail-pin');
 let railSpan = 0, railScale = 1, railAt = 0;
+/* the share of the frame the deck may fill, so a card is never flush with an
+   edge even when every measurement below is exactly right */
+const DECK_FIT = 0.94;
+
+/* How much of the pinned frame is really on screen.
+
+   The frame is 100vh tall, but a vh is not always a height you can see: when
+   the page is embedded, the viewport it is told about can be taller than the
+   window showing it, and the difference comes off the bottom — which is
+   exactly where the last line of a season card lives. Nothing inside the page
+   can ask how much of it is on screen, but an IntersectionObserver's implicit
+   root is the top-level viewport clipped through every frame in between, so
+   the tallest intersection it ever reports for the pinned frame is the band
+   the reader can actually see. */
+let visibleFrame = 0;
+if (railPin && window.IntersectionObserver) {
+  new IntersectionObserver(entries => {
+    let found = 0;
+    entries.forEach(e => { found = Math.max(found, e.intersectionRect.height); });
+    if (found > visibleFrame + 4) { visibleFrame = found; measureRail(); }
+  }, { threshold: Array.from({ length: 21 }, (_, i) => i / 20) }).observe(railPin);
+}
 
 function measureRail() {
   const off = window.matchMedia('(max-width: 760px)').matches || reduced;
@@ -265,9 +288,17 @@ function measureRail() {
   /* offsetHeight/scrollWidth are layout values, so the transform already on
      the stage does not feed back into the measurement */
   const deckH = rail.offsetHeight;
-  const availH = railOuter.clientHeight;
-  railScale = clamp(availH / Math.max(deckH, 1), 0.7, 1);
+
+  /* the part of the frame that is off the bottom of the window, if any */
+  const lost = visibleFrame
+    ? clamp(railPin.clientHeight - visibleFrame, 0, railPin.clientHeight * 0.4)
+    : 0;
+  const availH = Math.max(200, railOuter.clientHeight - lost) * DECK_FIT;
+  railScale = clamp(availH / Math.max(deckH, 1), 0.55, 1);
   railStage.style.setProperty('--rs', railScale.toFixed(4));
+  /* the deck is centred in its frame, so centring it in the visible band is
+     a lift of half whatever the window is cutting off */
+  railStage.style.setProperty('--ry', (-lost / 2).toFixed(1) + 'px');
 
   /* travel is in screen pixels, so one pixel of scroll is one pixel of card */
   railSpan = Math.max(0, rail.scrollWidth * railScale - railOuter.clientWidth);

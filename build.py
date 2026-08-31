@@ -30,13 +30,6 @@ SCRIPTS = [
     "main.js",
 ]
 
-FONTS = (
-    "https://fonts.googleapis.com/css2?"
-    "family=Cinzel:wght@400;600;800&"
-    "family=Cinzel+Decorative:wght@700;900&"
-    "family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap"
-)
-
 
 def build():
     """-> (html, note) — the note reports what went into the bundle."""
@@ -57,7 +50,11 @@ def build():
         sys.exit("index.html: could not find <body>")
     body = re.sub(r'\s*<script src="[^"]+"></script>', "", body.group(1))
 
-    css = (ROOT / "css/style.css").read_text()
+    # the faces ride along inside the file, so the bundle needs nothing from
+    # the network and lays out in the right metrics on the very first paint
+    css = (ROOT / "css/fonts.css").read_text() + "\n" + (ROOT / "css/style.css").read_text()
+    for rel, uri in payload["files"].items():
+        css = css.replace(f"url({rel})", f"url({uri})")
     js = "\n\n".join(
         f"/* ===== {name} ===== */\n" + (ROOT / "js" / name).read_text()
         for name in SCRIPTS
@@ -65,9 +62,6 @@ def build():
 
     note = f"{len(payload['files'])} media files, {raw_bytes/1e6:.2f} MB re-encoded"
     html_out = f"""<title>Winter Is Coming</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="{FONTS}">
 
 <style>
 {css}

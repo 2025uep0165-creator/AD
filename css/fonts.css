@@ -1,0 +1,49 @@
+/* ==========================================================================
+   The three faces the page is set in, carried with it.
+
+   They used to come from Google Fonts, which cost the page a round trip to a
+   third party before it could measure anything — and until that round trip
+   landed, every block was laid out in a fallback with different metrics. The
+   season deck sizes itself to the tallest card, so a face arriving late meant
+   a deck measured against the wrong height and the last line of every card cut
+   off. Carrying the files means the metrics are right at first paint.
+
+   Latin subsets only, which is all the page sets. Cinzel and EB Garamond are
+   variable files: one each covers the whole weight range asked for below.
+   ========================================================================== */
+
+@font-face {
+  font-family: 'Cinzel';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(assets/fonts/cinzel.woff2) format('woff2');
+}
+@font-face {
+  font-family: 'Cinzel Decorative';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(assets/fonts/cinzel-decorative-700.woff2) format('woff2');
+}
+@font-face {
+  font-family: 'Cinzel Decorative';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url(assets/fonts/cinzel-decorative-900.woff2) format('woff2');
+}
+@font-face {
+  font-family: 'EB Garamond';
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url(assets/fonts/eb-garamond.woff2) format('woff2');
+}
+@font-face {
+  font-family: 'EB Garamond';
+  font-style: italic;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url(assets/fonts/eb-garamond-italic.woff2) format('woff2');
+}

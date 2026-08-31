@@ -54,6 +54,16 @@ def build():
             key = f"assets/{folder}/{p.name}"
             files[key] = f"data:{mime};base64," + base64.b64encode(blob).decode()
 
+    # the three faces the page is set in, carried rather than fetched, so the
+    # metrics are right at first paint and nothing has to be re-measured later
+    fonts = ASSETS / "fonts"
+    if fonts.is_dir():
+        for p in sorted(fonts.glob("*.woff2")):
+            blob = p.read_bytes()
+            raw += len(blob)
+            files[f"assets/fonts/{p.name}"] = (
+                "data:font/woff2;base64," + base64.b64encode(blob).decode())
+
     manifest = {}
     mf = ASSETS / "manifest.json"
     if mf.exists():

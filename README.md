@@ -72,6 +72,7 @@ section by section as you scroll.
 
 ```
 index.html            page structure — mostly empty containers
+css/fonts.css         the three faces, carried rather than fetched
 css/style.css         the whole design system
 js/assets.js          the drop-in layer — reads assets/manifest.json
 js/data.js            all the lore: houses, seasons, moments, cast, quotes, sigil SVG
@@ -80,19 +81,22 @@ js/gl.js              tiny WebGL helper — mat4 maths, shaders, procedural mesh
 js/effects.js         embers, snow, per-moment atmospheres, cursor sparks
 js/audio.js           the synthesised score
 js/main.js            builds every section from the data, runs one rAF loop
-assets/               the images, and manifest.json that names them
+assets/               the images and the webfonts, and manifest.json that names them
 tools/                the sourcing, re-encoding and drop-in scripts
 build.py              flattens the whole thing into one self-contained file
 ```
 
 `python3 build.py` writes `dist/winter-is-coming.html`: the markup, the CSS,
-every script, every image re-encoded and inlined as a data URI, and the score
-carried along untouched — one file that opens anywhere with no server and no
-`assets/` folder beside it.
+every script, every image re-encoded and inlined as a data URI, the three
+webfonts, and the score carried along untouched — one file that opens anywhere
+with no server and no `assets/` folder beside it.
 
-No dependencies. No CDN, apart from an optional Google Fonts link for Cinzel and
-EB Garamond — if it's blocked, the fallback serif stack takes over and the page
-is unaffected. Nothing is tracked or phoned home.
+No dependencies, no CDN, no network at all. The faces used to come from Google
+Fonts, which cost a round trip to a third party before the page could measure
+anything — and until it landed, every block was laid out in a fallback with
+different metrics, which is how the season deck ended up sized against the
+wrong height. The latin subsets are 125 KB and ride along in the file, so the
+metrics are right on the first paint. Nothing is tracked or phoned home.
 
 Everything animated is gated behind an IntersectionObserver so off-screen
 canvases stop drawing and scenery isn't painted until it's needed, and the whole thing collapses to a static, readable
