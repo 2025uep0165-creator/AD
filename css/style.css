@@ -181,7 +181,7 @@ p:last-child { margin-bottom: 0; }
 /* The same mark as the hero, a size down — the gate has more to say under it.
    Both selectors, because .megatitle is defined further down the sheet and
    would otherwise win the tie on specificity. */
-.megatitle.gate-mark { font-size: clamp(1.5rem, 7.6vw, 4.5rem); margin: 0 0 1.35rem; }
+.megatitle.gate-mark { font-size: clamp(1.4rem, 11vw, 4.8rem); margin: 0 0 1.35rem; }
 
 .gate-rule {
   display: flex; align-items: center; justify-content: center; gap: .8rem;
@@ -381,9 +381,9 @@ p:last-child { margin-bottom: 0; }
   position: absolute; inset: 0; pointer-events: none;
   background:
     radial-gradient(78% 58% at 62% 34%, rgba(255,150,70,.18), transparent 62%),
-    linear-gradient(180deg, rgba(5,6,10,.78) 0%, rgba(5,6,10,.10) 28%,
-                    rgba(5,6,10,.18) 56%, rgba(5,6,10,.88) 90%, #05060a 100%),
-    linear-gradient(90deg, rgba(5,6,10,.52), transparent 32%, transparent 72%, rgba(5,6,10,.48));
+    linear-gradient(180deg, rgba(5,6,10,.8) 0%, rgba(5,6,10,.16) 26%,
+                    rgba(5,6,10,.42) 58%, rgba(5,6,10,.9) 90%, #05060a 100%),
+    linear-gradient(90deg, rgba(5,6,10,.58), transparent 30%, transparent 70%, rgba(5,6,10,.54));
 }
 /* Nothing is laid behind the wordmark — no pool, no band, no panel. The
    small type on either side of it carries its own shadow instead. */
@@ -398,55 +398,61 @@ p:last-child { margin-bottom: 0; }
 .hero-kicker {
   font-family: var(--title);
   font-size: .58rem; letter-spacing: .46em; text-transform: uppercase;
-  color: rgba(240,232,214,.9); margin-bottom: 1.9rem;
+  color: rgba(246,242,232,.96); margin-bottom: 1.9rem;
   text-shadow: 0 1px 12px rgba(0,0,0,.95), 0 0 26px rgba(0,0,0,.8);
   opacity: 0; animation: fadeUp 1.3s var(--ease) .45s forwards;
 }
 
-/* The show's own wordmark is one line of wide Trajan capitals cut in metal,
-   with a small OF set between the two words. Cinzel Decorative is the closest
-   face that can be carried as a webfont; the warm gradient and a hairline
-   dark edge cut into the glyphs do the rest.
+/* The wordmark, built to the poster: two lines of plain Trajan capitals in
+   polished steel — GAME OF over THRONES, both lines tracked to the same
+   measure — with the logo's O in place of the letter, a ring with three bars
+   across its counter. No webfont carries that glyph, so it is drawn once as
+   SVG in the markup and used in both places.
 
-   Nothing dark sits behind it. The letters are laid straight over the plate,
-   so what keeps them legible is the edge on the letterform itself — a half-
-   pixel of burnt umber around each glyph, the way the real mark is bevelled —
-   rather than a shadow or a pool of black on the photograph. */
+   The face is Cinzel rather than Cinzel Decorative: the mark is a clean
+   Trajan, and the decorative cut's swashes are not in it.
+
+   Nothing dark sits behind it. The letters lie straight over the plate, and
+   what keeps them legible is the edge on the letterform itself — a hairline
+   of cold iron cut around each glyph, the way the real mark is bevelled. */
 .megatitle {
-  font-family: var(--deco);
-  font-weight: 700;
-  font-size: clamp(1.3rem, 6.1vw, 5.8rem);
-  line-height: 1;
-  letter-spacing: .05em;
+  font-family: var(--title);
+  font-weight: 600;
+  font-size: clamp(1.5rem, 13.5vw, 7.4rem);
+  line-height: 1.02;
   text-transform: uppercase;
   margin: 0 0 1.5rem;
-  color: #f4efe2;
-  display: flex; flex-wrap: wrap;
-  align-items: center; justify-content: center;
-  column-gap: .22em; row-gap: .1em;
+  color: #eef2f6;
+  display: flex; flex-direction: column; align-items: center;
 }
-.megatitle .mt-word {
+.megatitle .mt-line {
+  display: flex; align-items: baseline; justify-content: center;
   background: linear-gradient(180deg,
-    #fffaea 0%, #f3e0ad 20%, #dcbb5c 44%, #a8801f 68%, #e5cd8b 88%, #fff6dd 100%);
+    #ffffff 0%, #e3e8ee 14%, #9aa4ae 34%, #5d666f 49%,
+    #8d97a1 56%, #dfe5eb 76%, #f6f8fa 90%, #98a2ac 100%);
   -webkit-background-clip: text; background-clip: text;
   -webkit-text-fill-color: transparent;
-  -webkit-text-stroke: .5px rgba(48,28,6,.55);
+  -webkit-text-stroke: .9px rgba(10,14,18,.72);
   opacity: 0; transform: translateY(22px);
   animation: cutIn 1.5s var(--ease) forwards;
 }
-.megatitle .mt-word:first-of-type { animation-delay: .65s; }
-.megatitle .mt-word:last-of-type  { animation-delay: .8s; }
-.megatitle .mt-of {
-  font-family: var(--title); font-weight: 600;
-  font-size: .3em; letter-spacing: .16em;
-  color: #e7d6a4;
-  -webkit-text-stroke: .4px rgba(48,28,6,.5);
-  align-self: center; margin-top: .12em;
-  opacity: 0; animation: fadeUp 1.2s var(--ease) 1.0s forwards;
+/* GAME OF is six letters to THRONES's seven, so it carries the wider track
+   and the two lines come out the same measure, as they do on the poster */
+.megatitle .mt-line:first-child { letter-spacing: .158em; animation-delay: .65s; }
+.megatitle .mt-line:last-child  { letter-spacing: .052em; animation-delay: .8s; }
+
+/* the drawn O, set on the cap height and tracked like the letters beside it */
+.megatitle .mt-o {
+  display: inline-block;
+  width: .8em; height: .8em;
+  align-self: center;
+  margin: 0 .1em 0 .02em;
+  transform: translateY(.018em);
 }
+.megatitle .mt-o svg { display: block; width: 100%; height: 100%; overflow: visible; }
 @keyframes cutIn {
-  from { opacity: 0; transform: translateY(22px); letter-spacing: .16em; }
-  to   { opacity: 1; transform: none; letter-spacing: .05em; }
+  from { opacity: 0; transform: translateY(22px) scale(.985); }
+  to   { opacity: 1; transform: none; }
 }
 
 .hero-rule {
@@ -1306,7 +1312,6 @@ p:last-child { margin-bottom: 0; }
   .quote-wall { columns: 1; }
   .score-player { grid-template-columns: 1fr; text-align: center; justify-items: center; }
   #dots { display: none; }
-  .megatitle { column-gap: .16em; letter-spacing: .03em; }
   #throne { height: 340vh; }
   .cast-grid { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); }
 }
