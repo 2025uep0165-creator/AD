@@ -2,11 +2,11 @@
 """Draw the GAME OF THRONES wordmark and write it out as SVG paths.
 
 The mark is not a font. It is one line of Trajan capitals with a small OF set
-between the words, a rule running along the top, a rectangle framing the left
-end, and the logo's own O — a ring with three bars standing in its counter.
-Nothing you can install renders that, so the letters are taken out of Cinzel as
-outlines, the O and the furniture are drawn here, and the result is one SVG
-that scales anywhere and can be recoloured from the stylesheet.
+between the words; the T of THRONES carries an arm that runs on over the rest
+of that word and stops at the S; and the O of OF is a ring with three bars
+standing in its counter. Nothing you can install renders that, so the letters
+are taken out of Cinzel as outlines, the arm and the O are drawn here, and the
+result is one SVG that scales anywhere and is recoloured from the stylesheet.
 
     python3 tools/wordmark.py        # -> assets/img/wordmark.svg
 """
@@ -51,6 +51,26 @@ def glyph_paths(text, font, glyphset, cmap, scale, x, y, track):
     return out, x
 
 
+def ink(glyphset, cmap, ch):
+    """-> (points of the glyph outline) so the drawing can be fitted to it."""
+    from fontTools.pens.recordingPen import RecordingPen
+    pen = RecordingPen()
+    glyphset[cmap[ord(ch)]].draw(pen)
+    return [p for op, args in pen.value for p in args if isinstance(p, tuple)]
+
+
+def t_arm(glyphset, cmap):
+    """The T's crossbar, measured off the glyph itself: where its top sits and
+    how thick it is. Guessing at this leaves a visible step where the drawn arm
+    meets the letter's own bar."""
+    pts = ink(glyphset, cmap, "T")
+    top = max(y for _, y in pts)
+    x0 = min(x for x, _ in pts)
+    # the flat underside, taken just inboard of the serif at the left end
+    bottom = max(y for x, y in pts if x0 + 40 < x < x0 + 140 and y < top - 30)
+    return top, top - bottom
+
+
 def run_width(text, glyphset, cmap, scale, track):
     w = sum(glyphset[cmap[ord(c)]].width for c in text) * scale * XSCALE
     return w + track * scale * (len(text) - 1)
@@ -73,26 +93,13 @@ def main():
     of = w_o + SMALL_TRACK * small + w_f
     text_w = w_game + WORD_GAP + of + WORD_GAP + w_thrones
 
-    # furniture: a rule along the top, and a rectangle framing the left end
-    pad_x, rule_h, rule_gap = 60, 22, 46
-    frame_w = w_game * 0.44
-    box_top, stroke = 0, 20
-    baseline = box_top + rule_h + rule_gap + CAP
-    box_h = baseline + CAP * 0.20
+    pad_x, pad_y = 26, 18
+    baseline = pad_y + CAP
     total_w = pad_x * 2 + text_w
-    total_h = box_h
+    total_h = baseline + CAP * 0.16          # room for the descending serifs
 
     x0 = pad_x
     parts = []
-
-    # the frame around the left end, and the rule running off its top edge
-    parts.append(
-        f'<path d="M0 {box_top} H{frame_w + pad_x} V{stroke} H{stroke} '
-        f'V{box_h - stroke} H{frame_w + pad_x} V{box_h} H0 Z"/>')
-    parts.append(
-        f'<rect x="{frame_w + pad_x + 40:.1f}" y="{box_top + 26}" '
-        f'width="{total_w - frame_w - pad_x - 40:.1f}" height="{rule_h}"/>')
-
     x = x0
     paths, x = glyph_paths("GAME", font, glyphset, cmap, s, x, baseline, TRACK)
     parts += paths
@@ -122,8 +129,16 @@ def main():
     parts += paths
     x += WORD_GAP
 
+    # THRONES, and the T's arm carried on over the rest of the word
+    t_left = x
     paths, x = glyph_paths("THRONES", font, glyphset, cmap, s, x, baseline, TRACK)
     parts += paths
+    arm_top, arm_h = t_arm(glyphset, cmap)
+    s_pts = ink(glyphset, cmap, "S")
+    s_over = (glyphset[cmap[ord("S")]].width - max(px for px, _ in s_pts)) * XSCALE
+    arm_x = t_left + min(px for px, _ in ink(glyphset, cmap, "T")) * XSCALE
+    parts.append(f'<rect x="{arm_x:.1f}" y="{baseline - arm_top:.1f}" '
+                 f'width="{x - s_over - arm_x:.1f}" height="{arm_h:.1f}"/>')
 
     body = "\n    ".join(parts)
     svg = f'''<svg xmlns="http://www.w3.org/2000/svg"
