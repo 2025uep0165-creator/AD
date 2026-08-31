@@ -209,12 +209,11 @@ const SEASONS = [
     tag: 'The game begins — and the man who refuses to play it loses first.',
     mood: 'stark',
     events: [
-      'Ned Stark rides south to serve as Hand to King Robert, against every instinct he has.',
+      'Ned rides south to be Hand to King Robert, against every instinct he has.',
       'Bran sees what he should not have seen and is thrown from a tower window.',
-      'Daenerys is sold to Khal Drogo and, somewhere on the Dothraki sea, stops being a girl who is given away.',
-      'Ned works out the secret in the book: Joffrey is no Baratheon. He gives Cersei a chance to run. She does not.',
-      'On the steps of the Great Sept of Baelor, Ilyn Payne swings Ice. The protagonist dies in episode nine.',
-      'Robb is proclaimed King in the North. Daenerys walks into her husband\'s pyre and walks out with three dragons.'
+      'Daenerys is sold to Khal Drogo and stops being a girl who is given away.',
+      'Ned finds the secret in the book: Joffrey is no Baratheon. He gives Cersei a chance to run.',
+      'On the steps of Baelor, Ilyn Payne swings Ice. The protagonist dies in episode nine.'
     ],
     hero: 'Ned Stark', close: 'The dragons are back in the world. Nobody in Westeros knows it yet.'
   },
@@ -223,12 +222,11 @@ const SEASONS = [
     tag: 'Five crowns, one throne, and a bay full of green fire.',
     mood: 'wildfire',
     events: [
-      'Robb, Stannis, Renly, Joffrey and Balon all claim a crown. The realm tears itself into fifths.',
+      'Robb, Stannis, Renly, Joffrey and Balon all claim a crown. The realm tears into fifths.',
       'A shadow with Stannis\'s face murders Renly in his own tent.',
-      'Arya, hiding in plain sight at Harrenhal, serves Tywin Lannister his supper every night.',
-      'Theon takes Winterfell to prove he is Greyjoy and burns two farm boys to keep the lie.',
-      'Tyrion, acting Hand, holds King\'s Landing with wildfire and a chain across the Blackwater.',
-      'Beyond the Wall, the dead are stirring. The season ends on a wight army marching, ten thousand strong.'
+      'Arya, hiding in plain sight at Harrenhal, serves Tywin his supper every night.',
+      'Theon takes Winterfell to prove he is a Greyjoy, and burns two farm boys to keep the lie.',
+      'Tyrion holds King\'s Landing with wildfire and a chain across the Blackwater.'
     ],
     hero: 'Tyrion Lannister', close: '"Those are brave men knocking at our door. Let\'s go kill them."'
   },
@@ -237,12 +235,11 @@ const SEASONS = [
     tag: 'The season television did not recover from.',
     mood: 'blood',
     events: [
-      'Jaime Lannister loses his sword hand and, with it, the only thing he ever knew how to be.',
-      'Daenerys buys the Unsullied with a dragon, then says one word — dracarys — and takes Astapor for free.',
-      'Jon Snow goes over the Wall with the Free Folk and falls in love with Ygritte, who knows nothing about him.',
-      'Robb marries for love and breaks a promise to Walder Frey. The Freys are a patient people.',
-      'At the Twins, the band strikes up a Lannister drinking song. The doors close. Catelyn sees it a heartbeat before anyone else.',
-      'Grey Worm, the Unsullied, and forty thousand freed slaves lift Daenerys above their heads: mhysa.'
+      'Jaime loses his sword hand, and with it the only thing he ever knew how to be.',
+      'Daenerys buys the Unsullied with a dragon, says dracarys, and takes Astapor for free.',
+      'Jon goes over the Wall with the Free Folk and falls for Ygritte, who knows nothing.',
+      'Robb marries for love and breaks a promise to Walder Frey. The Freys are patient.',
+      'At the Twins the band strikes up a Lannister song. Catelyn hears it first.'
     ],
     hero: 'Robb Stark', close: 'The Red Wedding. Episode nine. It is always episode nine.'
   },
@@ -251,12 +248,11 @@ const SEASONS = [
     tag: 'Justice, trial by combat, and the sound a skull makes.',
     mood: 'lannister',
     events: [
-      'Joffrey chokes to death purple-faced at his own wedding feast. Nobody in the Seven Kingdoms mourns him honestly.',
-      'Tyrion is framed for it and demands a trial by combat, having no champion and no friends left.',
-      'Oberyn Martell volunteers — he has waited seventeen years to make the Mountain say a name aloud.',
+      'Joffrey chokes to death purple-faced at his own wedding feast.',
+      'Tyrion is framed for it and demands a trial by combat, with no champion and no friends.',
+      'Oberyn volunteers — seventeen years of waiting to make the Mountain say a name aloud.',
       'At the Wall, a hundred brothers hold Castle Black against Mance Rayder\'s hundred thousand.',
-      'Brienne and the Hound fight over Arya on a hilltop, and Arya walks away from both of them.',
-      'Tyrion finds his father on the privy and a crossbow on the wall. "You are no son of mine." He is, though.'
+      'Tyrion finds his father on the privy and a crossbow on the wall. "You are no son of mine."'
     ],
     hero: 'Tyrion Lannister', close: 'Arya buys passage to Braavos with an iron coin. Valar morghulis.'
   },
@@ -266,10 +262,9 @@ const SEASONS = [
     mood: 'ice',
     events: [
       'Daenerys rules Meereen and learns that taking a city is the easy half.',
-      'Jon sails to Hardhome to evacuate the Free Folk — and the dead arrive first.',
-      'The Night King walks unhurried through the surf, raises his arms, and every corpse on the beach sits up.',
+      'Jon sails to Hardhome to evacuate the Free Folk. The dead arrive first.',
+      'The Night King raises his arms, and every corpse on the beach sits up.',
       'Stannis burns his own daughter alive for a favourable wind. He gets snow instead.',
-      'Cersei walks naked from the Great Sept to the Red Keep while the city screams shame at her.',
       'Jon\'s own brothers put their knives in him, one after another. "For the Watch."'
     ],
     hero: 'Jon Snow', close: 'Longclaw falls in the snow. The blood on it is black in the torchlight.'
@@ -280,11 +275,10 @@ const SEASONS = [
     mood: 'green',
     events: [
       'Melisandre, out of faith and out of ideas, brings Jon Snow back anyway.',
-      'Bran greensees too greedily, and a stableboy named Wylis is broken across time so a door can be held.',
-      'Arya finishes her training in Braavos, refuses the Faceless Men, and takes back her name.',
-      'Jon and Ramsay meet on an open field. Jon nearly suffocates under his own men before the Vale rides in.',
-      'Cersei loses her trial and answers it with a cellar full of wildfire under the Great Sept.',
-      'At the Tower of Joy, Bran hears Lyanna whisper a name — and Jon Snow stops being a bastard.'
+      'Bran greensees too greedily, and a stableboy is broken across time so a door can be held.',
+      'Jon nearly suffocates under his own men at Winterfell before the Vale rides in.',
+      'Cersei answers her trial with a cellar full of wildfire under the Great Sept.',
+      'At the Tower of Joy, Bran hears Lyanna whisper a name — and Jon stops being a bastard.'
     ],
     hero: 'Sansa Stark', close: 'Daenerys sails west with a fleet, three dragons, and every ally she ever made.'
   },
@@ -294,11 +288,10 @@ const SEASONS = [
     mood: 'fire',
     events: [
       'Daenerys takes Dragonstone — the castle she was born under, empty and waiting.',
-      'On the Roseroad, Drogon comes over the hill low and screaming and the Lannister loot train stops existing.',
-      'Seven men walk beyond the Wall to catch a corpse and prove a point to a woman who does not care.',
+      'On the Roseroad, Drogon comes over the hill low and screaming. The loot train stops existing.',
+      'Seven men walk beyond the Wall to catch a corpse and prove a point.',
       'The Night King throws an ice spear. Viserion falls out of the sky into a frozen lake.',
-      'Every enemy in the world meets in the Dragonpit and looks at a wight in a box.',
-      'Viserion, blue-eyed now, breathes and the Wall comes down at Eastwatch after eight thousand years.'
+      'Viserion, blue-eyed now, breathes, and the Wall comes down after eight thousand years.'
     ],
     hero: 'Daenerys Targaryen', close: 'The army of the dead walks into the North, unhurried, in perfect silence.'
   },
@@ -308,11 +301,10 @@ const SEASONS = [
     mood: 'night',
     events: [
       'The living gather at Winterfell — Stark, Targaryen, Lannister, Free Folk, Unsullied, Dothraki.',
-      'The Long Night: 55 nights of filming, one hour of darkness, and the Dothraki charge that goes out like candles.',
-      'The Night King reaches the godswood, reaches for Bran — and Arya drops out of the dark with a catspaw dagger.',
-      'The Bells: King\'s Landing surrenders, the bells ring, and Daenerys burns the city anyway.',
-      'Jon kills the woman he loves in the throne room. Drogon melts the Iron Throne into slag and carries her away.',
-      'Bran the Broken is chosen king by a council of lords. Sansa takes the North. Arya sails west of Westeros.'
+      'The Long Night: one hour of darkness, and the Dothraki charge that goes out like candles.',
+      'The Night King reaches for Bran, and Arya drops out of the dark with a catspaw dagger.',
+      'King\'s Landing surrenders, the bells ring, and Daenerys burns the city anyway.',
+      'Jon kills the woman he loves. Drogon melts the throne to slag and carries her away.'
     ],
     hero: 'Arya Stark', close: 'Jon rides north through the gate with the Free Folk. The last shot is green.'
   }

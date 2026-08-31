@@ -621,7 +621,9 @@ p:last-child { margin-bottom: 0; }
 .rail-outer::after  { right: 0; background: linear-gradient(270deg, var(--ink), transparent); }
 
 .rail {
-  display: flex; align-items: flex-start; gap: 1.6rem;
+  /* stretch, so eight cards with different amounts to say still read as one
+     even row rather than a ragged one */
+  display: flex; align-items: stretch; gap: 1.6rem;
   padding: 0 max(2rem, calc((100vw - var(--wrap)) / 2));
   will-change: transform;
 }
