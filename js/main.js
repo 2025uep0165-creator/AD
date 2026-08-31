@@ -495,6 +495,7 @@ watchAll('.reveal');
 /* ══════════════════════════════ 10 · CANVASES ═════════════════════════════ */
 
 const embers  = reduced ? null : EmberField($('#heroEmbers'), { count: 46 });
+const gateEmb = reduced ? null : EmberField($('#gateEmbers'), { count: 54 });
 const endEmb  = reduced ? null : EmberField($('#endEmbers'), { count: 80 });
 const snow    = reduced ? null : SnowField($('#snowFx'), { count: 240 });
 
@@ -637,6 +638,9 @@ function frame(now) {
   updateThrone(dt);
   updateRail(dt);
 
+  /* the gate is a shot too, so it gets its own embers until it is dismissed */
+  if (gateEmb && !entered) gateEmb.step(dt, 1);
+
   /* hero: embers over the plate, and the plate lifts away as you leave */
   if (isVis('#hero')) {
     const hp = clamp(scrollY / Math.max(window.innerHeight, 1), 0, 1);
@@ -687,7 +691,7 @@ requestAnimationFrame(frame);
 
 window.addEventListener('resize', () => {
   measureRail();
-  [embers, endEmb, snow, cursor].forEach(o => o && o.resize && o.resize());
+  [embers, gateEmb, endEmb, snow, cursor].forEach(o => o && o.resize && o.resize());
   Object.keys(BACKDROPS).forEach(k => BACKDROPS[k].resize());
   momentFx.forEach(m => m.fx.resize());
 }, { passive: true });

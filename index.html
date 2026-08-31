@@ -15,23 +15,45 @@
 
 <!-- ══════════════════════════════ THE GATE ══════════════════════════════ -->
 <div id="gate">
+  <!-- The Wall, because the page is a gate and that is the gate everyone
+       remembers. Graded most of the way to black so the gilding carries. -->
+  <div class="gate-plate" aria-hidden="true"><img src="assets/img/thewall.jpg" alt=""></div>
+  <canvas id="gateEmbers" aria-hidden="true"></canvas>
+  <div class="gate-grade" aria-hidden="true"></div>
+
   <div class="gate-inner">
-    <div class="gate-sigil" aria-hidden="true">
-      <div class="sig-slot sig-gate" data-sigil="targaryen"></div>
-    </div>
-    <p class="gate-kicker">HBO · 2011 — 2019 · 73 episodes</p>
-    <h1 class="gate-title">Winter Is Coming</h1>
+    <p class="gate-kicker">HBO&nbsp;&nbsp;·&nbsp;&nbsp;2011&nbsp;—&nbsp;2019&nbsp;&nbsp;·&nbsp;&nbsp;73 episodes</p>
+    <h1 class="megatitle gate-mark">
+      <span class="mt-word">Game</span>
+      <span class="mt-of">of</span>
+      <span class="mt-word">Thrones</span>
+    </h1>
+    <div class="gate-rule"><i></i><b></b><i></i></div>
     <p class="gate-sub">A scroll through the Seven Kingdoms — the houses,
        eight seasons, and every moment that made the world stop talking.</p>
-    <button id="enterBtn" class="gate-btn">
-      <span class="gate-btn-l"></span>
-      <span>Enter with sound</span>
-      <span class="gate-btn-r"></span>
-    </button>
-    <button id="enterSilent" class="gate-quiet">enter silently</button>
+    <div class="gate-acts">
+      <button id="enterBtn" class="gate-btn">
+        <span class="gate-btn-l"></span>
+        <span>Enter with sound</span>
+        <span class="gate-btn-r"></span>
+      </button>
+      <button id="enterSilent" class="gate-quiet">enter silently</button>
+    </div>
     <p class="gate-note">Best with sound, in the dark.</p>
   </div>
-  <div class="gate-vignette"></div>
+
+  <!-- the nine, banked along the foot of the gate like shields on a wall -->
+  <div class="gate-houses" aria-hidden="true">
+    <div class="sig-slot" data-sigil="stark"></div>
+    <div class="sig-slot" data-sigil="lannister"></div>
+    <div class="sig-slot" data-sigil="targaryen"></div>
+    <div class="sig-slot" data-sigil="baratheon"></div>
+    <div class="sig-slot" data-sigil="greyjoy"></div>
+    <div class="sig-slot" data-sigil="tyrell"></div>
+    <div class="sig-slot" data-sigil="martell"></div>
+    <div class="sig-slot" data-sigil="arryn"></div>
+    <div class="sig-slot" data-sigil="tully"></div>
+  </div>
 </div>
 
 <!-- ═══════════════════════════════ CHROME ══════════════════════════════ -->
