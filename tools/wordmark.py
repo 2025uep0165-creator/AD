@@ -24,10 +24,14 @@ OUT = ROOT / "assets/img/wordmark.svg"
 WEIGHT = 600           # the mark is cut a little heavier than body caps
 UPEM = 1000
 CAP = 700              # cap height in font units — the mark's measure
-TRACK = 62             # letter-spacing between the big capitals
-SMALL = 0.52           # the OF, as a share of the capitals
-SMALL_TRACK = 40
-WORD_GAP = 168         # around the OF
+# The face in the mark is a condensed Trajan: across all three references the
+# whole line runs about ten cap-heights wide. Cinzel set plain runs to nearly
+# thirteen, so the glyphs are drawn narrow to bring the proportion back.
+XSCALE = 0.82
+TRACK = 30             # letter-spacing between the big capitals
+SMALL = 0.50           # the OF, as a share of the capitals
+SMALL_TRACK = 26
+WORD_GAP = 118         # around the OF
 
 
 def glyph_paths(text, font, glyphset, cmap, scale, x, y, track):
@@ -40,15 +44,15 @@ def glyph_paths(text, font, glyphset, cmap, scale, x, y, track):
         d = pen.getCommands()
         if d:
             out.append(f'<path d="{d}" transform="translate({x:.1f} {y:.1f})'
-                       f' scale({scale:.5f} {-scale:.5f})"/>')
-        x += glyphset[name].width * scale
+                       f' scale({scale * XSCALE:.5f} {-scale:.5f})"/>')
+        x += glyphset[name].width * scale * XSCALE
         if i < len(text) - 1:
             x += track * scale
     return out, x
 
 
 def run_width(text, glyphset, cmap, scale, track):
-    w = sum(glyphset[cmap[ord(c)]].width for c in text) * scale
+    w = sum(glyphset[cmap[ord(c)]].width for c in text) * scale * XSCALE
     return w + track * scale * (len(text) - 1)
 
 
@@ -70,11 +74,11 @@ def main():
     text_w = w_game + WORD_GAP + of + WORD_GAP + w_thrones
 
     # furniture: a rule along the top, and a rectangle framing the left end
-    pad_x, rule_h, rule_gap = 74, 26, 96
+    pad_x, rule_h, rule_gap = 60, 22, 46
     frame_w = w_game * 0.44
-    box_top, stroke = 0, 24
+    box_top, stroke = 0, 20
     baseline = box_top + rule_h + rule_gap + CAP
-    box_h = baseline + CAP * 0.30
+    box_h = baseline + CAP * 0.20
     total_w = pad_x * 2 + text_w
     total_h = box_h
 
@@ -86,8 +90,8 @@ def main():
         f'<path d="M0 {box_top} H{frame_w + pad_x} V{stroke} H{stroke} '
         f'V{box_h - stroke} H{frame_w + pad_x} V{box_h} H0 Z"/>')
     parts.append(
-        f'<rect x="{frame_w + pad_x + 46:.1f}" y="{box_top + 34}" '
-        f'width="{total_w - frame_w - pad_x - 46:.1f}" height="{rule_h}"/>')
+        f'<rect x="{frame_w + pad_x + 40:.1f}" y="{box_top + 26}" '
+        f'width="{total_w - frame_w - pad_x - 40:.1f}" height="{rule_h}"/>')
 
     x = x0
     paths, x = glyph_paths("GAME", font, glyphset, cmap, s, x, baseline, TRACK)
@@ -127,12 +131,12 @@ def main():
      aria-label="Game of Thrones">
   <defs>
     <linearGradient id="wmGold" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%"   stop-color="#fffaef"/>
-      <stop offset="22%"  stop-color="#ffeec2"/>
-      <stop offset="48%"  stop-color="#f5cb70"/>
-      <stop offset="72%"  stop-color="#dc9a2b"/>
-      <stop offset="88%"  stop-color="#c8791a"/>
-      <stop offset="100%" stop-color="#f2cf86"/>
+      <stop offset="0%"   stop-color="#f6ecd8"/>
+      <stop offset="14%"  stop-color="#fffdf7"/>
+      <stop offset="46%"  stop-color="#ffffff"/>
+      <stop offset="72%"  stop-color="#fcf4e2"/>
+      <stop offset="90%"  stop-color="#f0e0c0"/>
+      <stop offset="100%" stop-color="#e8d3ac"/>
     </linearGradient>
   </defs>
   <g fill="url(#wmGold)">
