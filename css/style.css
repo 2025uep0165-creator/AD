@@ -328,38 +328,37 @@ p:last-child { margin-bottom: 0; }
 .megatitle {
   font-family: var(--deco);
   font-weight: 700;
-  font-size: clamp(1.3rem, 6.1vw, 5.8rem);
-  line-height: 1;
-  letter-spacing: .05em;
+  font-size: clamp(2.6rem, 9.6vw, 8.4rem);
+  line-height: .92;
+  letter-spacing: .06em;
   text-transform: uppercase;
   margin: 0 0 1.5rem;
   color: #f4efe2;
-  display: flex; flex-wrap: wrap;
-  align-items: center; justify-content: center;
-  column-gap: .22em; row-gap: .1em;
+  display: flex; flex-direction: column; align-items: center;
+  text-shadow: 0 2px 0 rgba(0,0,0,.55), 0 14px 46px rgba(0,0,0,.75);
 }
-.megatitle .mt-word {
+.megatitle .mt-line {
+  display: block;
   background: linear-gradient(180deg,
-    #fffaea 0%, #f3e0ad 20%, #dcbb5c 44%, #a8801f 68%, #e5cd8b 88%, #fff6dd 100%);
+    #fbf3d8 0%, #e9cd82 24%, #cfa832 50%, #8a6716 76%, #dcc073 100%);
   -webkit-background-clip: text; background-clip: text;
   -webkit-text-fill-color: transparent;
-  -webkit-text-stroke: .5px rgba(48,28,6,.55);
-  opacity: 0; transform: translateY(22px);
+  filter: drop-shadow(0 2px 2px rgba(0,0,0,.9))
+          drop-shadow(0 12px 30px rgba(0,0,0,.8));
+  opacity: 0; transform: translateY(26px);
   animation: cutIn 1.5s var(--ease) forwards;
 }
-.megatitle .mt-word:first-of-type { animation-delay: .65s; }
-.megatitle .mt-word:last-of-type  { animation-delay: .8s; }
+.megatitle .mt-line:nth-of-type(1) { animation-delay: .65s; }
+.megatitle .mt-line:last-of-type   { animation-delay: .82s; }
 .megatitle .mt-of {
-  font-family: var(--title); font-weight: 600;
-  font-size: .3em; letter-spacing: .16em;
-  color: #e7d6a4;
-  -webkit-text-stroke: .4px rgba(48,28,6,.5);
-  align-self: center; margin-top: .12em;
+  font-family: var(--serif); font-style: italic; text-transform: lowercase;
+  font-size: .2em; letter-spacing: .06em; color: rgba(216,205,180,.62);
+  margin: .28em 0 .18em;
   opacity: 0; animation: fadeUp 1.2s var(--ease) 1.0s forwards;
 }
 @keyframes cutIn {
-  from { opacity: 0; transform: translateY(22px); letter-spacing: .16em; }
-  to   { opacity: 1; transform: none; letter-spacing: .05em; }
+  from { opacity: 0; transform: translateY(26px); letter-spacing: .18em; }
+  to   { opacity: 1; transform: none; letter-spacing: .06em; }
 }
 
 .hero-rule {
@@ -1219,7 +1218,6 @@ p:last-child { margin-bottom: 0; }
   .quote-wall { columns: 1; }
   .score-player { grid-template-columns: 1fr; text-align: center; justify-items: center; }
   #dots { display: none; }
-  .megatitle { column-gap: .16em; letter-spacing: .03em; }
   #throne { height: 340vh; }
   .cast-grid { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); }
 }
