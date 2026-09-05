@@ -2,7 +2,7 @@ import Artist from '@/components/Artist';
 import Contact from '@/components/Contact';
 import ContentTodo from '@/components/ContentTodo';
 import CoverUp from '@/components/CoverUp';
-import Devanagari from '@/components/Devanagari';
+import Lettering from '@/components/Lettering';
 import Faq from '@/components/Faq';
 import Footer from '@/components/Footer';
 import Gallery from '@/components/Gallery';
@@ -23,9 +23,8 @@ import { faq } from '@/lib/content';
 import { faqJsonLd, localBusinessJsonLd } from '@/lib/jsonld';
 
 /**
- * Section order is the brief's, with one deliberate change: the Devanagari
- * feature sits directly under the hero rather than lower down. It is the
- * strongest thing on the page for the people who actually book, and on a phone
+ * Section order is the brief's, with one deliberate change: the lettering
+ * feature sits directly under the hero rather than lower down. On a phone
  * whatever comes second is what decides whether there is a third.
  */
 export default function Page() {
@@ -49,7 +48,7 @@ export default function Page() {
 
       <main id="main">
         <Hero />
-        <Devanagari />
+        <Lettering />
         <Gallery />
         <Reels />
         <CoverUp />

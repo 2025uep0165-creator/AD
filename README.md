@@ -144,7 +144,7 @@ scripts/
   the full `motion` export. The full bundle carries layout projection and 3D
   this site never uses; the difference is most of the mobile JS budget.
 - **GSAP + ScrollTrigger are dynamically imported** and used for exactly one
-  thing — the shloka drawing on letter by letter. They are never fetched under
+  thing — the lettering feature drawing on letter by letter. They are never fetched under
   `prefers-reduced-motion`, and a 2s watchdog un-hides the text if the chunk
   never arrives, so a failed load can never leave the section blank.
 - **Lenis is off on touch.** It runs only on `pointer: fine`, with
@@ -252,6 +252,14 @@ had no portfolio photographs at all, its gallery was empty placeholder cards.
 **Note on the map:** it is tinted blue by CSS filter in
 `components/Contact.tsx`. That blue is the one colour on the site outside the
 bone / ink / saffron palette — it was an explicit request.
+
+**Still open — devotional content elsewhere on the page.** The inverted
+section's shloka was removed on request. The gallery, however, still carries a
+**Devotional** filter and five pieces (ॐ, त्रिशूल, हर हर महादेव, a shloka band,
+and the mandala), and the FAQ, pricing table, booking form and SEO keywords all
+still offer Devanagari/Sanskrit lettering as a service. Those describe work he
+actually does, so they were left alone rather than deleted on inference — say
+the word and they come out too.
 
 **Also confirm:** the site says **11:00 AM – 8:30 PM, daily**, matching Google.
 The old site said Mon–Sat 11–8. The site and the Google Business Profile must

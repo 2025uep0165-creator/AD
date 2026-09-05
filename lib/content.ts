@@ -186,26 +186,29 @@ export const hero = {
 } as const;
 
 /* -------------------------------------------------------------------------- */
-/*  3 · Devanagari feature (the inverted section)                              */
+/*  3 · Lettering feature (the inverted section)                              */
 /* -------------------------------------------------------------------------- */
 
-export const devanagari = {
-  eyebrow: 'Devotional & Sanskrit',
-  /** Drawn on stroke by stroke as you scroll. */
-  // पार्वतीपतये is ONE word. नमः governs the dative, and "lord of Parvati" is
-  // a compound whose dative singular is पार्वतीपतये. Split as पार्वती + पतये
-  // the two stop agreeing — पार्वती is left sitting in the nominative. It is
-  // very often written separated in popular usage (and was in the brief), but
-  // this section's whole claim is correct spacing, so it is set properly here.
-  lines: ['ॐ नमः पार्वतीपतये', 'हर हर महादेव'],
-  transliteration: 'Om Namah Parvatipataye · Har Har Mahadev',
+/**
+ * The one inverted section on the page. It used to carry a shloka; that was
+ * removed at the client's request — no devotional framing here.
+ *
+ * What replaced it is the thing he is actually best at: lettering. The display
+ * line is one of his real pieces, set enormous and drawn on letter by letter
+ * as you scroll, so the section demonstrates the craft instead of describing
+ * it. Swap `lines` for any other piece of his; the animation adapts.
+ */
+export const lettering = {
+  eyebrow: 'Lettering & Script',
+  lines: ['JUST ONE', 'LIFE.'],
+  caption: 'Inner forearm · 4 in · one sitting',
   lead: 'Most people bring me a word they have already been carrying for years.',
   body: [
     'A mother\u2019s name. A date nobody else needs explained. The one line they say under their breath when they are frightened. It was theirs a long time before it was ever ink.',
-    'So it goes on properly or it does not go on at all. Correct matras, correct spacing, set in a real Devanagari face, stencilled and read back to you letter by letter \u2014 because you did not come here for a shape. You came for the word.',
+    'So it goes on properly or it does not go on at all. The right letterform, the right weight, the right spacing for the place it is going \u2014 drawn out, printed, and read back to you before anything touches skin. You did not come here for a shape. You came for the word.',
   ],
-  cta: 'Ask about Sanskrit work',
-  waMessage: 'Hi Udhay, I want a Sanskrit / Devanagari tattoo. Can you help me with the wording?',
+  cta: 'Ask about lettering',
+  waMessage: 'Hi Udhay, I want lettering done. Can you help me with the wording?',
 } as const;
 
 /* -------------------------------------------------------------------------- */
@@ -570,7 +573,7 @@ export const contact = {
 
 export const nav = [
   { href: '#work', label: 'Work' },
-  { href: '#devotional', label: 'Devotional' },
+  { href: '#lettering', label: 'Lettering' },
   { href: '#pricing', label: 'Pricing' },
   { href: '#studio', label: 'Studio' },
   { href: '#book', label: 'Book' },
