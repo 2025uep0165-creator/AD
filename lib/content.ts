@@ -158,7 +158,14 @@ export const hero = {
   /** 6–8s, muted, playsInline, under 2MB. Falls back to poster on slow 4G. */
   video: {
     src: todo<string>('6–8s clip: machine on skin, or peeling a stencil. Under 2MB, no audio.'),
-    poster: media('needle', 'Close-up of Udhay outlining a fine-line tattoo', 'Poster frame from the hero clip, 1080×1350.'),
+    // Real photograph, taken from the existing site and re-cut. Until a hero
+    // clip exists this is what the hero shows.
+    poster: {
+      src: '/images/hand-mandala.jpg',
+      alt: 'A dotwork mandala tattooed across the back of a hand, freshly finished',
+      plate: 'needle' as PlateKey,
+      need: 'A 6–8s hero clip would replace this still.',
+    },
   },
 
   /**
@@ -187,9 +194,10 @@ export const devanagari = {
   /** Drawn on stroke by stroke as you scroll. */
   lines: ['ॐ नमः पार्वती पतये', 'हर हर महादेव'],
   transliteration: 'Om Namah Parvati Pataye · Har Har Mahadev',
+  lead: 'Most people bring me a word they have already been carrying for years.',
   body: [
-    'Devanagari is not decoration. A matra in the wrong place changes the word, and it changes it forever.',
-    'Every shloka is set in a proper Devanagari face, stencilled, and read back to you letter by letter before the needle touches skin.',
+    'A mother\u2019s name. A date nobody else needs explained. The one line they say under their breath when they are frightened. It was theirs a long time before it was ever ink.',
+    'So it goes on properly or it does not go on at all. Correct matras, correct spacing, set in a real Devanagari face, stencilled and read back to you letter by letter \u2014 because you did not come here for a shape. You came for the word.',
   ],
   cta: 'Ask about Sanskrit work',
   waMessage: 'Hi Udhay, I want a Sanskrit / Devanagari tattoo. Can you help me with the wording?',
@@ -234,6 +242,20 @@ export const work: Work[] = [
     size: '4 in',
     session: '45 min',
     image: media('script', 'Fine script lettering reading “Just One Life” on an inner forearm', 'Original of the “Just One Life” forearm script.'),
+  },
+  {
+    id: 'w00',
+    category: 'devotional',
+    title: 'Mandala',
+    placement: 'Back of hand',
+    size: '4 in',
+    session: '3 hr',
+    image: {
+      src: '/images/hand-mandala.jpg',
+      alt: 'A dotwork mandala tattooed across the back of a hand',
+      plate: 'om' as PlateKey,
+      need: '',
+    },
   },
   {
     id: 'w02',
@@ -476,7 +498,15 @@ export const artist = {
     'One true, specific detail for the bio — e.g. the first tattoo you ever did, ' +
       'or a piece you would not repeat, or why you stopped taking colour work.',
   ),
-  portrait: media('portrait', 'Udhay tattooing in the studio', 'A real photo of Udhay WORKING — hands, machine, focus. Not the posed outdoor portrait.'),
+  // The portrait from the existing site. The original brief asked for a photo
+  // of Udhay WORKING rather than this posed outdoor one — that request stands,
+  // and this is here because it is the only real portrait available today.
+  portrait: {
+    src: '/images/udhay.jpg',
+    alt: 'Udhay, the artist behind Secret Ink Tattoo',
+    plate: 'portrait' as PlateKey,
+    need: 'Still wanted: a photo of Udhay working — hands, machine, focus.',
+  },
   waMessage: 'Hi Udhay, I have an idea for a tattoo I want to talk through.',
 } as const;
 

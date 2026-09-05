@@ -20,6 +20,7 @@ import Crest from './Crest';
  */
 export default function Devanagari() {
   const root = useRef<HTMLDivElement>(null);
+  const shloka = useRef<HTMLDivElement>(null);
   const [armed, setArmed] = useState(false);
 
   const lines = useMemo(
@@ -43,7 +44,8 @@ export default function Devanagari() {
 
   useEffect(() => {
     const el = root.current;
-    if (!el || !armed) return;
+    const target = shloka.current;
+    if (!el || !target || !armed) return;
 
     let ctx: { revert: () => void } | undefined;
     let cancelled = false;
@@ -63,7 +65,20 @@ export default function Devanagari() {
             clipPath: 'inset(0% 0% 0% 0%)',
             ease: 'none',
             stagger: { amount: 0.75 },
-            scrollTrigger: { trigger: el, start: 'top 78%', end: 'bottom 62%', scrub: 0.6 },
+            // Measured against the shloka itself, not the whole section.
+            // The section is tall (crest, shloka, translit, two paragraphs,
+            // CTA), so ending on ITS bottom meant the last glyphs only inked
+            // in once the shloka had already scrolled off the top — you never
+            // got to read it whole. Ending on the shloka block's OWN bottom at
+            // 70% of the viewport means the last glyph inks in while the line
+            // is still in the upper third — fully readable well before it
+            // reaches the middle of the screen, which is what was asked for.
+            scrollTrigger: {
+              trigger: target,
+              start: 'top 92%',
+              end: 'bottom 70%',
+              scrub: 0.5,
+            },
           });
         }, el);
       })
@@ -89,7 +104,7 @@ export default function Devanagari() {
           <p className="u-mono text-brass">{devanagari.eyebrow}</p>
         </div>
 
-        <div className="mt-14 sm:mt-20">
+        <div ref={shloka} className="mt-14 sm:mt-20">
           {lines.map((clusters, li) => (
             <p key={li} className="u-deva text-[clamp(2rem,9.5vw,6.5rem)]">
               {/* Screen readers get the whole line as one string. */}
@@ -110,12 +125,17 @@ export default function Devanagari() {
         <p className="u-mono mt-8 text-bone/60">{devanagari.transliteration}</p>
 
         <div className="mt-16 grid gap-10 border-t border-white/15 pt-10 lg:grid-cols-[1fr_auto] lg:items-end lg:gap-20">
-          <div className="max-w-measure space-y-4">
-            {devanagari.body.map((p) => (
-              <p key={p} className="text-[1.0625rem] leading-relaxed text-bone/85">
-                {p}
-              </p>
-            ))}
+          <div className="max-w-measure">
+            <p className="u-display text-[clamp(1.5rem,4.5vw,2.25rem)] leading-tight text-bone">
+              {devanagari.lead}
+            </p>
+            <div className="mt-6 space-y-4">
+              {devanagari.body.map((p) => (
+                <p key={p} className="text-[1.0625rem] leading-relaxed text-bone/85">
+                  {p}
+                </p>
+              ))}
+            </div>
           </div>
 
           <a

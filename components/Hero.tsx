@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { hero, resolve, studio, waHref } from '@/lib/content';
+import Image from 'next/image';
 import { useSaveData } from '@/lib/useMediaQuery';
 import Plate from './Plate';
 
@@ -56,9 +57,28 @@ export default function Hero() {
             {/* scrim so the display type keeps its contrast over any frame */}
             <div className="absolute inset-0 bg-bone/70" />
           </>
+        ) : hero.video.poster.src ? (
+          <>
+            <Image
+              src={hero.video.poster.src}
+              alt=""
+              fill
+              sizes="100vw"
+              priority
+              className="object-cover object-[50%_22%] [filter:saturate(0.78)_contrast(1.05)]"
+            />
+            {/* The photo is allowed to read at the top, where there is no type.
+                A single gradient carries it down to solid bone behind the
+                headline, so the display type keeps its full contrast without
+                flattening the whole image to grey. */}
+            <div className="absolute inset-0 bg-bone/20" />
+            {/* Bone at the top too: the header wordmark and the strapline are
+                --ink, and without this they sat dark-on-dark over the photo.
+                The mandala still reads in the band between the two gradients. */}
+            <div className="absolute inset-x-0 top-0 h-[30%] bg-gradient-to-b from-bone via-bone/90 to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 h-[64%] bg-gradient-to-t from-bone via-bone/95 to-transparent" />
+          </>
         ) : (
-          /* Fills the upper right, so the height above the headline reads as
-             composition rather than as a gap. */
           <div className="absolute -right-[14%] top-[7%] aspect-[4/5] h-[52svh] text-ink opacity-[0.085] sm:-right-[2%] sm:h-[62svh] lg:right-[4%]">
             <Plate plate="needle" />
           </div>

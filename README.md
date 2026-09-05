@@ -230,17 +230,28 @@ modern Android Chrome never fetches it; GSAP and Lenis are deferred chunks).
 9. **Confirm the "600+ tattoos" figure**, or delete that row from `hero.proof`.
    It came from the brief and is the one number on the page nobody has verified.
 
-**Media (26 slots)**
+**Media**
+
+Three real assets were recovered from the old site and are now in use:
+`/public/images/hand-mandala.jpg` (hero backdrop + a gallery piece),
+`/public/images/udhay.jpg` (artist portrait) and `/public/images/crest.png`
+(the real gold crest). Everything below is still outstanding — the old site
+had no portfolio photographs at all, its gallery was empty placeholder cards.
 
 10. 15–20 originals of his best work, not Instagram-compressed, weighted to
     lettering and Devanagari
 11. A hero clip — 6–8s, muted, under 2MB
 12. 5–6 vertical 9:16 process clips for the reels row
 13. One before/after cover-up pair, shot at the same angle and distance
-14. A real photo of him **working** — hands, machine, focus. Not the posed
-    outdoor portrait from the old site
-15. The original gold crest file at `/public/crest.svg`
-    (`components/Crest.tsx` currently draws a stand-in)
+14. A real photo of him **working** — hands, machine, focus. The posed outdoor
+    portrait from the old site is in place for now, but the brief's original
+    objection to it still stands
+15. ~~The original gold crest~~ — **done.** Pulled from the old site and
+    installed at `/public/images/crest.png` (re-cut and quantised, 251KB → 30KB)
+
+**Note on the map:** it is tinted blue by CSS filter in
+`components/Contact.tsx`. That blue is the one colour on the site outside the
+bone / ink / saffron palette — it was an explicit request.
 
 **Also confirm:** the site says **11:00 AM – 8:30 PM, daily**, matching Google.
 The old site said Mon–Sat 11–8. The site and the Google Business Profile must
