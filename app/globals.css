@@ -1,0 +1,274 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================================================
+   PALETTE — single source of truth. Change a triplet here, it changes
+   everywhere: Tailwind classes, hand-written CSS, all of it.
+
+   Why channels and not hex: Tailwind's opacity modifiers (bg-ink/15,
+   text-bone/60, …) cannot inject an alpha into a var() that holds a hex —
+   it silently drops the whole utility. Given as "R G B" they compose into
+   rgb(… / <alpha>) and every modifier works. The hex beside each is the
+   same colour, for reading.
+
+   Contrast ratios verified against WCAG 2.1 AA (4.5:1 for text).
+   ========================================================================== */
+:root {
+  --bone-rgb: 239 234 225; /* #EFEAE1 — dominant page background */
+  --paper-rgb: 251 249 245; /* #FBF9F5 — raised surfaces */
+  --ink-rgb: 10 10 10; /* #0A0A0A — type and linework */
+
+  /* Spec called for #A85A16. Measured 4.23:1 on --bone, which fails AA.
+     Darkened to the nearest ochre that clears it: 4.69:1. */
+  --saffron-rgb: 160 83 15; /* #A0530F */
+
+  /* Accent for use ON --ink only. --saffron is 3.52:1 on ink and unusable
+     for text there; this is 7.42:1. */
+  --saffron-lift-rgb: 224 138 60; /* #E08A3C */
+
+  /* Spec called for #8A857C. Measured 3.06:1 on --bone — fine for a hairline,
+     unreadable as text. Text-safe secondary is 4.78:1. */
+  --smoke-rgb: 107 102 89; /* #6B6659 */
+  --smoke-soft-rgb: 138 133 124; /* #8A857C — decoration only, never text */
+
+  /* The existing gold crest. 8.18:1 on ink. Never sits on bone. */
+  --brass-rgb: 201 162 39; /* #C9A227 */
+
+  /* Ready-made colours for hand-written CSS. */
+  --bone: rgb(var(--bone-rgb));
+  --paper: rgb(var(--paper-rgb));
+  --ink: rgb(var(--ink-rgb));
+  --saffron: rgb(var(--saffron-rgb));
+  --saffron-lift: rgb(var(--saffron-lift-rgb));
+  --smoke: rgb(var(--smoke-rgb));
+  --smoke-soft: rgb(var(--smoke-soft-rgb));
+  --brass: rgb(var(--brass-rgb));
+
+  --rule: rgb(var(--ink-rgb) / 0.15);
+  --rule-invert: rgb(var(--bone-rgb) / 0.18);
+
+  --ease-ink: cubic-bezier(0.16, 1, 0.3, 1);
+
+  color-scheme: light;
+}
+
+/* ==========================================================================
+   BASE
+   ========================================================================== */
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    /* Lenis drives scroll; native smooth would fight it. */
+    scroll-behavior: auto;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--bone);
+    color: var(--ink);
+    font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* Visible, styled focus. Never remove the ring. */
+  :focus-visible {
+    outline: 2px solid var(--saffron);
+    outline-offset: 3px;
+    border-radius: 1px;
+  }
+
+  ::selection {
+    background: var(--ink);
+    color: var(--bone);
+  }
+
+  /* Dark section inverts the selection so it stays legible. */
+  .is-inverted ::selection {
+    background: var(--brass);
+    color: var(--ink);
+  }
+}
+
+/* ==========================================================================
+   TYPE PRIMITIVES
+   ========================================================================== */
+@layer components {
+  .u-display {
+    font-family: var(--font-display), Georgia, serif;
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 0.9;
+    /* Fraunces variable axes: heavy weight, large optical size, low softness. */
+    font-variation-settings: 'SOFT' 0, 'WONK' 0, 'opsz' 144;
+  }
+
+  .u-deva {
+    font-family: var(--font-deva), serif;
+    line-height: 1.55; /* Devanagari needs room above for matras. */
+    letter-spacing: 0;
+  }
+
+  .u-mono {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-size: 0.6875rem;
+    font-weight: 500;
+  }
+
+  .u-rule {
+    border-color: var(--rule);
+  }
+
+  /* Section rhythm is deliberately uneven — see lib/rhythm.ts */
+  .u-gutter {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+  @media (min-width: 768px) {
+    .u-gutter {
+      padding-left: 2.5rem;
+      padding-right: 2.5rem;
+    }
+  }
+  @media (min-width: 1280px) {
+    .u-gutter {
+      padding-left: 4rem;
+      padding-right: 4rem;
+    }
+  }
+}
+
+/* ==========================================================================
+   SCROLL REVEAL
+   Clip-path wipe, not fade-up. Driven by one IntersectionObserver in
+   lib/useReveal.ts — no per-element JS animation loop.
+   ========================================================================== */
+@layer utilities {
+  [data-reveal] {
+    --reveal-delay: 0ms;
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+    transition:
+      clip-path 800ms var(--ease-ink) var(--reveal-delay),
+      opacity 500ms var(--ease-ink) var(--reveal-delay),
+      transform 800ms var(--ease-ink) var(--reveal-delay);
+    transform: translate3d(0, 12px, 0);
+    will-change: clip-path, opacity;
+  }
+
+  [data-reveal='shown'] {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+    transform: none;
+    will-change: auto;
+  }
+
+  /* Horizontal wipe variant, used on rules and the pricing rows. */
+  [data-reveal-x] {
+    --reveal-delay: 0ms;
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path 700ms var(--ease-ink) var(--reveal-delay);
+  }
+  [data-reveal-x='shown'] {
+    clip-path: inset(0 0 0 0);
+  }
+
+  .u-hide-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .u-hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   REDUCED MOTION — everything off, nothing hidden.
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  [data-reveal],
+  [data-reveal-x] {
+    opacity: 1 !important;
+    clip-path: none !important;
+    transform: none !important;
+  }
+}
+
+/* ==========================================================================
+   LOAD TRANSITION — see components/LoadTransition.tsx
+   ========================================================================== */
+.si-draw {
+  stroke-dasharray: var(--len);
+  stroke-dashoffset: var(--len);
+  animation-name: si-draw;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  animation-fill-mode: forwards;
+}
+@keyframes si-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.si-dot {
+  opacity: 0;
+  animation: si-dot 140ms cubic-bezier(0.16, 1, 0.3, 1) 620ms forwards;
+}
+@keyframes si-dot {
+  to {
+    opacity: 1;
+  }
+}
+
+/* Hidden unless the pre-paint script in components/LoadTransition.tsx decides
+   this is a first visit without prefers-reduced-motion. */
+.si-intro {
+  display: none;
+}
+
+[data-intro] .si-intro {
+  display: block;
+  -webkit-mask-image: linear-gradient(to top, #000 58%, rgba(0, 0, 0, 0.6) 68%, transparent 78%);
+  mask-image: linear-gradient(to top, #000 58%, rgba(0, 0, 0, 0.6) 68%, transparent 78%);
+  -webkit-mask-size: 100% 190%;
+  mask-size: 100% 190%;
+  -webkit-mask-position: 0 100%;
+  mask-position: 0 100%;
+  animation: si-wipe 260ms var(--ease-ink) 660ms forwards;
+}
+@keyframes si-wipe {
+  to {
+    -webkit-mask-position: 0 -95%;
+    mask-position: 0 -95%;
+    transform: translate3d(0, -8%, 0);
+  }
+}
+
+/* ==========================================================================
+   DEVANAGARI SECTION — glyph wipe driven by GSAP ScrollTrigger.
+   The starting state is CSS so there is no flash of fully-drawn text before
+   GSAP loads. Reduced motion resets it below.
+   ========================================================================== */
+.dv-armed .dv-glyph {
+  /* Clip only — never a low opacity. A glyph is either fully clipped (zero
+     area, nothing to read) or fully inked. A half-faded duplicate of text
+     that already exists for screen readers is just a contrast failure. */
+  clip-path: inset(0 100% 0 0);
+}
