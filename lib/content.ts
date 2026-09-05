@@ -192,8 +192,13 @@ export const hero = {
 export const devanagari = {
   eyebrow: 'Devotional & Sanskrit',
   /** Drawn on stroke by stroke as you scroll. */
-  lines: ['ॐ नमः पार्वती पतये', 'हर हर महादेव'],
-  transliteration: 'Om Namah Parvati Pataye · Har Har Mahadev',
+  // पार्वतीपतये is ONE word. नमः governs the dative, and "lord of Parvati" is
+  // a compound whose dative singular is पार्वतीपतये. Split as पार्वती + पतये
+  // the two stop agreeing — पार्वती is left sitting in the nominative. It is
+  // very often written separated in popular usage (and was in the brief), but
+  // this section's whole claim is correct spacing, so it is set properly here.
+  lines: ['ॐ नमः पार्वतीपतये', 'हर हर महादेव'],
+  transliteration: 'Om Namah Parvatipataye · Har Har Mahadev',
   lead: 'Most people bring me a word they have already been carrying for years.',
   body: [
     'A mother\u2019s name. A date nobody else needs explained. The one line they say under their breath when they are frightened. It was theirs a long time before it was ever ink.',
