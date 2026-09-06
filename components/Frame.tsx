@@ -38,6 +38,9 @@ export default function Frame({
           fill
           sizes={sizes}
           priority={priority}
+          // A remote src is served pre-optimised, so skip our optimiser: it
+          // avoids a pointless second pass and the remotePatterns allowlist.
+          unoptimized={/^https?:\/\//.test(media.src)}
           // The normalisation pass. Adjust once here, applies to every photo.
           className="object-cover [filter:saturate(0.82)_contrast(1.03)]"
         />

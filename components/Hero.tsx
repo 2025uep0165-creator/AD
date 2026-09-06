@@ -65,6 +65,7 @@ export default function Hero() {
               fill
               sizes="100vw"
               priority
+              unoptimized={/^https?:\/\//.test(hero.video.poster.src!)}
               className="object-cover object-[50%_22%] [filter:saturate(0.78)_contrast(1.05)]"
             />
             {/* The photo is allowed to read at the top, where there is no type.

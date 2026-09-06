@@ -37,6 +37,20 @@ export function resolve<T>(f: Field<T>): T | undefined {
 /*  Studio                                                                    */
 /* -------------------------------------------------------------------------- */
 
+/**
+ * Where the photographs live.
+ *
+ * Local paths resolve to /public and go through next/image optimisation.
+ * An absolute URL is used as-is (see components/Frame.tsx) — that is the
+ * escape hatch for deploys that cannot carry binary files, where these point
+ * at the studio's own already-optimised images instead.
+ */
+export const images = {
+  hero: '/images/hand-mandala.jpg',
+  portrait: '/images/udhay.jpg',
+  crest: '/images/crest.png',
+} as const;
+
 export const studio = {
   name: 'Secret Ink Tattoo',
   artist: 'Udhay',
@@ -161,7 +175,7 @@ export const hero = {
     // Real photograph, taken from the existing site and re-cut. Until a hero
     // clip exists this is what the hero shows.
     poster: {
-      src: '/images/hand-mandala.jpg',
+      src: images.hero,
       alt: 'A dotwork mandala tattooed across the back of a hand, freshly finished',
       plate: 'needle' as PlateKey,
       need: 'A 6–8s hero clip would replace this still.',
@@ -259,7 +273,7 @@ export const work: Work[] = [
     size: '4 in',
     session: '3 hr',
     image: {
-      src: '/images/hand-mandala.jpg',
+      src: images.hero,
       alt: 'A dotwork mandala tattooed across the back of a hand',
       plate: 'om' as PlateKey,
       need: '',
@@ -510,7 +524,7 @@ export const artist = {
   // of Udhay WORKING rather than this posed outdoor one — that request stands,
   // and this is here because it is the only real portrait available today.
   portrait: {
-    src: '/images/udhay.jpg',
+    src: images.portrait,
     alt: 'Udhay, the artist behind Secret Ink Tattoo',
     plate: 'portrait' as PlateKey,
     need: 'Still wanted: a photo of Udhay working — hands, machine, focus.',

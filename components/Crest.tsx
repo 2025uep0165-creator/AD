@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { images } from '@/lib/content';
 
 /**
  * The real gold crest — the owl, the two machines, the banner. Taken from the
@@ -14,12 +15,13 @@ import Image from 'next/image';
 export default function Crest({ className = '', title }: { className?: string; title?: string }) {
   return (
     <Image
-      src="/images/crest.png"
+      src={images.crest}
       alt={title ?? ''}
       width={335}
       height={384}
       className={`w-auto ${className}`}
       aria-hidden={title ? undefined : true}
+      unoptimized={/^https?:\/\//.test(images.crest)}
       priority={false}
     />
   );
