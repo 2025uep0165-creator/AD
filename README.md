@@ -270,6 +270,39 @@ local ranking as well as confusing people standing outside a closed shop.
 
 ## Deploy
 
-Push to a Vercel project; the defaults are correct (`next build`, no env vars,
-no backend). Set the real domain in `seo.siteUrl` in `lib/content.ts` before
-launch — the canonical URL, sitemap, robots and OG URLs all derive from it.
+Live at **https://secret-ink-tattoo-jammu.vercel.app**
+
+The normal way is to connect this repository to a Vercel project and let it
+build on push. The defaults are correct: `next build`, no env vars, no
+backend.
+
+### The canonical URL
+
+`seo.siteUrl` in `lib/content.ts` reads, in order: `NEXT_PUBLIC_SITE_URL`, then
+the domain Vercel is serving, then `https://secretinktattoo.in`. So nothing
+needs editing when the real domain is attached — point the DNS at Vercel and
+the canonical, sitemap, robots and OG URLs follow. The `.in` fallback only
+applies to builds outside Vercel.
+
+### How the current deployment was made, and why it is odd
+
+Vercel could not read this repository from GitHub on the account being used
+(`create_git_project` returns `repo_no_access`), so it was deployed through
+Vercel's file-tree API instead, which takes source text only — no images, no
+logo, no OG card, and 130KB of TypeScript that would have had to be copied by
+hand with no way to prove none of it was mangled.
+
+Instead the deployment contains three files — `package.json`, `.npmrc` and
+`scripts/fetch-source.mjs` — and its build command is:
+
+    SOURCE_REF=<commit sha> node scripts/fetch-source.mjs && next build
+
+That unpacks this repository at a pinned commit from its public tarball, so
+what is live is byte-identical to the commit it names. Pinned to a SHA rather
+than a branch, a rebuild cannot pick up code nobody reviewed.
+
+**This is a bridge, not the destination.** Connect the repository to Vercel
+when you can: then delete the build-command override, and `scripts/fetch-source.mjs`
+with it. Note that the deployment stops rebuilding if this repository is ever
+made private or that commit disappears — the site already built stays up, but
+it could not be rebuilt from scratch.
