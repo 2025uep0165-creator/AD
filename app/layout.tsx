@@ -30,11 +30,20 @@ const mono = JetBrains_Mono({
   weight: ['400', '500'],
 });
 
+/**
+ * Devanagari appears in three gallery titles and the placeholder plates —
+ * nothing above the fold. Preloading it put two ~118KB files on the critical
+ * path against Fraunces, which is what actually paints the hero headline, and
+ * on a 400kbps link that is two seconds of contention for glyphs nobody has
+ * scrolled to yet. No preload means it is fetched when something needs it.
+ * Latin is dropped for the same reason: Latin titles render in Fraunces.
+ */
 const deva = Tiro_Devanagari_Sanskrit({
-  subsets: ['devanagari', 'latin'],
+  subsets: ['devanagari'],
   display: 'swap',
   variable: '--font-deva',
   weight: ['400'],
+  preload: false,
 });
 
 export const metadata: Metadata = {

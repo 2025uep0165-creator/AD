@@ -473,7 +473,9 @@ export const pricing = {
 /*  8 · Process                                                               */
 /* -------------------------------------------------------------------------- */
 
-export const process = {
+/** Named howItWorks, not process: a module-scope `process` shadows Node's
+ *  global for the whole file, which silently breaks any process.env read. */
+export const howItWorks = {
   eyebrow: 'How it works',
   steps: [
     { n: '01', title: 'Consult', body: 'Message me on WhatsApp with your idea, where you want it and roughly how big. I will tell you if it will work at that size, and what it costs. Free.' },
@@ -598,7 +600,21 @@ export const nav = [
 /* -------------------------------------------------------------------------- */
 
 export const seo = {
-  siteUrl: 'https://secretinktattoo.in',
+  /**
+   * The domain Udhay intends to use. It is not registered yet, so until it
+   * points here, fall back to whatever domain Vercel is actually serving —
+   * otherwise canonical, sitemap, OG and JSON-LD all name a host that does
+   * not resolve, and a live site that disowns its own URL gets dropped from
+   * search. Vercel sets this to the custom domain once one is attached, so
+   * nothing has to change here when the .in goes live.
+   *
+   * Read at build time on the server only; no client component imports it.
+   */
+  siteUrl:
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    (process.env.VERCEL_PROJECT_PRODUCTION_URL
+      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+      : 'https://secretinktattoo.in'),
   title: 'Secret Ink Tattoo — Tattoo Studio in Janipur, Jammu',
   description:
     'Small tattoos with permanent meaning. Script, Devanagari and Sanskrit lettering, fine line, couple tattoos, cover-ups and piercing in Janipur Colony, Jammu. From ₹699. Book on WhatsApp.',

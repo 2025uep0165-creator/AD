@@ -65,19 +65,49 @@ for (const device of ['Pixel 7', 'Desktop Chrome']) {
   const p = await ctx.newPage();
   await p.goto(URL, { waitUntil: 'networkidle' });
 
+  /**
+   * scrollIntoViewIfNeeded does nothing when any part of the target is already
+   * on screen, so on a section taller than the viewport — #work runs about ten
+   * screens — it leaves the page wherever the previous check left it. Twice now
+   * that has meant clicking a gallery item that was still 4000px above the
+   * viewport and unrevealed, which fails as a pointer-interception timeout and
+   * reads like a product bug. Put the element's top at the top of the viewport
+   * instead, so each check starts from a known position rather than an
+   * inherited one.
+   */
+  const scrollTo = async (sel) => {
+    await p.evaluate((s) => {
+      const el = document.querySelector(s);
+      if (el) window.scrollTo(0, window.scrollY + el.getBoundingClientRect().top);
+    }, sel);
+    await p.waitForTimeout(150);
+  };
+
+  /** Waits out a gallery item's clip-path wipe, so the click lands on the
+   *  button and not on the part of it still clipped away. */
+  const revealed = () =>
+    p.waitForFunction(
+      () => {
+        const li = document.querySelector('#work ul > li');
+        return !!li && getComputedStyle(li).opacity === '1';
+      },
+      null,
+      { timeout: 5000 },
+    );
+
   const bar = p.locator('div.fixed.inset-x-0.bottom-0').first();
   const hero = await p.locator('#hero a[href*="wa.me"]').first().getAttribute('href');
   check('hero CTA targets the studio WhatsApp', /wa\.me\/919682516002\?text=./.test(hero));
 
   check('sticky bar hidden over the hero', await bar.evaluate((e) => e.classList.contains('translate-y-full')));
-  await p.locator('#work').scrollIntoViewIfNeeded();
+  await scrollTo('#work');
   await p.waitForTimeout(700);
   check('sticky bar appears past the hero', await bar.evaluate((e) => e.classList.contains('translate-y-0')));
-  await p.locator('#book').scrollIntoViewIfNeeded();
+  await scrollTo('#book');
   await p.waitForTimeout(700);
   check('sticky bar hides over the booking form', await bar.evaluate((e) => e.classList.contains('translate-y-full')));
 
-  await p.locator('#work').scrollIntoViewIfNeeded();
+  await scrollTo('#work');
   await p.waitForTimeout(400);
   const all = await p.locator('#work ul > li').count();
   await p.getByRole('button', { name: 'Devotional', exact: true }).click();
@@ -86,6 +116,7 @@ for (const device of ['Pixel 7', 'Desktop Chrome']) {
   check('gallery filters narrow the list', some > 0 && some < all, `${all} → ${some}`);
   await p.getByRole('button', { name: 'All', exact: true }).click();
   await p.waitForTimeout(400);
+  await revealed();
 
   await p.locator('#work ul > li button').first().click();
   await p.waitForTimeout(500);
@@ -112,7 +143,7 @@ for (const device of ['Pixel 7', 'Desktop Chrome']) {
     (await p.locator(`#${await q.getAttribute('aria-controls')}`).getAttribute('role')) === 'region',
   );
 
-  await p.locator('#book').scrollIntoViewIfNeeded();
+  await scrollTo('#book');
   await p.fill('#name', 'Test Person');
   await p.fill('#phone', '+919999999999');
   await p.fill('#placement', 'Forearm');
@@ -161,7 +192,7 @@ for (const device of ['Pixel 7', 'Desktop Chrome']) {
     gsap: !!window.gsap,
   }));
   check('reduced motion: intro overlay never plays', r.intro === false);
-  check('reduced motion: shloka is fully inked', r.glyphClip === 'none');
+  check('reduced motion: lettering is fully inked', r.glyphClip === 'none');
   check('reduced motion: GSAP is never loaded', r.gsap === false);
   check('reduced motion: nothing stays hidden', r.stillHidden === 0);
   await ctx.close();

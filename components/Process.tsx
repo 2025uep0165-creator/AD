@@ -1,4 +1,4 @@
-import { process } from '@/lib/content';
+import { howItWorks } from '@/lib/content';
 import { stagger } from '@/lib/stagger';
 
 /** Section 8 — process. Big mono numerals, no icons. */
@@ -6,10 +6,10 @@ export default function Process() {
   return (
     <section className="border-y border-ink/15 bg-paper py-20 sm:py-24">
       <div className="u-gutter">
-        <p className="u-mono text-saffron">{process.eyebrow}</p>
+        <p className="u-mono text-saffron">{howItWorks.eyebrow}</p>
 
         <ol className="mt-12 grid gap-px bg-ink/15 sm:grid-cols-2 lg:grid-cols-4">
-          {process.steps.map((s, i) => (
+          {howItWorks.steps.map((s, i) => (
             <li
               key={s.n}
               data-reveal=""
