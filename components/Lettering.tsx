@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { lettering, waHref } from '@/lib/content';
 import Crest from './Crest';
+import Frame from './Frame';
 
 /**
  * Section 3 — the inverted section. The only flip on the page.
@@ -122,7 +123,7 @@ export default function Lettering() {
 
         <p className="u-mono mt-8 text-bone/60">{lettering.caption}</p>
 
-        <div className="mt-16 grid gap-10 border-t border-white/15 pt-10 lg:grid-cols-[1fr_auto] lg:items-end lg:gap-20">
+        <div className="mt-16 grid gap-10 border-t border-white/15 pt-10 lg:grid-cols-[1fr_21rem] lg:gap-20">
           <div className="max-w-measure">
             <p className="u-display text-[clamp(1.5rem,4.5vw,2.25rem)] leading-tight text-bone">
               {lettering.lead}
@@ -134,16 +135,23 @@ export default function Lettering() {
                 </p>
               ))}
             </div>
+
+            <a
+              href={waHref(lettering.waMessage)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="u-mono mt-9 inline-flex min-h-[56px] items-center justify-center border border-brass px-8 text-brass transition-colors duration-300 ease-ink hover:bg-brass hover:text-ink"
+            >
+              {lettering.cta}
+            </a>
           </div>
 
-          <a
-            href={waHref(lettering.waMessage)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="u-mono inline-flex min-h-[56px] shrink-0 items-center justify-center border border-brass px-8 text-brass transition-colors duration-300 ease-ink hover:bg-brass hover:text-ink"
-          >
-            {lettering.cta}
-          </a>
+          {/* The piece the headline is quoting. Frame's inverted variant swaps
+              the bone mat for a hairline that survives on --ink. */}
+          <figure className="m-0">
+            <Frame media={lettering.image} sizes="(min-width: 1024px) 21rem, 100vw" inverted />
+            <figcaption className="u-mono mt-3 text-bone/60">{lettering.imageCaption}</figcaption>
+          </figure>
         </div>
       </div>
     </section>

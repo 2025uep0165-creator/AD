@@ -16,7 +16,7 @@ export default function Artist() {
     <section id="studio" className="py-20 sm:py-28">
       <div className="u-gutter grid gap-10 lg:grid-cols-[minmax(0,26rem)_1fr] lg:gap-20">
         <div data-reveal="" className="lg:sticky lg:top-24 lg:self-start">
-          <Frame media={artist.portrait} label="Udhay" sizes="(min-width: 1024px) 26rem, 100vw" />
+          <Frame media={artist.portrait} sizes="(min-width: 1024px) 26rem, 100vw" />
         </div>
 
         <div>

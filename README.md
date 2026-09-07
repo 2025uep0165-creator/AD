@@ -51,24 +51,25 @@ Run `npm run dev` and a **Content TODO** panel in the bottom-left lists
 everything still outstanding, read directly out of `content.ts`. It is stripped
 from production builds.
 
-### Photographs and video
+### Photographs
 
-Every media slot has the same shape:
-
-```ts
-{ src: null, alt: '…', plate: 'om', need: 'Original of the nape Om.' }
-```
-
-While `src` is `null` the site draws a **plate** — fine ink linework on bone, in
-the real 4:5 crop (`components/Plate.tsx`). The layout is never broken and
-never implies a photograph exists. To swap in a real photo, drop the file in
-`/public` and set `src`:
+Every image on the site is a photograph of Udhay's own work, pulled from the
+studio's existing site. A media slot is just:
 
 ```ts
-{ src: '/work/nape-om.jpg', alt: '…', plate: 'om', need: '…' }
+{ src: '/images/work/medusa.jpg', alt: '…' }
 ```
 
-Nothing else changes — matting, crop, desaturation and lazy-loading are handled
+There is no placeholder artwork any more. An earlier version drew ink line
+motifs into empty slots so the layout never broke; next to a real tattoo they
+read as clip-art and made the page look unfinished, so they are gone along with
+`components/Plate.tsx`. A slot with no photograph is now a slot that does not
+ship — which is why the gallery is ten pieces rather than a padded seventeen,
+and why the cover-up section shows one real piece instead of a staged
+before/after.
+
+To swap a photo, drop the file in `/public/images/work/` and point
+`workPhotos` in `lib/content.ts` at it. Nothing else changes — matting, crop, desaturation and lazy-loading are handled
 by `components/Frame.tsx`, which normalises every photo the same way (fixed 4:5,
 `saturate(0.82) contrast(1.03)`, identical bone mat and hairline). That
 consistency is what makes a phone camera roll read as a gallery wall. Adjust the
@@ -126,7 +127,7 @@ app/
   globals.css           palette, type primitives, reveal, reduced motion
   opengraph-image.png   the WhatsApp share card
   robots.ts sitemap.ts
-components/             one file per section, plus Plate / Frame / Crest
+components/             one file per section, plus Frame / Crest
 lib/
   content.ts            ALL copy and media
   jsonld.ts             LocalBusiness + TattooParlor + FAQPage
@@ -234,15 +235,26 @@ modern Android Chrome never fetches it; GSAP and Lenis are deferred chunks).
 
 Three real assets were recovered from the old site and are now in use:
 `/public/images/hand-mandala.jpg` (hero backdrop + a gallery piece),
-`/public/images/udhay.jpg` (artist portrait) and `/public/images/crest.png`
-(the real gold crest). Everything below is still outstanding — the old site
-had no portfolio photographs at all, its gallery was empty placeholder cards.
+`/public/images/udhay.jpg` (artist portrait), `/public/images/crest.png` (the
+real gold crest) and the ten pieces in `/public/images/work/`.
 
-10. 15–20 originals of his best work, not Instagram-compressed, weighted to
-    lettering and Devanagari
+Those ten are every photograph the old site published — `front.JPG`,
+`front1`, `front4`–`front11` under `/images/gallery/udhay/`. Instagram cannot
+be read without logging in, so they are also every photograph obtainable
+without Udhay's help.
+
+10. More originals. Ten is a thin portfolio and six of the ten are illustrative
+    blackwork, so Lettering, Fine Line and Couple each rest on one or two
+    pieces. Twenty would let the filters carry their own weight
 11. A hero clip — 6–8s, muted, under 2MB
-12. 5–6 vertical 9:16 process clips for the reels row
-13. One before/after cover-up pair, shot at the same angle and distance
+12. Vertical 9:16 process clips. The reels row was removed for now: with no
+    MP4s, every card was a poster with nothing behind it, showing a photograph
+    the visitor had scrolled past a moment earlier
+13. One before/after cover-up pair, shot at the same angle and distance. Until
+    it exists the section shows a real piece at cover-up density, captioned as
+    exactly that — staging a before/after out of two unrelated photographs
+    would be inventing a result, which is the one thing a tattoo site must not
+    do
 14. A real photo of him **working** — hands, machine, focus. The posed outdoor
     portrait from the old site is in place for now, but the brief's original
     objection to it still stands

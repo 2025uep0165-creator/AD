@@ -1,6 +1,5 @@
 import Image from 'next/image';
 import type { Media } from '@/lib/content';
-import Plate from './Plate';
 
 /**
  * Uniform matting for every piece of work.
@@ -12,14 +11,12 @@ import Plate from './Plate';
  */
 export default function Frame({
   media,
-  label,
   sizes = '100vw',
   priority = false,
   className = '',
   inverted = false,
 }: {
   media: Media;
-  label?: string;
   sizes?: string;
   priority?: boolean;
   className?: string;
@@ -31,24 +28,18 @@ export default function Frame({
         inverted ? 'border-white/15 bg-white/[0.03]' : 'border-ink/15 bg-paper'
       } ${className}`}
     >
-      {media.src ? (
-        <Image
-          src={media.src}
-          alt={media.alt}
-          fill
-          sizes={sizes}
-          priority={priority}
-          // A remote src is served pre-optimised, so skip our optimiser: it
-          // avoids a pointless second pass and the remotePatterns allowlist.
-          unoptimized={/^https?:\/\//.test(media.src)}
-          // The normalisation pass. Adjust once here, applies to every photo.
-          className="object-cover [filter:saturate(0.82)_contrast(1.03)]"
-        />
-      ) : (
-        <div className="absolute inset-0 grid place-items-center p-[6%]">
-          <Plate plate={media.plate} label={label} />
-        </div>
-      )}
+      <Image
+        src={media.src}
+        alt={media.alt}
+        fill
+        sizes={sizes}
+        priority={priority}
+        // A remote src is served pre-optimised, so skip our optimiser: it
+        // avoids a pointless second pass and the remotePatterns allowlist.
+        unoptimized={/^https?:\/\//.test(media.src)}
+        // The normalisation pass. Adjust once here, applies to every photo.
+        className="object-cover [filter:saturate(0.82)_contrast(1.03)]"
+      />
     </div>
   );
 }

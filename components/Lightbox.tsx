@@ -146,7 +146,7 @@ export default function Lightbox({
                   transition: drag.active ? 'none' : 'transform 400ms cubic-bezier(0.16,1,0.3,1)',
                 }}
               >
-                <Frame media={item.image} label={item.title} sizes="(min-width: 640px) 30rem, 92vw" inverted />
+                <Frame media={item.image} sizes="(min-width: 640px) 30rem, 92vw" inverted />
               </div>
             </div>
 

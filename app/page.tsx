@@ -14,7 +14,7 @@ import LoadTransition from '@/components/LoadTransition';
 import Motion from '@/components/Motion';
 import Pricing from '@/components/Pricing';
 import Process from '@/components/Process';
-import Reels from '@/components/Reels';
+import Instagram from '@/components/Instagram';
 import Reveal from '@/components/Reveal';
 import Reviews from '@/components/Reviews';
 import SmoothScroll from '@/components/SmoothScroll';
@@ -50,7 +50,7 @@ export default function Page() {
         <Hero />
         <Lettering />
         <Gallery />
-        <Reels />
+        <Instagram />
         <CoverUp />
         <Pricing />
         <Process />

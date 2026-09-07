@@ -51,6 +51,24 @@ export const images = {
   crest: '/images/crest.png',
 } as const;
 
+/**
+ * Udhay's work, as photographed on the studio's existing site. `mandala` is
+ * deliberately the same file as the hero — it is his signature piece, and one
+ * copy serves both rather than shipping the same photograph twice.
+ */
+export const workPhotos = {
+  chakras: '/images/work/chakras.jpg',
+  mandala: images.hero,
+  roseClock: '/images/work/rose-clock.jpg',
+  medusa: '/images/work/medusa.jpg',
+  spider: '/images/work/spider.jpg',
+  anubis: '/images/work/anubis.jpg',
+  mementoMori: '/images/work/memento-mori.jpg',
+  peace: '/images/work/peace.jpg',
+  maaBhole: '/images/work/maa-bhole.jpg',
+  cobra: '/images/work/cobra.jpg',
+} as const;
+
 export const studio = {
   name: 'Secret Ink Tattoo',
   artist: 'Udhay',
@@ -116,46 +134,22 @@ export const waHref = (text: string) =>
 export const telHref = `tel:${studio.phoneE164}`;
 
 /* -------------------------------------------------------------------------- */
-/*  Media placeholders                                                        */
+/*  Photographs                                                               */
 /* -------------------------------------------------------------------------- */
 
 /**
- * Every media slot works the same way. While `src` is null the component draws
- * a plate — fine ink linework on bone, in the real 4:5 crop — so the layout is
- * never broken and never pretends a photograph exists. Drop a file in /public
- * and set `src`; nothing else changes.
+ * Every image on this site is a photograph of Udhay's own work, taken from the
+ * studio's existing site. There is no placeholder artwork left: an earlier
+ * version drew line motifs into empty slots, which read as clip-art next to a
+ * real tattoo and made the page look unfinished. A slot with no photograph is
+ * now a slot that does not ship.
  */
 export type Media = {
-  src: string | null;
+  src: string;
   alt: string;
-  /** Which line motif to draw while src is null. See components/Plate.tsx */
-  plate: PlateKey;
-  /** What to send Udhay for. Shown in the dev TODO panel. */
-  need: string;
 };
 
-export type PlateKey =
-  | 'om'
-  | 'trishul'
-  | 'shloka'
-  | 'script'
-  | 'heartbeat'
-  | 'bird'
-  | 'hourglass'
-  | 'sun'
-  | 'deer'
-  | 'floral'
-  | 'couple'
-  | 'coverup'
-  | 'needle'
-  | 'portrait';
-
-const media = (plate: PlateKey, alt: string, need: string): Media => ({
-  src: null,
-  alt,
-  plate,
-  need,
-});
+const photo = (src: string, alt: string): Media => ({ src, alt });
 
 /* -------------------------------------------------------------------------- */
 /*  1 · Hero                                                                  */
@@ -174,12 +168,10 @@ export const hero = {
     src: todo<string>('6–8s clip: machine on skin, or peeling a stencil. Under 2MB, no audio.'),
     // Real photograph, taken from the existing site and re-cut. Until a hero
     // clip exists this is what the hero shows.
-    poster: {
-      src: images.hero,
-      alt: 'A dotwork mandala tattooed across the back of a hand, freshly finished',
-      plate: 'needle' as PlateKey,
-      need: 'A 6–8s hero clip would replace this still.',
-    },
+    poster: photo(
+      images.hero,
+      'A geometric mandala tattooed across the back of a hand, freshly finished',
+    ),
   },
 
   /**
@@ -214,8 +206,14 @@ export const hero = {
  */
 export const lettering = {
   eyebrow: 'Lettering & Script',
-  lines: ['JUST ONE', 'LIFE.'],
-  caption: 'Inner forearm · 4 in · one sitting',
+  // A real piece of his, not an invented one: the memento mori forearm.
+  lines: ['MEMENTO', 'MORI'],
+  caption: 'Forearm · 8 in · four hours',
+  image: photo(
+    workPhotos.mementoMori,
+    'The finished memento mori forearm piece: lettering over reaching hands, an hourglass and a dagger, threaded with red',
+  ),
+  imageCaption: 'The piece, finished',
   lead: 'Most people bring me a word they have already been carrying for years.',
   body: [
     'A mother\u2019s name. A date nobody else needs explained. The one line they say under their breath when they are frightened. It was theirs a long time before it was ever ink.',
@@ -230,20 +228,36 @@ export const lettering = {
 /* -------------------------------------------------------------------------- */
 
 /** Only what he actually does. No Realism, no Traditional, no Colour. */
+/**
+ * Filters describe the work that actually exists. The brief asked for
+ * Lettering / Devotional / Fine Line / Couple / Cover-ups, but of the eleven
+ * photographs the studio has published, six are illustrative blackwork —
+ * Medusa, Anubis, a black widow, a rose and clock, a cobra, a hand mandala —
+ * and none is a cover-up. A filter that returns nothing is a broken filter, so
+ * Cover-ups comes out (it stays a service in pricing and the FAQ) and
+ * Illustrative goes in. Restore either the moment the photographs exist.
+ */
 export const filters = [
   { id: 'all', label: 'All' },
   { id: 'lettering', label: 'Lettering & Script' },
   { id: 'devotional', label: 'Devotional' },
   { id: 'fineline', label: 'Fine Line' },
+  { id: 'illustrative', label: 'Illustrative' },
   { id: 'couple', label: 'Couple' },
-  { id: 'coverup', label: 'Cover-ups' },
 ] as const;
 
 export type FilterId = (typeof filters)[number]['id'];
+export type Category = Exclude<FilterId, 'all'>;
 
 export type Work = {
   id: string;
-  category: Exclude<FilterId, 'all'>;
+  /**
+   * A piece can sit in more than one bucket, because real tattoos do: the
+   * matching मां / भोले pair is a couple piece, Devanagari lettering and
+   * devotional all at once. With a portfolio this size, forcing one label each
+   * would leave three filters holding a single piece.
+   */
+  categories: readonly Category[];
   title: string;
   placement: string;
   size: string;
@@ -252,190 +266,137 @@ export type Work = {
 };
 
 /**
- * 15–20 originals needed, weighted to lettering and Devanagari.
- * Shot straight on, not through cling film, daylight if possible.
+ * Every piece here is Udhay's, photographed by the studio. Placement and size
+ * are read off the photograph; session lengths are estimates from the size and
+ * density of the work and should be corrected by him before launch.
  */
 export const work: Work[] = [
   {
     id: 'w01',
-    category: 'lettering',
-    title: '“Just One Life”',
-    placement: 'Inner forearm',
-    size: '4 in',
-    session: '45 min',
-    image: media('script', 'Fine script lettering reading “Just One Life” on an inner forearm', 'Original of the “Just One Life” forearm script.'),
+    categories: ['devotional'],
+    title: 'Seven chakras, trishul',
+    placement: 'Forearm',
+    size: '9 in',
+    session: '3 hr',
+    image: photo(
+      workPhotos.chakras,
+      'A trishul framing seven chakra symbols tattooed down the inside of a forearm, the topmost carrying an Om',
+    ),
   },
   {
-    id: 'w00',
-    category: 'devotional',
+    id: 'w02',
+    categories: ['illustrative'],
     title: 'Mandala',
     placement: 'Back of hand',
     size: '4 in',
     session: '3 hr',
-    image: {
-      src: images.hero,
-      alt: 'A dotwork mandala tattooed across the back of a hand',
-      plate: 'om' as PlateKey,
-      need: '',
-    },
-  },
-  {
-    id: 'w02',
-    category: 'devotional',
-    title: 'ॐ',
-    placement: 'Back of neck',
-    size: '1.5 in',
-    session: '30 min',
-    image: media('om', 'A small Om symbol tattooed at the back of the neck', 'Original of the nape Om.'),
+    image: photo(
+      workPhotos.mandala,
+      'A geometric floral mandala in solid black covering the back of a hand',
+    ),
   },
   {
     id: 'w03',
-    category: 'lettering',
-    title: 'Name with heartbeat',
-    placement: 'Wrist',
-    size: '3 in',
+    categories: ['lettering', 'fineline'],
+    title: 'PEACE',
+    placement: 'Inner forearm',
+    size: '2 in',
     session: '40 min',
-    image: media('heartbeat', 'A name in script joined to a heartbeat line, tattooed on a wrist', 'Original of a name-and-heartbeat wrist piece.'),
+    image: photo(
+      workPhotos.peace,
+      'The word PEACE in block letters under a fine-line mountain range, sun and two birds, on an inner forearm',
+    ),
   },
   {
     id: 'w04',
-    category: 'devotional',
-    title: 'त्रिशूल',
-    placement: 'Forearm',
-    size: '5 in',
+    categories: ['couple', 'lettering', 'devotional'],
+    title: 'मां · भोले',
+    placement: 'Wrists, matching pair',
+    size: '2.5 in each',
     session: '1 hr',
-    image: media('trishul', 'A trishul tattooed along the forearm', 'Original of the forearm trishul.'),
+    image: photo(
+      workPhotos.maaBhole,
+      'Two wrists side by side: मां with an infinity loop on one, and a trishul-and-Devanagari glyph with a red flame on the other',
+    ),
   },
   {
     id: 'w05',
-    category: 'fineline',
-    title: 'Birds in flight',
-    placement: 'Collarbone',
-    size: '2.5 in',
-    session: '35 min',
-    image: media('bird', 'Three small fine-line birds in flight across a collarbone', 'Original of the collarbone birds.'),
+    categories: ['fineline', 'lettering'],
+    title: 'Memento mori',
+    placement: 'Forearm',
+    size: '8 in',
+    session: '4 hr',
+    image: photo(
+      workPhotos.mementoMori,
+      'A forearm piece reading MEMENTO MORI over reaching hands, an hourglass and a dagger, threaded with red linework',
+    ),
   },
   {
     id: 'w06',
-    category: 'devotional',
-    title: 'हर हर महादेव',
-    placement: 'Upper back',
-    size: '7 in',
-    session: '2 hr',
-    image: media('shloka', 'Har Har Mahadev in Devanagari lettering across an upper back', 'Original of the Har Har Mahadev back piece.'),
+    categories: ['illustrative'],
+    title: 'Medusa',
+    placement: 'Forearm',
+    size: '8 in',
+    session: '4 hr',
+    image: photo(
+      workPhotos.medusa,
+      'Medusa in black linework down a forearm, snakes coiling out of her hair',
+    ),
   },
   {
     id: 'w07',
-    category: 'fineline',
-    title: 'Hourglass',
-    placement: 'Inner arm',
-    size: '3 in',
-    session: '1 hr',
-    image: media('hourglass', 'A fine-line hourglass tattooed on an inner arm', 'Original of the hourglass.'),
+    categories: ['illustrative'],
+    title: 'Anubis',
+    placement: 'Forearm',
+    size: '7 in',
+    session: '4 hr',
+    image: photo(
+      workPhotos.anubis,
+      'Anubis in black and grey down a forearm, headdress and collar picked out in fine line',
+    ),
   },
   {
     id: 'w08',
-    category: 'couple',
-    title: 'Matching initials',
-    placement: 'Ring finger, both hands',
-    size: '0.5 in each',
-    session: '30 min for the pair',
-    image: media('couple', 'Matching initials tattooed on the ring fingers of a couple', 'Original of a matching couple piece.'),
+    categories: ['illustrative'],
+    title: 'Rose and clock',
+    placement: 'Back of hand',
+    size: '4 in',
+    session: '2 hr 30 min',
+    image: photo(
+      workPhotos.roseClock,
+      'A black and grey rose over a Roman-numeral pocket watch on the back of a hand',
+    ),
   },
   {
     id: 'w09',
-    category: 'lettering',
-    title: '“Believe”',
-    placement: 'Side wrist',
-    size: '2.5 in',
-    session: '30 min',
-    image: media('script', 'The word Believe in fine script on a side wrist', 'Original of the “Believe” wrist script.'),
+    categories: ['illustrative'],
+    title: 'Black widow',
+    placement: 'Upper arm',
+    size: '5 in',
+    session: '2 hr',
+    image: photo(
+      workPhotos.spider,
+      'A black widow spider on its web across an upper arm, the body shaded in black and grey with white highlights',
+    ),
   },
   {
     id: 'w10',
-    category: 'fineline',
-    title: 'Rising sun',
-    placement: 'Shoulder',
-    size: '3 in',
-    session: '50 min',
-    image: media('sun', 'A fine-line rising sun tattooed on a shoulder', 'Original of the sun.'),
-  },
-  {
-    id: 'w11',
-    category: 'coverup',
-    title: 'Old name, covered',
-    placement: 'Forearm',
-    size: '6 in',
-    session: '2.5 hr',
-    image: media('coverup', 'A dense blackwork design covering an older name tattoo on a forearm', 'Original of a finished cover-up.'),
-  },
-  {
-    id: 'w12',
-    category: 'lettering',
-    title: '“Patience”',
-    placement: 'Forearm',
-    size: '4 in',
-    session: '45 min',
-    image: media('script', 'The word Patience in fine script along a forearm', 'Original of the “Patience” piece.'),
-  },
-  {
-    id: 'w13',
-    category: 'fineline',
-    title: 'Deer',
-    placement: 'Calf',
-    size: '4 in',
-    session: '1 hr 15 min',
-    image: media('deer', 'A fine-line deer tattooed on a calf', 'Original of the deer.'),
-  },
-  {
-    id: 'w14',
-    category: 'devotional',
-    title: 'Shloka band',
-    placement: 'Forearm band',
-    size: '8 in',
-    session: '2 hr 30 min',
-    image: media('shloka', 'A Sanskrit shloka tattooed as a band around a forearm', 'Original of the shloka band.'),
-  },
-  {
-    id: 'w15',
-    category: 'fineline',
-    title: 'Small florals',
-    placement: 'Ankle',
-    size: '2 in',
-    session: '35 min',
-    image: media('floral', 'A small fine-line floral sprig tattooed on an ankle', 'Original of the ankle florals.'),
-  },
-  {
-    id: 'w16',
-    category: 'couple',
-    title: 'Date, matching',
-    placement: 'Inner forearm, both',
-    size: '2 in each',
-    session: '40 min for the pair',
-    image: media('couple', 'A matching date tattooed in fine numerals on two inner forearms', 'Original of a matching date pair.'),
+    categories: ['illustrative'],
+    title: 'Cobra',
+    placement: 'Hand to wrist',
+    size: '7 in',
+    session: '3 hr 30 min',
+    image: photo(
+      workPhotos.cobra,
+      'A cobra winding from the back of a hand up over the wrist, scales shaded black with a deep red belly',
+    ),
   },
 ];
 
 /* -------------------------------------------------------------------------- */
-/*  5 · Reels                                                                 */
+/*  5 · Instagram — see components/Instagram.tsx                              */
 /* -------------------------------------------------------------------------- */
 
-export type Reel = {
-  id: string;
-  caption: string;
-  poster: Media;
-  src: Field<string>;
-};
-
-/** Self-hosted MP4s. Never IG embeds — they are slow and they break. */
-export const reels: Reel[] = [
-  { id: 'r1', caption: 'Stencil, checked twice', poster: media('script', 'Stencil being placed on a forearm', 'Vertical 9:16 clip, 5–8s, muted.'), src: todo('Reel 1 MP4 — stencil placement.') },
-  { id: 'r2', caption: 'Outlining a shloka', poster: media('shloka', 'Outlining Devanagari lettering', 'Vertical 9:16 clip, 5–8s, muted.'), src: todo('Reel 2 MP4 — Devanagari outline.') },
-  { id: 'r3', caption: 'Fine line, single pass', poster: media('bird', 'A fine line being pulled in one pass', 'Vertical 9:16 clip, 5–8s, muted.'), src: todo('Reel 3 MP4 — fine line.') },
-  { id: 'r4', caption: 'Cover-up, hour three', poster: media('coverup', 'A cover-up in progress', 'Vertical 9:16 clip, 5–8s, muted.'), src: todo('Reel 4 MP4 — cover-up progress.') },
-  { id: 'r5', caption: 'Fresh, wrapped', poster: media('heartbeat', 'A finished tattoo being wrapped', 'Vertical 9:16 clip, 5–8s, muted.'), src: todo('Reel 5 MP4 — wrapping.') },
-  { id: 'r6', caption: 'Piercing, sterile field', poster: media('needle', 'A sterile piercing setup', 'Vertical 9:16 clip, 5–8s, muted.'), src: todo('Reel 6 MP4 — piercing setup.') },
-];
 
 /* -------------------------------------------------------------------------- */
 /*  6 · Cover-up before / after                                               */
@@ -445,8 +406,20 @@ export const coverUp = {
   eyebrow: 'Cover-ups',
   heading: 'The one you regret is not permanent.',
   body: 'Most cover-ups are possible. Darker, bigger and bolder than the original — that is the trade. Send a clear photo in daylight and I will tell you honestly whether it will work, and what it will take.',
-  before: media('script', 'A faded older name tattoo on a forearm before the cover-up', 'The BEFORE photo of one cover-up. Same angle, same distance as the after.'),
-  after: media('coverup', 'The same forearm after a bold blackwork cover-up', 'The AFTER photo of the same cover-up. Same angle, same distance.'),
+  /**
+   * There is no before/after here, and that is deliberate. The studio has not
+   * published a matched pair, and staging one out of two unrelated photographs
+   * would be inventing a result — the one thing a tattoo site must never do.
+   * Shown instead is the density a cover-up actually needs, captioned as what
+   * it is. Swap in a real pair, same angle and distance, and the slider that
+   * was here can come back.
+   */
+  image: photo(
+    workPhotos.anubis,
+    'A dense black and grey Anubis covering a forearm — the kind of coverage an old tattoo needs',
+  ),
+  imageCaption: 'Blackwork at cover-up density. Not a cover-up.',
+  need: 'A matched BEFORE and AFTER of one real cover-up — same angle, same distance, daylight.',
   waMessage: 'Hi Udhay, I want to cover an old tattoo. Sending a photo now.',
 } as const;
 
@@ -528,7 +501,6 @@ export const artist = {
   portrait: {
     src: images.portrait,
     alt: 'Udhay, the artist behind Secret Ink Tattoo',
-    plate: 'portrait' as PlateKey,
     need: 'Still wanted: a photo of Udhay working — hands, machine, focus.',
   },
   waMessage: 'Hi Udhay, I have an idea for a tattoo I want to talk through.',
@@ -627,6 +599,4 @@ export const seo = {
     'small tattoo Jammu',
     'piercing Jammu',
   ],
-  /** OG image is the Devanagari piece — this is what renders in a WhatsApp share. */
-  ogImageNeed: 'Best Devanagari piece, 1200×630 safe crop, for the WhatsApp/OG share card.',
 } as const;

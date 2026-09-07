@@ -12,13 +12,15 @@ function isPending(v: unknown): v is { pending: true; ask: string } {
   return typeof v === 'object' && v !== null && (v as { pending?: unknown }).pending === true;
 }
 
-function isMedia(v: unknown): v is C.Media {
+/**
+ * Media no longer has a pending state — every image slot now ships a real
+ * photograph — so what is worth tracking is the handful that are stand-ins.
+ * Any object carrying a `need` string is one of those, and unlike a pending
+ * field it is still rendered, which is exactly why it needs chasing.
+ */
+function hasPhotoAsk(v: unknown): v is { need: string } {
   return (
-    typeof v === 'object' &&
-    v !== null &&
-    'plate' in (v as object) &&
-    'need' in (v as object) &&
-    'src' in (v as object)
+    typeof v === 'object' && v !== null && typeof (v as { need?: unknown }).need === 'string'
   );
 }
 
@@ -35,10 +37,7 @@ export function collectTodos(): Todo[] {
       out.push({ path, ask: node.ask, kind: 'fact' });
       return;
     }
-    if (isMedia(node)) {
-      if (node.src === null) out.push({ path, ask: node.need, kind: 'media' });
-      return;
-    }
+    if (hasPhotoAsk(node)) out.push({ path, ask: node.need, kind: 'media' });
     if (Array.isArray(node)) {
       node.forEach((v, i) => walk(v, `${path}[${i}]`));
       return;
@@ -52,12 +51,6 @@ export function collectTodos(): Todo[] {
   }
 
   // Assets that have no slot in content.ts because they are file-system paths.
-  out.push({ path: 'public/og.jpg', ask: C.seo.ogImageNeed, kind: 'media' });
-  out.push({
-    path: 'public/crest.svg',
-    ask: 'The original gold crest file, so components/Crest.tsx can stop drawing a stand-in.',
-    kind: 'media',
-  });
   out.push({
     path: 'hero.proof',
     ask: 'Confirm the "600+ tattoos" figure, or delete that row from hero.proof.',

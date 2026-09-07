@@ -23,7 +23,7 @@ export default function Gallery() {
   const [open, setOpen] = useState<number | null>(null);
 
   const items = useMemo(
-    () => (active === 'all' ? work : work.filter((w) => w.category === active)),
+    () => (active === 'all' ? work : work.filter((w) => w.categories.includes(active))),
     [active],
   );
 
@@ -87,7 +87,6 @@ export default function Gallery() {
               <div className="px-5 lg:px-0">
                 <Frame
                   media={item.image}
-                  label={item.title}
                   sizes="(min-width: 1024px) 44vw, 100vw"
                 />
               </div>
