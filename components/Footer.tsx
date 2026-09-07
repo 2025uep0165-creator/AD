@@ -13,7 +13,7 @@ export default function Footer() {
       <div className="u-gutter">
         <div className="flex flex-col gap-10 border-b border-white/15 pb-12 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex items-start gap-5">
-            <Crest className="h-16 w-16 shrink-0" sizes="96px" title={`${studio.name} crest`} />
+            <Crest className="h-16 w-16 shrink-0" title={`${studio.name} crest`} />
             <div>
               <p className="u-display text-2xl leading-tight">{studio.name}</p>
               <p className="u-mono mt-2 text-bone/60">

@@ -101,7 +101,7 @@ export default function Lettering() {
     >
       <div ref={root} className={`u-gutter ${armed ? 'dv-armed' : ''}`}>
         <div className="flex items-center gap-4">
-          <Crest className="h-11 shrink-0" sizes="96px" />
+          <Crest className="h-11 shrink-0" />
           <p className="u-mono text-brass">{lettering.eyebrow}</p>
         </div>
 
