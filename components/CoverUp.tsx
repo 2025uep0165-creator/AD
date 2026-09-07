@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { coverUp, waHref } from '@/lib/content';
 import Frame from './Frame';
 
@@ -17,7 +17,7 @@ import Frame from './Frame';
 export default function CoverUp() {
   const [pos, setPos] = useState(52);
   const box = useRef<HTMLDivElement>(null);
-  const dragging = useRef(false);
+  const stopDrag = useRef<(() => void) | null>(null);
 
   const setFromClientX = useCallback((clientX: number) => {
     const el = box.current;
@@ -25,6 +25,37 @@ export default function CoverUp() {
     const r = el.getBoundingClientRect();
     setPos(Math.min(100, Math.max(0, ((clientX - r.left) / r.width) * 100)));
   }, []);
+
+  /**
+   * The drag listens on the window, not on the element.
+   *
+   * This used to use setPointerCapture. The browser fired lostpointercapture
+   * partway through a drag and the wipe simply froze — measured stopping at
+   * 40% while the pointer went on to 80% — so the one interaction this section
+   * exists for did not work. Window listeners cannot be lost that way, and
+   * they also let the drag continue past the edges of the image, which is what
+   * anyone dragging a handle expects.
+   */
+  const beginDrag = useCallback(
+    (e: React.PointerEvent) => {
+      setFromClientX(e.clientX);
+      const move = (ev: PointerEvent) => setFromClientX(ev.clientX);
+      const end = () => {
+        window.removeEventListener('pointermove', move);
+        window.removeEventListener('pointerup', end);
+        window.removeEventListener('pointercancel', end);
+        stopDrag.current = null;
+      };
+      window.addEventListener('pointermove', move);
+      window.addEventListener('pointerup', end);
+      window.addEventListener('pointercancel', end);
+      stopDrag.current = end;
+    },
+    [setFromClientX],
+  );
+
+  // Unmounting mid-drag would otherwise leave the window listeners behind.
+  useEffect(() => () => stopDrag.current?.(), []);
 
   const onKey = (e: React.KeyboardEvent) => {
     const step = e.shiftKey ? 10 : 4;
@@ -71,17 +102,12 @@ export default function CoverUp() {
             aria-valuenow={Math.round(pos)}
             aria-valuetext={`${Math.round(pos)}% of the way from ${coverUp.leftLabel} to ${coverUp.rightLabel}`}
             onKeyDown={onKey}
-            onPointerDown={(e) => {
-              dragging.current = true;
-              e.currentTarget.setPointerCapture(e.pointerId);
-              setFromClientX(e.clientX);
-            }}
-            onPointerMove={(e) => dragging.current && setFromClientX(e.clientX)}
-            onPointerUp={(e) => {
-              dragging.current = false;
-              e.currentTarget.releasePointerCapture(e.pointerId);
-            }}
-            onPointerCancel={() => (dragging.current = false)}
+            onPointerDown={beginDrag}
+            // Without this the browser starts its own image drag on the first
+            // move — dragstart, then pointercancel, and every later pointer
+            // event goes to native drag-and-drop instead of here. That is what
+            // made the wipe stop dead partway across.
+            onDragStart={(e) => e.preventDefault()}
             className="relative w-full cursor-ew-resize touch-pan-y select-none"
           >
             <Frame media={coverUp.right} sizes="(min-width: 1024px) 46vw, 100vw" />

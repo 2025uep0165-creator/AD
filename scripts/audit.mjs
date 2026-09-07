@@ -132,6 +132,36 @@ for (const device of ['Pixel 7', 'Desktop Chrome']) {
   check('Escape closes the lightbox', (await p.locator('[role="dialog"][aria-modal="true"]:not(#menu-panel)').count()) === 0);
   check('scroll lock released on close', await p.evaluate(() => document.body.style.overflow !== 'hidden'));
 
+  // The cover-up wipe. Dragging over an image starts the browser's own
+  // drag-and-drop, which fires pointercancel and silently kills every later
+  // pointer event — the handle followed the first move and then froze. Nothing
+  // here caught that, so: drag it properly and assert it actually follows.
+  const wipe = p.locator('[role="slider"]');
+  await wipe.scrollIntoViewIfNeeded();
+  await p.waitForTimeout(300);
+  {
+    const b = await wipe.boundingBox();
+    const y = b.y + b.height / 2;
+    const at = (f) => b.x + b.width * f;
+    await p.mouse.move(at(0.15), y);
+    await p.mouse.down();
+    await p.waitForTimeout(80);
+    const first = Number(await wipe.getAttribute('aria-valuenow'));
+    await p.mouse.move(at(0.8), y);
+    await p.waitForTimeout(160);
+    const dragged = Number(await wipe.getAttribute('aria-valuenow'));
+    await p.mouse.up();
+    check('cover-up wipe follows a drag', Math.abs(dragged - 80) <= 4, `15% → ${first}, 80% → ${dragged}`);
+  }
+  await wipe.focus();
+  const before = Number(await wipe.getAttribute('aria-valuenow'));
+  await p.keyboard.press('ArrowLeft');
+  await p.waitForTimeout(120);
+  check(
+    'cover-up wipe moves from the keyboard',
+    Number(await wipe.getAttribute('aria-valuenow')) < before,
+  );
+
   const q = p.getByRole('button', { name: /Does it hurt/ });
   await q.scrollIntoViewIfNeeded();
   check('FAQ starts collapsed', (await q.getAttribute('aria-expanded')) === 'false');
