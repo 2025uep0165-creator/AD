@@ -65,11 +65,14 @@ motifs into empty slots so the layout never broke; next to a real tattoo they
 read as clip-art and made the page look unfinished, so they are gone along with
 `components/Plate.tsx`. A slot with no photograph is now a slot that does not
 ship — which is why the gallery is ten pieces rather than a padded seventeen,
-and why the cover-up section shows one real piece instead of a staged
-before/after.
+and why the cover-up slider compares two of his own pieces instead of staging
+a before/after out of two unrelated arms.
 
-To swap a photo, drop the file in `/public/images/work/` and point
-`workPhotos` in `lib/content.ts` at it. Nothing else changes — matting, crop, desaturation and lazy-loading are handled
+To swap a photo, drop the file in `/public/images/work/`, point `workPhotos`
+in `lib/content.ts` at it, and run `node scripts/make-blur.mjs` — that
+regenerates `lib/blur.ts`, the 16px inline placeholders that fill each crop
+with roughly the right colours from first paint instead of leaving a grey box
+while the real file arrives. Nothing else changes — matting, crop, desaturation and lazy-loading are handled
 by `components/Frame.tsx`, which normalises every photo the same way (fixed 4:5,
 `saturate(0.82) contrast(1.03)`, identical bone mat and hairline). That
 consistency is what makes a phone camera roll read as a gallery wall. Adjust the
@@ -251,10 +254,14 @@ without Udhay's help.
     MP4s, every card was a poster with nothing behind it, showing a photograph
     the visitor had scrolled past a moment earlier
 13. One before/after cover-up pair, shot at the same angle and distance. Until
-    it exists the section shows a real piece at cover-up density, captioned as
-    exactly that — staging a before/after out of two unrelated photographs
-    would be inventing a result, which is the one thing a tattoo site must not
-    do
+    it exists the slider compares two of his own pieces — a small light one
+    against a full forearm — labelled "Small & light" and "Full coverage"
+    rather than "Before" and "After". No stock library reachable from here has
+    a real matched pair (Unsplash and Pexels are bot-walled or key-gated;
+    Openverse and Wikimedia have only convention photography of identifiable
+    strangers), and staging one out of two unrelated arms would be inventing a
+    result. Swap the two photographs in `coverUp` and change the labels back
+    the day a real pair arrives
 14. A real photo of him **working** — hands, machine, focus. The posed outdoor
     portrait from the old site is in place for now, but the brief's original
     objection to it still stands

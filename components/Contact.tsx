@@ -99,9 +99,7 @@ export default function Contact() {
               src={`https://www.google.com/maps?q=${encodeURIComponent(studio.mapsEmbedQuery)}&output=embed`}
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              // Tinted blue on request. Note this is the one colour on the
-              // site outside the bone/ink/saffron palette.
-              className="h-full w-full [filter:grayscale(1)_sepia(1)_hue-rotate(175deg)_saturate(2.1)_brightness(0.98)_contrast(0.95)]"
+              className="h-full w-full"
             />
           </div>
           {/* Not decoration: an embed can fail, and most people would rather

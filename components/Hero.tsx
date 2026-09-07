@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { hero, resolve, studio, waHref } from '@/lib/content';
 import Image from 'next/image';
+import { blur } from '@/lib/blur';
 import { useSaveData } from '@/lib/useMediaQuery';
 
 /**
@@ -65,6 +66,14 @@ export default function Hero() {
               sizes="100vw"
               priority
               unoptimized={/^https?:\/\//.test(hero.video.poster.src)}
+              // 62, the same as everything else, and deliberately so: this
+              // photograph is also a gallery piece, and asking for a different
+              // quality here made it a different URL — the same image fetched
+              // twice, 65KB for one picture. It is scrimmed and gradient-washed
+              // behind the headline anyway, where 75 bought nothing visible.
+              quality={62}
+              placeholder="blur"
+              blurDataURL={blur[hero.video.poster.src]}
               className="object-cover object-[50%_22%] [filter:saturate(0.78)_contrast(1.05)]"
             />
             {/* The photo is allowed to read at the top, where there is no type.

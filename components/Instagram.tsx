@@ -21,16 +21,28 @@ export default function Instagram() {
           href={studio.instagram.studioUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="group flex flex-col gap-8 border border-ink bg-ink p-7 text-bone transition-colors duration-300 ease-ink hover:bg-saffron sm:flex-row sm:items-end sm:justify-between sm:p-10"
+          className="group block border border-ink bg-ink p-7 text-bone transition-colors duration-300 ease-ink hover:bg-saffron sm:p-10"
         >
-          <span>
-            <span className="u-mono block text-bone/60">Every piece, as it happens</span>
-            <span className="u-display mt-4 block text-[clamp(1.9rem,7vw,3.5rem)] leading-none">
-              @{studio.instagram.studio}
+          <span className="u-mono block text-bone/60">Every piece, as it happens</span>
+
+          {/* items-baseline, not items-end: the handle has descenders (_j), so
+              aligning boxes put the follower count visibly above its baseline.
+              Baseline alignment is what the eye actually reads as level. */}
+          <span className="mt-5 flex flex-wrap items-baseline justify-between gap-x-10 gap-y-3">
+            <span className="u-display text-[clamp(1.5rem,5.4vw,2.75rem)] leading-[1.15]">
+              {/* Fraunces draws @ with no right sidebearing — its ink runs to
+                  the edge of its box — so next to a letter the two read as
+                  touching even though the boxes do not overlap. 0.18em is the
+                  smallest gap that looks deliberate at display size, and there
+                  is over 100px of spare width on a 412px phone to spend on it.
+                  A margin on the @ alone, rather than tracking, keeps the rest
+                  of the handle set normally. */}
+              <span className="mr-[0.18em] inline-block">@</span>
+              {studio.instagram.studio}
             </span>
-          </span>
-          <span className="u-mono shrink-0 text-bone/60 group-hover:text-bone">
-            {studio.instagram.followers} followers →
+            <span className="u-mono shrink-0 text-bone/60 transition-colors duration-300 ease-ink group-hover:text-bone">
+              {studio.instagram.followers} followers →
+            </span>
           </span>
         </a>
       </div>

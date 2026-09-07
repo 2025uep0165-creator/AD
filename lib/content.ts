@@ -407,18 +407,30 @@ export const coverUp = {
   heading: 'The one you regret is not permanent.',
   body: 'Most cover-ups are possible. Darker, bigger and bolder than the original — that is the trade. Send a clear photo in daylight and I will tell you honestly whether it will work, and what it will take.',
   /**
-   * There is no before/after here, and that is deliberate. The studio has not
-   * published a matched pair, and staging one out of two unrelated photographs
-   * would be inventing a result — the one thing a tattoo site must never do.
-   * Shown instead is the density a cover-up actually needs, captioned as what
-   * it is. Swap in a real pair, same angle and distance, and the slider that
-   * was here can come back.
+   * Two of Udhay's own pieces, not one arm photographed twice.
+   *
+   * The studio has never published a matched cover-up pair, and no stock
+   * library reachable from here has one either — what is licensed for reuse is
+   * convention photography of identifiable strangers. Dragging two mismatched
+   * arms past each other under BEFORE and AFTER would both look wrong and
+   * claim a result that never happened.
+   *
+   * So the slider compares coverage rather than staging a transformation: a
+   * small light piece against a forearm carried end to end, both his, both
+   * labelled for what they are. The moment a real pair arrives, swap these two
+   * and change the labels back.
    */
-  image: photo(
-    workPhotos.anubis,
-    'A dense black and grey Anubis covering a forearm — the kind of coverage an old tattoo needs',
+  left: photo(
+    workPhotos.peace,
+    'A small PEACE lettering piece with a fine-line mountain range on an inner forearm',
   ),
-  imageCaption: 'Blackwork at cover-up density. Not a cover-up.',
+  leftLabel: 'Small & light',
+  right: photo(
+    workPhotos.chakras,
+    'Seven chakra symbols and a trishul carried the full length of a forearm',
+  ),
+  rightLabel: 'Full coverage',
+  imageCaption: 'Two different pieces, not one cover-up — drag to compare the coverage.',
   need: 'A matched BEFORE and AFTER of one real cover-up — same angle, same distance, daylight.',
   waMessage: 'Hi Udhay, I want to cover an old tattoo. Sending a photo now.',
 } as const;

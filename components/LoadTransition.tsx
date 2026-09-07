@@ -42,7 +42,7 @@ export default function LoadTransition() {
       <script dangerouslySetInnerHTML={{ __html: DECIDE }} />
       <div className="si-intro pointer-events-none fixed inset-0 z-[90] bg-ink" aria-hidden="true">
         <div className="si-mark absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-          <Crest className="h-[22vmin] max-h-40" />
+          <Crest className="h-[18vmin] max-h-24" sizes="96px" />
         </div>
       </div>
       <LoadTransitionCleanup />

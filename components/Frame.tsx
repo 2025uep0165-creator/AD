@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import type { Media } from '@/lib/content';
+import { blur } from '@/lib/blur';
 
 /**
  * Uniform matting for every piece of work.
@@ -13,15 +14,18 @@ export default function Frame({
   media,
   sizes = '100vw',
   priority = false,
+  quality = 62,
   className = '',
   inverted = false,
 }: {
   media: Media;
   sizes?: string;
   priority?: boolean;
+  quality?: number;
   className?: string;
   inverted?: boolean;
 }) {
+  const placeholder = blur[media.src];
   return (
     <div
       className={`relative aspect-[4/5] w-full overflow-hidden border ${
@@ -34,6 +38,11 @@ export default function Frame({
         fill
         sizes={sizes}
         priority={priority}
+        quality={quality}
+        // A 16px inline copy of the same photo, so the crop is filled with
+        // roughly the right colours from first paint rather than sitting empty
+        // for a second. See scripts/make-blur.mjs.
+        {...(placeholder ? { placeholder: 'blur' as const, blurDataURL: placeholder } : {})}
         // A remote src is served pre-optimised, so skip our optimiser: it
         // avoids a pointless second pass and the remotePatterns allowlist.
         unoptimized={/^https?:\/\//.test(media.src)}
