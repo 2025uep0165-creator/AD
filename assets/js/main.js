@@ -93,7 +93,7 @@ $('#discList').innerHTML = discData.map((d, i) => `
 $('#discPlate').innerHTML = discData.map((d, i) => `
   <figure class="dp${i === 0 ? ' is-on' : ''}" data-i="${i}">
     <img src="${thumb(d.hero)}" alt="" loading="lazy" decoding="async" ${onerr(d.hero)}>
-    <figcaption><span class="mono">${d.hero.v}</span>${esc(d.hero.t)}</figcaption>
+    <figcaption><span class="mono">${d.hero.v}</span><span class="dp__title">${esc(d.hero.t)}</span></figcaption>
   </figure>`).join('');
 
 const discItems = $$('.di'), discPlates = $$('.dp');
@@ -328,6 +328,9 @@ function openLb(id, list) {
   document.body.classList.add('is-locked');
   requestAnimationFrame(() => lb.classList.add('is-on'));
   paintLb();
+  // a real history entry, so the phone's back button closes the player
+  // instead of leaving the site
+  history.pushState({ lb: true }, '', location.href);
 }
 function paintLb() {
   const w = lbList[lbIdx];
@@ -344,17 +347,24 @@ function paintLb() {
     ? `https://www.youtube.com/shorts/${w.id}`
     : `https://www.youtube.com/watch?v=${w.id}`;
 }
-function closeLb() {
+let lbClosing = false;
+function closeLb(fromPop) {
+  if (lb.hidden || lbClosing) return;
+  lbClosing = true;
   lb.classList.remove('is-on');
   document.body.classList.remove('is-locked');
-  setTimeout(() => { lb.hidden = true; lbFrame.innerHTML = ''; }, 420);
+  setTimeout(() => { lb.hidden = true; lbFrame.innerHTML = ''; lbClosing = false; }, 420);
+  // consume the history entry openLb pushed, unless we're already
+  // responding to the back button having done exactly that
+  if (!fromPop) history.back();
 }
 const step = d => { lbIdx = (lbIdx + d + lbList.length) % lbList.length; paintLb(); };
 
-$('#lbX').addEventListener('click', closeLb);
+$('#lbX').addEventListener('click', () => closeLb());
 $('#lbPrev').addEventListener('click', () => step(-1));
 $('#lbNext').addEventListener('click', () => step(1));
 lb.addEventListener('click', e => { if (e.target === lb || e.target.classList.contains('lb__stage')) closeLb(); });
+addEventListener('popstate', () => { if (!lb.hidden) closeLb(true); });
 addEventListener('keydown', e => {
   if (lb.hidden) return;
   if (e.key === 'Escape') closeLb();

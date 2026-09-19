@@ -123,30 +123,60 @@ export function createScene(canvas, opts = {}) {
   const target = new THREE.Vector3();
   let progress = 0, shown = 0, clock = 0;
 
-  function onDown(e) {
+  /* mouse / pen drag, via Pointer Events — touch is handled separately below */
+  function onPointerDown(e) {
+    if (e.pointerType === 'touch') return;
     drag.active = true; drag.moved = false;
-    drag.lx = (e.touches ? e.touches[0].clientX : e.clientX);
-    drag.ly = (e.touches ? e.touches[0].clientY : e.clientY);
+    drag.lx = e.clientX; drag.ly = e.clientY;
   }
-  function onMove(e) {
-    if (!drag.active) return;
-    const x = (e.touches ? e.touches[0].clientX : e.clientX);
-    const y = (e.touches ? e.touches[0].clientY : e.clientY);
-    const dx = x - drag.lx, dy = y - drag.ly;
+  function onPointerMove(e) {
+    if (e.pointerType === 'touch' || !drag.active) return;
+    const dx = e.clientX - drag.lx, dy = e.clientY - drag.ly;
     if (Math.abs(dx) > 3 || Math.abs(dy) > 3) drag.moved = true;
     drag.vx += dx * 0.0045;
     drag.vy -= dy * 0.055;
-    drag.lx = x; drag.ly = y;
-    if (e.touches && drag.moved) e.preventDefault();
+    drag.lx = e.clientX; drag.ly = e.clientY;
   }
-  function onUp() { drag.active = false; }
+  function onPointerUp() { drag.active = false; }
 
-  canvas.addEventListener('pointerdown', onDown);
-  window.addEventListener('pointermove', onMove);
-  window.addEventListener('pointerup', onUp);
-  canvas.addEventListener('touchstart', onDown, { passive: true });
-  canvas.addEventListener('touchmove', onMove, { passive: false });
-  canvas.addEventListener('touchend', onUp);
+  /* touch: a swipe is either a page scroll (vertical) or a look-around drag
+     (horizontal) — decided once, from the first few pixels of movement, so
+     a vertical swipe is never hijacked into blocking the page scroll. */
+  let touchAxis = null, touchX0 = 0, touchY0 = 0;
+  function onTouchStart(e) {
+    const t = e.touches[0];
+    touchAxis = null;
+    touchX0 = drag.lx = t.clientX;
+    touchY0 = drag.ly = t.clientY;
+  }
+  function onTouchMove(e) {
+    const t = e.touches[0];
+    const dx = t.clientX - drag.lx, dy = t.clientY - drag.ly;
+
+    if (touchAxis === null) {
+      const tdx = t.clientX - touchX0, tdy = t.clientY - touchY0;
+      if (Math.abs(tdx) > 8 || Math.abs(tdy) > 8) {
+        touchAxis = Math.abs(tdx) > Math.abs(tdy) ? 'x' : 'y';
+      }
+    }
+
+    if (touchAxis === 'x') {
+      e.preventDefault();
+      drag.vx += dx * 0.0045;
+      drag.vy -= dy * 0.055;
+    }
+    // touchAxis === 'y' (or still undecided): left alone, native scroll runs
+
+    drag.lx = t.clientX; drag.ly = t.clientY;
+  }
+  function onTouchEnd() { touchAxis = null; }
+
+  canvas.addEventListener('pointerdown', onPointerDown);
+  window.addEventListener('pointermove', onPointerMove);
+  window.addEventListener('pointerup', onPointerUp);
+  canvas.addEventListener('touchstart', onTouchStart, { passive: true });
+  canvas.addEventListener('touchmove', onTouchMove, { passive: false });
+  canvas.addEventListener('touchend', onTouchEnd);
 
   /* ---------- per-frame ---------- */
   const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(),
@@ -237,8 +267,8 @@ export function createScene(canvas, opts = {}) {
     jump(v) { progress = shown = clamp(v); },
     get stage() { return Math.min(STAGES - 1, Math.floor(shown / BAND)); },
     dispose() {
-      window.removeEventListener('pointermove', onMove);
-      window.removeEventListener('pointerup', onUp);
+      window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('pointerup', onPointerUp);
       renderer.dispose();
     }
   };
