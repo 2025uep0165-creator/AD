@@ -1,7 +1,9 @@
 /* VFUHO — application logic. */
 
 import { WORKS } from './works.js';
-import { BRAND, FIGURES, CHAPTERS, DISCIPLINES, TECHNIQUES, TIMELINE, PLATFORMS, FILTERS } from './site.js';
+import { BRAND, FIGURES, CHAPTERS, DISCIPLINES, TECHNIQUES, TIMELINE, PLATFORMS, FILTERS, MOTION } from './site.js';
+
+document.documentElement.classList.add('js');
 
 const $  = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -9,7 +11,13 @@ const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const lerp  = (a, b, t) => a + (b - a) * t;
 const easeInOut = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const LOWPOWER = matchMedia('(max-width: 900px)').matches || navigator.hardwareConcurrency <= 4;
+const NARROW   = matchMedia('(max-width: 900px)').matches;
+/* Render quality steps down on small screens and modest CPUs. */
+const LOWPOWER = NARROW || navigator.hardwareConcurrency <= 4;
+/* Looping video is a bandwidth question, not a CPU one — gate it on
+   screen size, motion preference and the user's own data-saver setting. */
+const NET = navigator.connection || {};
+const CAN_AUTOPLAY = !NARROW && !REDUCED && !NET.saveData && !/(^|-)2g$/.test(NET.effectiveType || '');
 
 /* thumbnails straight from YouTube — vertical posters for Shorts, 16:9 for films */
 const thumb = w => w.f === 'short'
@@ -116,6 +124,87 @@ $('#plat').innerHTML = PLATFORMS.map(p => `
     <span class="pl__e">${p.extra}</span>
     <span class="pl__go">Visit <i>&#8599;</i></span>
   </a>`).join('');
+
+/* -- "In motion": three builds that play on loop where they stand -- */
+const motionPicks = MOTION.map(id => WORKS.find(w => w.id === id)).filter(Boolean);
+$('#motionRow').innerHTML = motionPicks.map(w => `
+  <figure class="mo" data-id="${w.id}">
+    <div class="mo__screen">
+      <img src="${thumb(w)}" alt="${esc(w.t)}" loading="lazy" decoding="async">
+      <span class="mo__play"><i></i></span>
+    </div>
+    <figcaption>
+      <p class="mo__t">${esc(w.t)}</p>
+      <p class="mo__v mono">${w.v}</p>
+    </figcaption>
+  </figure>`).join('');
+
+/* Autoplay is opt-in by viewport and never on metered/low-power devices:
+   the poster stays put on mobile and the tap opens the full player instead. */
+if (CAN_AUTOPLAY) {
+  const YT_ORIGIN = /(^|\.)youtube(-nocookie)?\.com$/;
+
+  /* A player is only faded in once it reports that it is genuinely playing.
+     If it is region-locked, has embedding disabled, or autoplay is refused,
+     the iframe is dropped and the poster stays — a visitor never meets
+     YouTube's "Video unavailable" panel. */
+  function goLive(fig) {
+    if (fig.querySelector('iframe')) return;
+    const id = fig.dataset.id;
+    const f = document.createElement('iframe');
+    f.src = `https://www.youtube-nocookie.com/embed/${id}`
+          + `?autoplay=1&mute=1&loop=1&playlist=${id}&controls=0&modestbranding=1`
+          + `&rel=0&playsinline=1&disablekb=1&enablejsapi=1&origin=${encodeURIComponent(location.origin)}`;
+    f.title = 'Looping preview';
+    f.setAttribute('allow', 'autoplay; encrypted-media');
+    f.setAttribute('tabindex', '-1');
+    f.setAttribute('aria-hidden', 'true');
+
+    let settled = false;
+    const stop = () => { settled = true; removeEventListener('message', onMsg); clearTimeout(timer); };
+    const drop = () => { if (settled) return; stop(); fig.classList.remove('is-live'); f.remove(); };
+
+    const onMsg = e => {
+      if (!YT_ORIGIN.test(new URL(e.origin).hostname) || e.source !== f.contentWindow) return;
+      let d = e.data;
+      if (typeof d === 'string') { try { d = JSON.parse(d); } catch { return; } }
+      if (!d || typeof d !== 'object') return;
+      if (d.event === 'onError' || d.info?.errorCode) return drop();
+      // playerState 1 === playing
+      const st = d.info?.playerState ?? (d.event === 'onStateChange' ? d.info : undefined);
+      if (st === 1) { stop(); fig.classList.add('is-live'); }
+    };
+    addEventListener('message', onMsg);
+    const timer = setTimeout(drop, 8000);
+
+    f.addEventListener('load', () => {
+      try { f.contentWindow.postMessage(JSON.stringify({ event: 'listening', id }), '*'); } catch {}
+    });
+    fig.querySelector('.mo__screen').appendChild(f);
+  }
+
+  const player = new IntersectionObserver((es) => {
+    es.forEach(e => {
+      const fig = e.target;
+      if (e.isIntersecting) goLive(fig);
+      else { fig.classList.remove('is-live'); fig.querySelector('iframe')?.remove(); }
+    });
+  }, { threshold: 0.45 });
+  $$('.mo').forEach(f => player.observe(f));
+}
+
+$('#motionRow').addEventListener('click', e => {
+  const f = e.target.closest('.mo');
+  if (f) openLb(f.dataset.id, motionPicks);
+});
+
+/* -- the wall: a dense field of everything that has been finished -- */
+const wallPicks = WORKS.filter(w => w.f === 'short').slice(0, 54);
+$('#wallGrid').innerHTML = wallPicks
+  .map(w => `<img src="${thumb(w)}" alt="" loading="lazy" decoding="async" data-id="${w.id}">`).join('');
+$('#wallGrid').addEventListener('click', e => {
+  if (e.target.dataset.id) openLb(e.target.dataset.id, wallPicks);
+});
 
 /* =====================================================================
    2 · GALLERY
@@ -238,6 +327,33 @@ $('#burger').addEventListener('click', () => {
   $('#burger').setAttribute('aria-expanded', open);
 });
 $$('.nav__links a').forEach(a => a.addEventListener('click', () => nav.classList.remove('is-open')));
+
+/* which section am I in? */
+const navLinks = $$('.nav__links a');
+const spy = new IntersectionObserver((es) => {
+  es.forEach(e => {
+    if (!e.isIntersecting) return;
+    const id = e.target.id;
+    navLinks.forEach(a => a.classList.toggle('is-here', a.getAttribute('href') === '#' + id));
+  });
+}, { threshold: 0.01, rootMargin: '-45% 0px -50% 0px' });
+navLinks.forEach(a => {
+  const el = document.querySelector(a.getAttribute('href'));
+  if (el) spy.observe(el);
+});
+
+/* how far down the whole page am I? */
+const prog = $('#prog');
+let progQueued = false;
+addEventListener('scroll', () => {
+  if (progQueued) return;
+  progQueued = true;
+  requestAnimationFrame(() => {
+    const max = document.documentElement.scrollHeight - innerHeight;
+    prog.style.transform = `scaleX(${max > 0 ? clamp(scrollY / max) : 0})`;
+    progQueued = false;
+  });
+}, { passive: true });
 
 const revealer = new IntersectionObserver((es) => {
   es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-in'); revealer.unobserve(e.target); } });
@@ -370,10 +486,13 @@ document.addEventListener('visibilitychange', () => {
 /* =====================================================================
    6 · BOOT
    ===================================================================== */
+let booted = false;
 function finishBoot() {
+  if (booted) return;
+  booted = true;
   bootBar.style.width = '100%';
   setTimeout(() => boot.classList.add('is-done'), 380);
-  setTimeout(() => boot.remove(), 1400);
+  setTimeout(() => { boot.remove(); hero.classList.add('is-lit'); }, 900);
 }
 
 (function preload() {

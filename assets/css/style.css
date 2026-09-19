@@ -718,3 +718,122 @@ button{ font:inherit; color:inherit; background:none; border:0; cursor:pointer; 
 .no-gl .chap{ position:relative; inset:auto; transform:none; opacity:1; visibility:visible; max-width:none;
   padding-top:1.6rem; border-top:1px solid var(--line); }
 .no-gl .hud,.no-gl .scrollcue,.no-gl .dragcue,.no-gl .stage__vignette{ display:none; }
+
+/* =====================================================================
+   PAGE PROGRESS
+   ===================================================================== */
+.prog{
+  position:fixed; top:0; left:0; right:0; height:2px; z-index:95;
+  background:linear-gradient(90deg,var(--clay-lo),var(--clay),var(--ember));
+  transform:scaleX(0); transform-origin:left; will-change:transform;
+}
+
+/* =====================================================================
+   HERO — the three lines rise out of their own mask once boot clears.
+   Guarded on html.js so the copy is never hidden if the script fails.
+   ===================================================================== */
+.js .hero__title span > i{
+  transform:translateY(108%);
+  transition:transform 1.05s cubic-bezier(.16,1,.3,1);
+}
+.js .hero.is-lit .hero__title span > i{ transform:none; }
+.js .hero.is-lit .hero__title span:nth-child(2) > i{ transition-delay:.09s; }
+.js .hero.is-lit .hero__title span:nth-child(3) > i{ transition-delay:.18s; }
+.js .hero__eyebrow,.js .hero__lede,.js .hero__meta{
+  opacity:0; transform:translateY(14px);
+  transition:opacity .9s var(--ease), transform .9s var(--ease);
+}
+.js .hero.is-lit .hero__eyebrow{ opacity:1; transform:none; transition-delay:.05s; }
+.js .hero.is-lit .hero__lede{   opacity:1; transform:none; transition-delay:.42s; }
+.js .hero.is-lit .hero__meta{   opacity:1; transform:none; transition-delay:.54s; }
+
+/* =====================================================================
+   NAV — where am I
+   ===================================================================== */
+.nav__links a.is-here{ color:var(--bone); }
+.nav__links a.is-here::after{ width:100%; background:var(--clay-hi); }
+
+/* =====================================================================
+   IN MOTION — three builds playing on loop
+   ===================================================================== */
+.motion{ padding:clamp(5rem,12vh,10rem) 0; background:var(--ink); position:relative; z-index:5; }
+.motion__row{
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:clamp(12px,1.6vw,26px);
+  width:min(1160px, 100% - var(--gut)*2); margin:0 auto;
+}
+.mo{ margin:0; cursor:pointer; }
+.mo__screen{
+  position:relative; aspect-ratio:9/16; overflow:hidden; border-radius:var(--r);
+  background:var(--ink-4); border:1px solid var(--line);
+  transition:.5s var(--ease);
+}
+.mo:hover .mo__screen{ border-color:var(--clay); transform:translateY(-5px); }
+.mo__screen img{
+  position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+  transition:opacity .8s var(--ease);
+}
+.mo__screen iframe{
+  position:absolute; top:50%; left:50%; width:101%; height:101%;
+  transform:translate(-50%,-50%) scale(1.03);
+  border:0; pointer-events:none; opacity:0; transition:opacity .9s var(--ease);
+}
+.mo.is-live iframe{ opacity:1; }
+.mo__play{
+  position:absolute; inset:0; display:grid; place-items:center; z-index:2;
+  transition:.45s var(--ease);
+}
+.mo.is-live .mo__play{ opacity:0; }
+.mo__play i{
+  width:62px; height:62px; border-radius:50%; background:rgba(10,9,8,.55);
+  border:1px solid rgba(242,237,230,.42); backdrop-filter:blur(8px);
+  display:grid; place-items:center; transition:.4s var(--ease);
+}
+.mo:hover .mo__play i{ background:var(--clay); border-color:var(--clay); }
+.mo__play i::after{ content:''; border-left:15px solid #fff; border-block:9px solid transparent; margin-left:5px; }
+.mo figcaption{ padding:1.1rem .1rem 0; }
+.mo__t{
+  margin:0 0 .4rem; font-size:.95rem; line-height:1.35; font-weight:450;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+}
+.mo__v{ margin:0; color:var(--clay-hi); }
+
+/* =====================================================================
+   THE WALL — a full-bleed field of finished houses
+   ===================================================================== */
+.wall{
+  position:relative; width:100vw; margin-left:calc(50% - 50vw);
+  background:var(--ink); overflow:hidden; z-index:5;
+  max-height:min(88vh, 860px);   /* clip mid-row: the field reads as endless */
+}
+.wall__grid{
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(112px,1fr)); gap:3px;
+}
+.wall__grid img{
+  width:100%; aspect-ratio:9/16; object-fit:cover; background:var(--ink-4);
+  filter:grayscale(1) brightness(.34) contrast(1.05);
+  transition:filter .55s var(--ease), transform .55s var(--ease);
+  cursor:pointer;
+}
+.wall__grid img:hover{ filter:none; transform:scale(1.06); z-index:2; position:relative; }
+.wall__over{
+  position:absolute; inset:0; display:grid; place-content:center; text-align:center;
+  pointer-events:none; padding:1rem;
+  background:radial-gradient(64% 56% at 50% 50%, rgba(10,9,8,.95) 0%, rgba(10,9,8,.86) 44%, rgba(10,9,8,.42) 74%, transparent 92%);
+}
+.wall__over .mono{ color:var(--clay-hi); margin:0 0 1rem; }
+.wall__line{
+  font-family:var(--display); font-weight:300; font-style:italic;
+  font-size:clamp(2rem,5.4vw,4.6rem); line-height:1.02; letter-spacing:-.03em; margin:0;
+  font-variation-settings:'opsz' 144;
+}
+
+@media (max-width:900px){
+  .motion__row{ grid-template-columns:1fr 1fr; }
+  .mo:nth-child(3){ display:none; }
+  .wall__grid{ grid-template-columns:repeat(auto-fill,minmax(78px,1fr)); gap:2px; }
+}
+@media (max-width:520px){
+  .motion__row{ grid-template-columns:1fr; }
+  .mo:nth-child(3){ display:block; }
+}

@@ -95,15 +95,15 @@ export const TECHNIQUES = [
 export const TIMELINE = [
   { year: '2020', title: 'The channel opens',
     body: 'VFUHO is founded on 6 October 2020 with a single idea: build real houses, at miniature scale, out of mini bricks — and show every step.' },
-  { year: '2021', title: 'Learning the material',
-    body: 'One-storey houses in brick and stone. Foundations, pillars and the first stair sets. The vocabulary of the craft is assembled piece by piece.' },
-  { year: '2022', title: 'Two storeys and a pool',
+  { year: 'Early', title: 'Learning the material',
+    body: 'One-storey houses in brick and stone. Foundations, pillars and the first stair sets. The vocabulary of the craft gets assembled piece by piece.' },
+  { year: 'Upward', title: 'Two storeys and a pool',
     body: 'The builds grow upward. Swimming pools, pumps and plumbing arrive, and the houses begin to do things as well as be things.' },
-  { year: '2023', title: 'The first hundred million',
-    body: 'A column tutorial crosses 109 million views. The channel proves that patience and precision travel further than spectacle.' },
-  { year: '2024', title: 'Brick against brick',
-    body: 'A T-shaped two-storey house, mini bricks against plastic blocks, reaches 334 million views — the single most-watched build in the archive.' },
-  { year: '2025', title: 'Engineering as the story',
+  { year: 'Breakthrough', title: 'Patience finds its audience',
+    body: 'A step-by-step column tutorial becomes one of the most-watched things on the channel — proof that precision travels further than spectacle.' },
+  { year: 'The record', title: 'Brick against brick',
+    body: 'A T-shaped two-storey house, mini bricks set against plastic blocks, becomes the single most-watched build in the archive.' },
+  { year: 'Lately', title: 'Engineering as the story',
     body: 'Flood-proof foundations, cantilevers, cliffside houses and lit bridges. The work becomes unmistakably architectural.' },
   { year: '2026', title: 'Two billion and building',
     body: 'Over 2.2 billion views, 3.73 million subscribers and 131 finished houses. The archive keeps growing, one brick at a time.' }
@@ -119,6 +119,9 @@ export const PLATFORMS = [
   { k: 'facebook',  name: 'Facebook',  handle: '/vfuho',   stat: 'Daily', statLabel: 'builds',
     extra: 'Full-length process films', url: BRAND.links.facebook }
 ];
+
+/* The three builds that play on loop in the "In motion" band. */
+export const MOTION = ['FtHoM7j22JA', '6JvWS-m-JsU', 'Rh6UxFUCVW8'];
 
 export const FILTERS = [
   { k: 'all',        label: 'All work' },
