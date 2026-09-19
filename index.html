@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VFUHO — A Legacy Built Brick by Brick</title>
+<meta name="description" content="VFUHO builds miniature houses entirely from mini bricks, with real foundations, real steel and real water. 3.73 million subscribers. 2.2 billion views. 131 houses. This is the archive.">
+<meta name="theme-color" content="#0a0908">
+<meta property="og:type" content="website">
+<meta property="og:title" content="VFUHO — A Legacy Built Brick by Brick">
+<meta property="og:description" content="Miniature houses built entirely from mini bricks. 2.2 billion views. 131 houses. One brick at a time.">
+<meta property="og:image" content="https://i.ytimg.com/vi/FtHoM7j22JA/maxresdefault.jpg">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://i.ytimg.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%230a0908'/><rect x='14' y='30' width='32' height='16' fill='%23c2643b'/><rect x='54' y='30' width='32' height='16' fill='%23c2643b'/><rect x='34' y='54' width='32' height='16' fill='%23c2643b'/></svg>">
+
+<script type="importmap">
+{ "imports": { "three": "./assets/vendor/three.module.min.js" } }
+</script>
+</head>
+
+<body>
+
+<!-- ============ PRELOADER ============ -->
+<div class="boot" id="boot">
+  <div class="boot__inner">
+    <div class="boot__mark">VFUHO</div>
+    <div class="boot__bar"><i id="bootBar"></i></div>
+    <div class="boot__note mono">Laying the first course<span class="dots"></span></div>
+  </div>
+</div>
+
+<!-- ============ NAV ============ -->
+<header class="nav" id="nav">
+  <a class="nav__mark" href="#top" aria-label="VFUHO home">
+    <span class="nav__brick"></span> VFUHO
+  </a>
+  <nav class="nav__links" aria-label="Sections">
+    <a href="#legacy">Legacy</a>
+    <a href="#craft">The Craft</a>
+    <a href="#disciplines">Disciplines</a>
+    <a href="#work">The Work</a>
+    <a href="#journey">Journey</a>
+    <a href="#reach">Reach</a>
+  </nav>
+  <a class="nav__cta" href="https://youtube.com/@vfuhoo" target="_blank" rel="noopener">
+    Subscribe <span class="mono">3.73M</span>
+  </a>
+  <button class="nav__burger" id="burger" aria-label="Menu" aria-expanded="false"><span></span><span></span></button>
+</header>
+
+<main id="top">
+
+<!-- ============ THE BUILD — pinned 3D stage ============ -->
+<section class="stage" id="build">
+  <div class="stage__sticky">
+    <canvas id="gl" aria-label="Interactive 3D miniature brick house under construction"></canvas>
+    <div class="stage__vignette"></div>
+
+    <!-- hero copy -->
+    <div class="hero" id="hero">
+      <p class="hero__eyebrow mono">Est. October 2020 · Miniature architecture</p>
+      <h1 class="hero__title">
+        <span>Built</span>
+        <span>brick</span>
+        <span>by brick.</span>
+      </h1>
+      <p class="hero__lede">
+        VFUHO builds miniature houses entirely from mini bricks — real foundations,
+        real steel, real water, real light. Two point two billion people have watched it happen.
+      </p>
+      <div class="hero__meta mono">
+        <span>3.73M subscribers</span><i></i><span>2.2B views</span><i></i><span>131 houses</span>
+      </div>
+    </div>
+
+    <!-- chapter panels injected here -->
+    <div class="chapters" id="chapters" aria-live="polite"></div>
+
+    <!-- HUD -->
+    <div class="hud">
+      <div class="hud__rail" id="hudRail"></div>
+      <div class="hud__read mono"><b id="hudPct">0</b>% complete</div>
+    </div>
+    <div class="scrollcue mono" id="scrollcue"><span>Scroll to build</span><i></i></div>
+    <div class="dragcue mono" id="dragcue">Drag to look around</div>
+  </div>
+</section>
+
+<!-- ============ LEGACY FIGURES ============ -->
+<section class="legacy" id="legacy">
+  <div class="wrap">
+    <p class="kicker mono">§ 01 — The record</p>
+    <h2 class="h2">A legacy measured<br>in billions.</h2>
+    <div class="figures" id="figures"></div>
+  </div>
+</section>
+
+<!-- ============ MARQUEE ============ -->
+<div class="marquee" aria-hidden="true"><div class="marquee__track" id="marqueeTrack"></div></div>
+
+<!-- ============ THE CRAFT ============ -->
+<section class="craft" id="craft">
+  <div class="wrap craft__grid">
+    <div class="craft__text">
+      <p class="kicker mono">§ 02 — The craft</p>
+      <h2 class="h2">Not models.<br>Buildings.</h2>
+      <p class="lead">
+        Most miniature builders make something that looks like a house.
+        VFUHO makes something that <em>behaves</em> like one.
+      </p>
+      <p>
+        Every build starts underground. Footings are dug and poured. Rebar is cut, bent and tied by
+        hand at a scale where a single steel wire is thinner than a matchstick. Only then does the
+        first brick get laid — and from there it is thousands of them, course after course, in
+        running bond, levelled one at a time.
+      </p>
+      <p>
+        The houses have plumbing that carries water, pumps that fill pools, doors that open by
+        themselves and lights that come on behind real glass. Nothing is faked, and nothing is
+        rushed. That is the whole discipline: the patience to build the parts nobody will ever see
+        exactly as carefully as the parts everybody will.
+      </p>
+      <blockquote class="pull">
+        “Miniature houses built entirely from mini bricks, crafted with incredible detail
+        and precision.”
+        <cite>— VFUHO</cite>
+      </blockquote>
+    </div>
+    <div class="craft__stack" id="craftStack"></div>
+  </div>
+</section>
+
+<!-- ============ DISCIPLINES ============ -->
+<section class="disciplines" id="disciplines">
+  <div class="wrap">
+    <p class="kicker mono">§ 03 — Bodies of work</p>
+    <h2 class="h2">Six disciplines.</h2>
+    <p class="section-lede">
+      One hundred and thirty-one finished houses, sorted by what they taught.
+    </p>
+    <div class="disc-grid" id="discGrid"></div>
+  </div>
+</section>
+
+<!-- ============ THE WORK ============ -->
+<section class="work" id="work">
+  <div class="wrap">
+    <p class="kicker mono">§ 04 — The archive</p>
+    <h2 class="h2">The work.</h2>
+    <p class="section-lede">
+      Every house VFUHO has filmed. Choose one and watch it get built.
+    </p>
+    <div class="filters" id="filters" role="tablist" aria-label="Filter the archive"></div>
+    <div class="gal" id="gal"></div>
+    <div class="work__more">
+      <button class="btn" id="moreBtn">Show more houses</button>
+      <p class="mono work__count" id="workCount"></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HALL OF FAME ============ -->
+<section class="fame" id="fame">
+  <div class="wrap">
+    <p class="kicker mono">§ 05 — Hall of record</p>
+    <h2 class="h2">The ones the<br>world stopped for.</h2>
+    <div class="fame__list" id="fameList"></div>
+  </div>
+</section>
+
+<!-- ============ JOURNEY ============ -->
+<section class="journey" id="journey">
+  <div class="wrap">
+    <p class="kicker mono">§ 06 — The journey</p>
+    <h2 class="h2">Six years,<br>one brick at a time.</h2>
+    <ol class="tl" id="tl"></ol>
+  </div>
+</section>
+
+<!-- ============ TECHNIQUE INDEX ============ -->
+<section class="index" id="index">
+  <div class="wrap">
+    <p class="kicker mono">§ 07 — The ledger</p>
+    <h2 class="h2">Techniques<br>in the repertoire.</h2>
+    <div class="ledger" id="ledger"></div>
+  </div>
+</section>
+
+<!-- ============ REACH ============ -->
+<section class="reach" id="reach">
+  <div class="wrap">
+    <p class="kicker mono">§ 08 — Reach</p>
+    <h2 class="h2">Where the<br>work lives.</h2>
+    <div class="plat" id="plat"></div>
+  </div>
+</section>
+
+<!-- ============ CLOSING ============ -->
+<section class="close" id="close">
+  <div class="wrap close__inner">
+    <p class="kicker mono">§ 09 — The legacy</p>
+    <h2 class="close__line">
+      Anyone can stack<br>a few bricks.<br>
+      <em>Almost nobody<br>finishes the house.</em>
+    </h2>
+    <p class="close__body">
+      Six years. One hundred and thirty-one houses. Two point two billion views.
+      Every one of them built by hand, filmed from the first footing to the last light
+      switching on — and every one of them started exactly the same way: with a single
+      brick, laid level.
+    </p>
+    <div class="close__cta">
+      <a class="btn btn--solid" href="https://youtube.com/@vfuhoo" target="_blank" rel="noopener">Watch on YouTube</a>
+      <a class="btn" href="https://www.instagram.com/vfuho_" target="_blank" rel="noopener">Follow on Instagram</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap foot__grid">
+    <div>
+      <div class="foot__mark">VFUHO</div>
+      <p class="mono">Miniature architecture · Est. 6 October 2020</p>
+    </div>
+    <nav class="foot__links" aria-label="VFUHO channels">
+      <a href="https://youtube.com/@vfuhoo" target="_blank" rel="noopener">YouTube</a>
+      <a href="https://www.instagram.com/vfuho_" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://www.tiktok.com/@vfuho_" target="_blank" rel="noopener">TikTok</a>
+      <a href="https://www.facebook.com/vfuho" target="_blank" rel="noopener">Facebook</a>
+    </nav>
+    <p class="foot__fine mono">
+      Figures shown are taken from VFUHO's live public channels.<br>
+      Thumbnails and films are the property of VFUHO.
+    </p>
+  </div>
+</footer>
+
+<!-- ============ LIGHTBOX ============ -->
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Film player" hidden>
+  <button class="lb__x" id="lbX" aria-label="Close">&times;</button>
+  <button class="lb__nav lb__nav--prev" id="lbPrev" aria-label="Previous">&#8249;</button>
+  <button class="lb__nav lb__nav--next" id="lbNext" aria-label="Next">&#8250;</button>
+  <div class="lb__stage">
+    <div class="lb__frame" id="lbFrame"></div>
+    <div class="lb__meta">
+      <h3 id="lbTitle"></h3>
+      <p class="mono"><span id="lbViews"></span><i></i><span id="lbCat"></span></p>
+      <a class="lb__out mono" id="lbOut" target="_blank" rel="noopener">Open on YouTube &#8599;</a>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="assets/js/main.js"></script>
+</body>
+</html>
