@@ -19,20 +19,30 @@ itself as you scroll.
 | **Legacy** | Animated counters for the headline figures. |
 | **Marquee** | A continuous ribbon of real build thumbnails. |
 | **The Craft** | The manifesto, set against a stack of real stills. |
-| **Disciplines** | Six bodies of work; click one to filter the archive. |
+| **Disciplines** | Six bodies of work as an editorial index — hovering a name swaps the plate beside it; clicking filters the archive. |
+| **In motion** | Three of the most-watched builds playing on loop, held inside the fold. |
 | **The Work** | All 131 builds, filterable, with a cinematic lightbox that plays the real film. |
-| **Hall of Record** | The eight most-watched builds, ranked. |
+| **Hall of Record** | The eight most-watched builds, ranked, with a rule under each showing its share of the top spot. |
 | **Journey** | 2020 → 2026, year by year. |
-| **The Ledger** | Sixteen signature techniques in the repertoire. |
+| **The Ledger** | Sixteen signature techniques, each opening a build that demonstrates it. |
 | **Reach** | YouTube, Instagram, TikTok and Facebook with live figures. |
 | **The Legacy** | Closing statement. |
 
 ## The 3D stage
 
-`assets/js/scene.js` builds the house from scratch in code — no model files. Roughly
-1,800 individual bricks, laid in running bond with real openings, plus hand-placed
-rebar cages, cast slabs, a staircase, a cantilevered upper storey, a pool that fills
-with water, planting and lamps that switch on at the end.
+`assets/js/scene.js` builds the house from scratch in code — roughly 1,800 individual
+bricks laid in running bond with real openings, plus hand-placed rebar cages, cast
+slabs, an external stair that climbs to the balcony, a cantilevered upper storey,
+and lamps that switch on at the end.
+
+The things that read badly as stacked boxes — the trees, the pool and the site
+wheelbarrow — are **modelled in Blender** and delivered as one 143 KB glTF
+(`assets/models/vfuho-props.glb`, ~720 triangles). The trees have tapered trunks,
+real limbs and faceted canopy clusters; the pool has a tiled shell, coping, a
+waterline band, entry steps and a ladder, with its water as a separate object the
+site fills on scroll; the wheelbarrow is the one from the VFuho logo. They load
+asynchronously and join the same 0→1 build timeline as the brickwork — if the model
+fails to load, the brick house simply builds without them.
 
 Everything is drawn with three `InstancedMesh`es (bricks/concrete, steel rods, glazing),
 so the whole scene is three draw calls. Each element carries its own start time on a
@@ -41,6 +51,14 @@ so the whole scene is three draw calls. Each element carries its own start time 
 **It is a progressive enhancement.** If WebGL is unavailable, or the engine fails to load,
 the page catches it, drops a `.no-gl` class and renders the opening as a full-bleed still
 with the chapters laid out as a grid. Nothing else on the site depends on it.
+
+## Brand
+
+The official VFuho logo is in `assets/img/`. `vfuho-logo.png` is the supplied
+original; `vfuho-mark.png` (the wheelbarrow) and `vfuho-wordmark.png` are cut from
+it with the black field keyed out, so they sit on any background. The mark and
+wordmark carry the nav, the loading screen and the footer, and `favicon.png` is the
+browser tab.
 
 ## Content
 

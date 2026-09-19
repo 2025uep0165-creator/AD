@@ -9,7 +9,7 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="VFUHO — A Legacy Built Brick by Brick">
 <meta property="og:description" content="Miniature houses built entirely from mini bricks. 2.2 billion views. 131 houses. One brick at a time.">
-<meta property="og:image" content="https://i.ytimg.com/vi/FtHoM7j22JA/maxresdefault.jpg">
+<meta property="og:image" content="assets/img/vfuho-logo.png">
 <meta name="twitter:card" content="summary_large_image">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,7 +17,8 @@
 <link rel="preconnect" href="https://i.ytimg.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap">
 <link rel="stylesheet" href="assets/css/style.css">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%230a0908'/><rect x='14' y='30' width='32' height='16' fill='%23c2643b'/><rect x='54' y='30' width='32' height='16' fill='%23c2643b'/><rect x='34' y='54' width='32' height='16' fill='%23c2643b'/></svg>">
+<link rel="icon" type="image/png" href="assets/img/favicon.png">
+<link rel="apple-touch-icon" href="assets/img/vfuho-logo.png">
 
 <script type="importmap">
 { "imports": { "three": "./assets/vendor/three.module.min.js" } }
@@ -29,7 +30,8 @@
 <!-- ============ PRELOADER ============ -->
 <div class="boot" id="boot">
   <div class="boot__inner">
-    <div class="boot__mark">VFUHO</div>
+    <img class="boot__logo" src="assets/img/vfuho-mark.png" alt="" width="349" height="256">
+    <img class="boot__word" src="assets/img/vfuho-wordmark.png" alt="VFuho" width="436" height="160">
     <div class="boot__bar"><i id="bootBar"></i></div>
     <div class="boot__note mono">Laying the first course<span class="dots"></span></div>
   </div>
@@ -38,8 +40,9 @@
 <!-- ============ NAV ============ -->
 <div class="prog" id="prog" aria-hidden="true"></div>
 <header class="nav" id="nav">
-  <a class="nav__mark" href="#top" aria-label="VFUHO home">
-    <span class="nav__brick"></span> VFUHO
+  <a class="nav__mark" href="#top" aria-label="VFuho — home">
+    <img src="assets/img/vfuho-mark.png" alt="" width="349" height="256">
+    <img class="nav__word" src="assets/img/vfuho-wordmark.png" alt="VFuho" width="436" height="160">
   </a>
   <nav class="nav__links" aria-label="Sections">
     <a href="#legacy">Legacy</a>
@@ -145,20 +148,28 @@
     <p class="section-lede">
       One hundred and thirty-one finished houses, sorted by what they taught.
     </p>
-    <div class="disc-grid" id="discGrid"></div>
+    <div class="disc">
+      <ol class="disc__list" id="discList"></ol>
+      <div class="disc__plate" id="discPlate" aria-hidden="true"></div>
+    </div>
   </div>
 </section>
 
 <!-- ============ IN MOTION ============ -->
 <section class="motion" id="motion">
-  <div class="wrap">
-    <p class="kicker mono">§ 04 — In motion</p>
-    <h2 class="h2">Watch it happen.</h2>
-    <p class="section-lede">
-      Three of the most-watched builds in the archive, playing where they stand.
-    </p>
+  <div class="wrap motion__grid">
+    <div class="motion__copy">
+      <p class="kicker mono">§ 04 — In motion</p>
+      <h2 class="h2">Watch it<br>happen.</h2>
+      <p>
+        Three of the most-watched builds in the archive, playing where they stand.
+        No cuts, no commentary — just a pair of hands, a pile of mini bricks and
+        the patience to finish.
+      </p>
+      <ol class="motion__index" id="motionIndex"></ol>
+    </div>
+    <div class="motion__row" id="motionRow"></div>
   </div>
-  <div class="motion__row" id="motionRow"></div>
 </section>
 
 <!-- ============ THE WORK ============ -->
@@ -249,7 +260,7 @@
 <footer class="foot">
   <div class="wrap foot__grid">
     <div>
-      <div class="foot__mark">VFUHO</div>
+      <img class="foot__logo" src="assets/img/vfuho-logo.png" alt="VFuho" width="447" height="447">
       <p class="mono">Miniature architecture · Est. 6 October 2020</p>
     </div>
     <nav class="foot__links" aria-label="VFUHO channels">

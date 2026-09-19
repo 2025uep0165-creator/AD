@@ -4,6 +4,7 @@
    site → foundation → steel → columns → walls → floors → upper storey → roof → life. */
 
 import * as THREE from 'three';
+import { GLTFLoader } from '../vendor/loaders/GLTFLoader.js';
 
 const BW = 1.00;   // brick length
 const BH = 0.44;   // brick height
@@ -103,16 +104,15 @@ export function createScene(canvas, opts = {}) {
   boxes.forEach((b, i) => boxIM.setColorAt(i, b.color));
   if (boxIM.instanceColor) boxIM.instanceColor.needsUpdate = true;
 
-  /* ---------- water ---------- */
-  const water = new THREE.Mesh(
-    new THREE.PlaneGeometry(9.2, 6.2).rotateX(-Math.PI / 2),
-    new THREE.MeshPhysicalMaterial({
-      color: 0x2b7f9e, roughness: 0.06, metalness: 0.15, transparent: true,
-      opacity: 0.0, transmission: 0.4, thickness: 1
-    })
-  );
-  water.position.set(15.4, 0.92, 3.4);
-  scene.add(water);
+  /* ---------- modelled props (built in Blender, loaded as glTF) ----------
+     Trees, the pool and the site wheelbarrow are real models rather than
+     stacked boxes. They load asynchronously and join the build sequence
+     the moment they arrive; nothing else waits on them. */
+  const propGroup = new THREE.Group();
+  scene.add(propGroup);
+  const props = [];                    // { obj, base, t0, dur, drop, spin }
+  let water = null;                    // Pool_Water, once the model lands
+  loadProps(propGroup, props, o => { water = o; }, lowPower);
 
   /* ---------- dust ---------- */
   const dust = makeDust(lowPower ? 220 : 620);
@@ -183,10 +183,25 @@ export function createScene(canvas, opts = {}) {
     if (rods.length)  { for (let i = 0; i < rods.length; i++)  place(rodIM, rods, p, i);  rodIM.instanceMatrix.needsUpdate = true; }
     if (panes.length) { for (let i = 0; i < panes.length; i++) place(paneIM, panes, p, i); paneIM.instanceMatrix.needsUpdate = true; }
 
+    // props rise into place on their own slots in the timeline
+    for (let i = 0; i < props.length; i++) {
+      const it = props[i];
+      const t = clamp((p - it.t0) / it.dur);
+      const a = t >= 1 ? 1 : backOut(t);
+      it.obj.visible = t > 0;
+      if (t <= 0) continue;
+      const g = t >= 1 ? 1 : 0.35 + 0.65 * a;
+      it.obj.scale.setScalar(it.base.s * g);
+      it.obj.position.y = it.base.y + it.drop * (1 - a) * (1 - a);
+      it.obj.rotation.y = it.base.ry + it.spin * (1 - a);
+    }
+
     // water fills during the final chapter
     const fill = clamp((p - BAND * 8.15) / (BAND * 0.7));
-    water.material.opacity = fill * 0.88;
-    water.position.y = lerp(0.6, 1.25, fill);
+    if (water) {
+      water.material.opacity = fill * 0.92;
+      water.position.y = water.userData.y0 - water.userData.dip * (1 - fill);
+    }
 
     // lights on
     hearth.intensity = clamp((p - BAND * 8.4) / (BAND * 0.6)) * 34;
@@ -273,7 +288,7 @@ function compose(out) {
     add(0, 'box', [ 13.6, 0.42, z], [0.13, 1.45, 0.13], new THREE.Color('#7a6552'));
   }
   // pallets of bricks stacked ready on site
-  [[-12.6, -8.2], [-12.6, -2.0], [-11.4, 5.8]].forEach(([px, pz]) => {
+  [[-16.0, -9.0], [-16.2, -3.6], [-17.0, 2.4]].forEach(([px, pz]) => {
     for (let c = 0; c < 7; c++)
       for (let r = 0; r < 3; r++)
         for (let k = 0; k < 2; k++)
@@ -324,11 +339,29 @@ function compose(out) {
 
   /* 5 — THE FLOORS: deck over the ground storey + a cast stair */
   add(5, 'box', [0, FY + 0.21, 0], [W + 0.6, 0.42, D + 0.6], new THREE.Color('#a39a8f'));
-  for (let s = 0; s < 11; s++) {                         // staircase
-    const y = GY + 0.3 + s * (FY - GY - 0.3) / 11;
-    add(5, 'box', [-6.2 + s * 0.02, y, 7.2 + s * 0.62], [4.2, 0.30, 0.62], tint(pick(CONCRETE)));
+  /* External stair, running up the west flank and landing on the balcony
+     rather than stopping in mid-air. 14 treads, 0.58 going, 0.47 rise. */
+  const ST_N = 14, ST_RUN = 0.58, ST_X = -12.0, ST_W = 3.0;
+  const ST_TOP = FY + 0.72, ST_FOOT = 1.05;
+  const stepZ = s => 8.4 - s * ST_RUN;
+  for (let s = 0; s < ST_N; s++) {
+    const y = ST_FOOT + (s + 1) * (ST_TOP - ST_FOOT) / ST_N;
+    add(5, 'box', [ST_X, y - 0.15, stepZ(s)], [ST_W, 0.30, ST_RUN], tint(pick(CONCRETE)));
+    add(5, 'box', [ST_X, y - 0.44, stepZ(s) - ST_RUN / 2], [ST_W, 0.30, 0.16], tint(pick(CONCRETE)));  // riser
   }
-  add(5, 'box', [-4.0, FY + 0.9, 8.1], [0.22, 1.2, 7.4], new THREE.Color('#6d6660'));
+  // landing that bridges the top tread to the balcony deck
+  add(5, 'box', [-10.9, ST_TOP - 0.16, stepZ(ST_N - 1) - 0.5], [4.6, 0.32, 1.1], new THREE.Color('#9b9288'));
+  // stringer + handrail following the flight
+  const midZ = (stepZ(0) + stepZ(ST_N - 1)) / 2, runZ = ST_N * ST_RUN;
+  const rise = ST_TOP - ST_FOOT, pitch = Math.atan2(rise, runZ);
+  add(5, 'box', [ST_X - ST_W / 2 - 0.12, (ST_FOOT + ST_TOP) / 2 - 0.35, midZ],
+      [0.20, 0.44, Math.hypot(runZ, rise)], new THREE.Color('#6d6660'), [pitch, 0, 0]);
+  add(5, 'box', [ST_X - ST_W / 2 - 0.12, (ST_FOOT + ST_TOP) / 2 + 0.95, midZ],
+      [0.16, 0.16, Math.hypot(runZ, rise)], new THREE.Color('#7d766f'), [pitch, 0, 0]);
+  for (let s = 0; s < ST_N; s += 3) {
+    const y = ST_FOOT + (s + 1) * (ST_TOP - ST_FOOT) / ST_N;
+    add(5, 'box', [ST_X - ST_W / 2 - 0.12, y + 0.42, stepZ(s)], [0.11, 1.05, 0.11], new THREE.Color('#7d766f'));
+  }
 
   /* 6 — THE UPPER STOREY: offset volume, cantilevered over the entrance */
   const UW = 17, UD = 11.5, UX = 2.2, UZ = -0.4;
@@ -358,27 +391,25 @@ function compose(out) {
   }
   // balcony slab where the upper storey steps back
   add(7, 'box', [-7.3, FY + 0.56, 2.0], [5.6, 0.32, 8.0], new THREE.Color('#9b9288'));
-  for (let j = 0; j < 14; j++)                           // balustrade
-    add(7, 'box', [-10.0, FY + 1.25, -1.7 + j * 0.58], [0.16, 1.05, 0.16], new THREE.Color('#5d5852'));
-  add(7, 'box', [-10.0, FY + 1.85, 2.0], [0.30, 0.16, 8.0], new THREE.Color('#6d6660'));
-
-  /* 8 — THE LIFE: pool, terrace, planting, lamps */
-  add(8, 'box', [15.4, 0.35, 3.4], [10.6, 1.3, 7.6], new THREE.Color('#5d5750'));   // pool shell
-  add(8, 'box', [15.4, 0.55, 3.4], [9.2, 1.1, 6.2], new THREE.Color('#1f6a86'));    // pool lining
-  for (let i = 0; i < 40; i++) {                                                     // terrace paving
-    const gx = i % 8, gz = (i / 8) | 0;
-    add(8, 'box', [8.6 + gx * 1.72, 0.98, -6.6 + gz * 1.72], [1.6, 0.16, 1.6], tint(pick(CONCRETE)));
+  for (let j = 0; j < 14; j++) {                         // balustrade, with an opening at the stair head
+    const z = -1.7 + j * 0.58;
+    if (z > -0.5 && z < 1.6) continue;
+    add(7, 'box', [-10.0, FY + 1.25, z], [0.16, 1.05, 0.16], new THREE.Color('#5d5852'));
   }
-  const trees = [[-17.5, -9.5], [-19, 2.5], [-16, 11], [-3, 13.5], [9, 13], [21, 10.5], [23, 1], [20.5, -9], [8, -12.5], [-6, -12]];
-  trees.forEach(([x, z]) => {
-    const h = 2.2 + Math.random() * 1.8;
-    add(8, 'box', [x, 0.6 + h / 2, z], [0.46, h, 0.46], new THREE.Color('#6b4e30'));
-    for (let b = 0; b < 3; b++) {
-      const r = 2.5 - b * 0.62;
-      add(8, 'box', [x, 0.6 + h + b * 0.66, z], [r, 1.25, r],
-        new THREE.Color(b % 2 ? '#4f8449' : '#3f7040'), [0, Math.random() * 0.8, 0]);
+  add(7, 'box', [-10.0, FY + 1.85, -1.15], [0.30, 0.16, 2.3], new THREE.Color('#6d6660'));
+  add(7, 'box', [-10.0, FY + 1.85, 4.15], [0.30, 0.16, 3.7], new THREE.Color('#6d6660'));
+
+  /* 8 — THE LIFE: terrace, lamps. The pool, the planting and the site
+     wheelbarrow are modelled objects, placed by loadProps(). */
+  // pool deck: paving laid around the pool, with the water's footprint left open
+  const POOL = { x: 19.8, z: 1.2, w: 11.4, d: 7.6 };
+  for (let gx = 0; gx < 9; gx++) {
+    for (let gz = 0; gz < 9; gz++) {
+      const x = 13.2 + gx * 1.74, z = -6.0 + gz * 1.74;
+      if (Math.abs(x - POOL.x) < POOL.w / 2 - 0.5 && Math.abs(z - POOL.z) < POOL.d / 2 - 0.5) continue;
+      add(8, 'box', [x, 0.98, z], [1.62, 0.16, 1.62], tint(pick(CONCRETE)));
     }
-  });
+  }
   [[-11.5, -8.5], [11.5, -8.5], [0, 10.5]].forEach(([x, z]) => {                     // lamps
     add(8, 'box', [x, 1.9, z], [0.2, 2.6, 0.2], new THREE.Color('#4a453f'));
     add(8, 'box', [x, 3.35, z], [0.7, 0.32, 0.7], new THREE.Color('#ffd9a0'));
@@ -465,6 +496,103 @@ function compose(out) {
       });
     });
   }
+}
+
+/* =====================================================================
+   PROPS — trees, the pool and the wheelbarrow, modelled in Blender and
+   delivered as one small glTF. Placed here, on the same 0→1 timeline as
+   the brickwork, so they rise with everything else.
+   ===================================================================== */
+const TREES = [
+  [-17.5, -9.5, 1.00], [-19.0,  2.5, 0.82], [-16.0, 11.0, 0.93],
+  [ -3.0, 13.5, 0.75], [  9.0, 13.0, 0.88], [ 21.0, 10.5, 1.05],
+  [ 29.0,  6.0, 0.80], [ 20.5, -9.0, 0.96], [  8.0,-12.5, 0.72],
+  [ -6.0,-12.0, 1.02], [-22.0, -3.0, 0.68], [ 14.0,-13.5, 0.78]
+];
+const BARROWS = [[-15.0, -6.6, 0.5], [-18.2, 6.8, -2.3]];
+
+function loadProps(group, props, onWater, lowPower) {
+  const dress = obj => {
+    obj.traverse(n => {
+      if (!n.isMesh) return;
+      n.castShadow = !lowPower;
+      n.receiveShadow = !lowPower;
+    });
+    return obj;
+  };
+
+  /* Wrap a model in outer(placed) → inner(scaled, re-centred on its own
+     footprint) so a single position is all the scene has to think about. */
+  const rig = (parts, span, spanAxis, at, ry) => {
+    const outer = new THREE.Group(), inner = new THREE.Group();
+    outer.add(inner);
+    parts.forEach(p => inner.add(dress(p)));
+    const b1 = new THREE.Box3().setFromObject(inner);
+    const s1 = b1.getSize(new THREE.Vector3());
+    const k = span / (spanAxis === 'y' ? s1.y : Math.max(s1.x, s1.z));
+    inner.scale.setScalar(k);
+    const b2 = new THREE.Box3().setFromObject(inner);
+    const c = b2.getCenter(new THREE.Vector3());
+    inner.position.set(-c.x, -b2.min.y, -c.z);
+    outer.position.set(at[0], at[1], at[2]);
+    outer.rotation.y = ry || 0;
+    outer.userData.k = k;
+    return outer;
+  };
+
+  const enrol = (obj, t0, drop, spin) => {
+    props.push({
+      obj, base: { s: obj.scale.x, y: obj.position.y, ry: obj.rotation.y },
+      t0, dur: BAND * 0.34, drop, spin
+    });
+    group.add(obj);
+  };
+
+  new GLTFLoader().load('assets/models/vfuho-props.glb', gltf => {
+    const find = n => gltf.scene.getObjectByName(n);
+
+    /* ---- the pool, with its water riding inside the same rig ---- */
+    const poolSrc = find('Pool'), waterSrc = find('Pool_Water');
+    if (poolSrc) {
+      const parts = [poolSrc.clone(true)];
+      let water = null;
+      if (waterSrc) {
+        water = waterSrc.clone(true);
+        water.castShadow = false;
+        water.material = new THREE.MeshPhysicalMaterial({
+          color: 0x2e86a8, roughness: 0.03, metalness: 0.12,
+          transparent: true, opacity: 0, transmission: 0.5, thickness: 0.7
+        });
+        parts.push(water);
+      }
+      const p = rig(parts, 11.4, 'x', [19.8, -0.02, 1.2], 0);
+      if (water) {
+        water.userData.y0 = water.position.y;
+        water.userData.dip = 0.9 / p.userData.k;   // model units
+        onWater(water);
+      }
+      enrol(p, BAND * 8.02, 5, 0.5);
+    }
+
+    /* ---- planting ---- */
+    const variants = [find('Tree_A'), find('Tree_B')].filter(Boolean);
+    if (variants.length) {
+      TREES.forEach(([x, z, k], i) => {
+        const t = rig([variants[i % variants.length].clone(true)],
+                      7.4 * k, 'y', [x, 0.02, z], (i * 2.399) % (Math.PI * 2));
+        enrol(t, BAND * 8.3 + (i / TREES.length) * BAND * 0.45, 9, 1.4);
+      });
+    }
+
+    /* ---- the wheelbarrow from the logo, parked on site ---- */
+    const barrow = find('Wheelbarrow');
+    if (barrow) {
+      BARROWS.forEach(([x, z, ry], i) => {
+        const b = rig([barrow.clone(true)], 2.9, 'x', [x, 0.02, z], ry);
+        enrol(b, BAND * 0.2 + i * BAND * 0.14, 4, 2.2);
+      });
+    }
+  }, undefined, err => console.warn('[vfuho] props unavailable; the brick build stands alone.', err));
 }
 
 /* =====================================================================

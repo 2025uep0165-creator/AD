@@ -24,6 +24,7 @@ const thumb = w => w.f === 'short'
   ? `https://i.ytimg.com/vi/${w.id}/oar2.jpg`
   : `https://i.ytimg.com/vi/${w.id}/maxresdefault.jpg`;
 const fallback = w => `https://i.ytimg.com/vi/${w.id}/hqdefault.jpg`;
+const onerr = w => `onerror="this.onerror=null;this.src='${fallback(w)}'"`;
 
 const CATNAME = {
   house: 'Villas & Houses', structure: 'Pillars & Structures', foundation: 'Foundations',
@@ -61,31 +62,54 @@ $('#figures').innerHTML = FIGURES.map(f => `
 /* -- marquee of real thumbnails -- */
 const strip = WORKS.filter(w => w.f === 'short').slice(0, 30);
 $('#marqueeTrack').innerHTML = [...strip, ...strip]
-  .map(w => `<img src="${thumb(w)}" alt="" loading="lazy" decoding="async">`).join('');
+  .map(w => `<img src="${thumb(w)}" alt="" loading="lazy" decoding="async" ${onerr(w)}>`).join('');
 
 /* -- craft stack -- */
 const stackPicks = ['8bNZvP4wH6c', 'F0GEhfGkYaA', 'cipdD8qpHVY', 'mzAB18R6ucY']
   .map(id => WORKS.find(w => w.id === id)).filter(Boolean);
 $('#craftStack').innerHTML = stackPicks.map(w => `
   <figure data-id="${w.id}">
-    <img src="${thumb(w)}" alt="${esc(w.t)}" loading="lazy" decoding="async">
+    <img src="${thumb(w)}" alt="${esc(w.t)}" loading="lazy" decoding="async" ${onerr(w)}>
     <figcaption>${w.v}</figcaption>
   </figure>`).join('');
 
-/* -- disciplines -- */
-$('#discGrid').innerHTML = DISCIPLINES.map((d, i) => {
-  const n = WORKS.filter(w => w.c === d.k).length;
-  const views = WORKS.filter(w => w.c === d.k).reduce((s, w) => s + w.n, 0);
-  const hero = WORKS.find(w => w.id === d.hero) || WORKS.find(w => w.c === d.k);
-  return `<article class="disc rv" data-cat="${d.k}" tabindex="0" role="button"
-             aria-label="Filter the archive by ${esc(d.name)}">
-    <img src="${thumb(hero)}" alt="" loading="lazy" decoding="async">
-    <span class="disc__n">${String(i + 1).padStart(2, '0')}</span>
-    <h3 class="disc__t">${d.name}</h3>
-    <p class="disc__b">${d.blurb}</p>
-    <p class="disc__c"><b>${n}</b> builds <i>·</i> <b>${big(views)}</b> views</p>
-  </article>`;
-}).join('');
+/* -- disciplines: an index you read, with a plate that answers it -- */
+const discData = DISCIPLINES.map(d => {
+  const of = WORKS.filter(w => w.c === d.k);
+  return { ...d, n: of.length, views: of.reduce((s, w) => s + w.n, 0),
+           hero: WORKS.find(w => w.id === d.hero) || of[0] };
+});
+$('#discList').innerHTML = discData.map((d, i) => `
+  <li class="di rv${i === 0 ? ' is-on' : ''}" data-cat="${d.k}" data-i="${i}" tabindex="0" role="button"
+      aria-label="Show ${esc(d.name)} in the archive">
+    <span class="di__n mono">${String(i + 1).padStart(2, '0')}</span>
+    <span class="di__body">
+      <span class="di__t">${d.name}</span>
+      <span class="di__b">${d.blurb}</span>
+    </span>
+    <span class="di__c mono"><b>${d.n}</b> builds<i></i><b>${big(d.views)}</b> views</span>
+  </li>`).join('');
+
+$('#discPlate').innerHTML = discData.map((d, i) => `
+  <figure class="dp${i === 0 ? ' is-on' : ''}" data-i="${i}">
+    <img src="${thumb(d.hero)}" alt="" loading="lazy" decoding="async" ${onerr(d.hero)}>
+    <figcaption><span class="mono">${d.hero.v}</span>${esc(d.hero.t)}</figcaption>
+  </figure>`).join('');
+
+const discItems = $$('.di'), discPlates = $$('.dp');
+let discActive = 0;
+function showDiscipline(i) {
+  if (i === discActive) return;
+  discActive = i;
+  discItems.forEach((el, k) => el.classList.toggle('is-on', k === i));
+  discPlates.forEach((el, k) => el.classList.toggle('is-on', k === i));
+}
+$('#discList').addEventListener('pointerover', e => {
+  const li = e.target.closest('.di'); if (li) showDiscipline(+li.dataset.i);
+});
+$('#discList').addEventListener('focusin', e => {
+  const li = e.target.closest('.di'); if (li) showDiscipline(+li.dataset.i);
+});
 
 /* -- filters -- */
 $('#filters').innerHTML = FILTERS.map(f => {
@@ -95,24 +119,47 @@ $('#filters').innerHTML = FILTERS.map(f => {
 
 /* -- hall of fame -- */
 const fame = WORKS.slice(0, 8);
+const fameMax = fame[0].n;
 $('#fameList').innerHTML = fame.map((w, i) => `
-  <div class="fr rv" data-id="${w.id}" tabindex="0" role="button" aria-label="Play ${esc(w.t)}">
+  <div class="fr rv" data-id="${w.id}" tabindex="0" role="button" aria-label="Play ${esc(w.t)}"
+       style="--bar:${(w.n / fameMax * 100).toFixed(1)}%">
+    <span class="fr__bar" aria-hidden="true"></span>
     <span class="fr__r">${String(i + 1).padStart(2, '0')}</span>
     <div class="fr__mid">
-      <img class="fr__th" src="${thumb(w)}" alt="" loading="lazy" decoding="async">
+      <img class="fr__th" src="${thumb(w)}" alt="" loading="lazy" decoding="async" ${onerr(w)}>
       <h3 class="fr__t">${esc(w.t)}</h3>
     </div>
     <span class="fr__v">${w.v.replace(/([\d.]+)([KMB])? views/, (_, n, s) => n + (s ? `<sup>${s}</sup>` : ''))}</span>
   </div>`).join('');
 
 /* -- timeline -- */
-$('#tl').innerHTML = TIMELINE.map(t => `
-  <li><span class="tl__y">${t.year}</span><h3 class="tl__t">${t.title}</h3><p class="tl__b">${t.body}</p></li>`).join('');
+$('#tl').innerHTML = TIMELINE.map((t, i) => `
+  <li data-n="${String(i + 1).padStart(2, '0')}">
+    <span class="tl__y">${t.year}</span>
+    <h3 class="tl__t">${t.title}</h3>
+    <p class="tl__b">${t.body}</p>
+  </li>`).join('');
 
 /* -- technique ledger -- */
-$('#ledger').innerHTML = TECHNIQUES.map(([t, d], i) => `
-  <div class="lg rv"><span class="lg__n">${String(i + 1).padStart(2, '0')}</span>
-  <span class="lg__t">${t}</span><span class="lg__d">${d}</span></div>`).join('');
+const techWorks = TECHNIQUES.map(([, , id]) => WORKS.find(w => w.id === id)).filter(Boolean);
+$('#ledger').innerHTML = TECHNIQUES.map(([t, d, id], i) => {
+  const w = WORKS.find(x => x.id === id);
+  return `<div class="lg rv${w ? '' : ' is-flat'}"${w ? ` data-id="${id}" tabindex="0" role="button"
+       aria-label="Watch a build that shows ${esc(t)}"` : ''}>
+    <span class="lg__n">${String(i + 1).padStart(2, '0')}</span>
+    <span class="lg__t">${t}</span>
+    <span class="lg__d">${d}</span>
+    ${w ? `<span class="lg__go mono"><img src="${thumb(w)}" alt="" loading="lazy" decoding="async" ${onerr(w)}>Watch <i>&#8599;</i></span>` : ''}
+  </div>`;
+}).join('');
+$('#ledger').addEventListener('click', e => {
+  const g = e.target.closest('.lg[data-id]');
+  if (g) openLb(g.dataset.id, techWorks);
+});
+$('#ledger').addEventListener('keydown', e => {
+  const g = e.target.closest('.lg[data-id]');
+  if (g && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); g.click(); }
+});
 
 /* -- platforms -- */
 $('#plat').innerHTML = PLATFORMS.map(p => `
@@ -130,7 +177,7 @@ const motionPicks = MOTION.map(id => WORKS.find(w => w.id === id)).filter(Boolea
 $('#motionRow').innerHTML = motionPicks.map(w => `
   <figure class="mo" data-id="${w.id}">
     <div class="mo__screen">
-      <img src="${thumb(w)}" alt="${esc(w.t)}" loading="lazy" decoding="async">
+      <img src="${thumb(w)}" alt="${esc(w.t)}" loading="lazy" decoding="async" ${onerr(w)}>
       <span class="mo__play"><i></i></span>
     </div>
     <figcaption>
@@ -193,6 +240,16 @@ if (CAN_AUTOPLAY) {
   $$('.mo').forEach(f => player.observe(f));
 }
 
+$('#motionIndex').innerHTML = motionPicks.map((w, i) => `
+  <li data-id="${w.id}" tabindex="0" role="button" aria-label="Play ${esc(w.t)}">
+    <span class="mono">${String(i + 1).padStart(2, '0')}</span>
+    <span class="mi__t">${esc(w.t)}</span>
+    <span class="mi__v mono">${w.v}</span>
+  </li>`).join('');
+$('#motionIndex').addEventListener('click', e => {
+  const li = e.target.closest('li'); if (li) openLb(li.dataset.id, motionPicks);
+});
+
 $('#motionRow').addEventListener('click', e => {
   const f = e.target.closest('.mo');
   if (f) openLb(f.dataset.id, motionPicks);
@@ -201,7 +258,7 @@ $('#motionRow').addEventListener('click', e => {
 /* -- the wall: a dense field of everything that has been finished -- */
 const wallPicks = WORKS.filter(w => w.f === 'short').slice(0, 54);
 $('#wallGrid').innerHTML = wallPicks
-  .map(w => `<img src="${thumb(w)}" alt="" loading="lazy" decoding="async" data-id="${w.id}">`).join('');
+  .map(w => `<img src="${thumb(w)}" alt="" loading="lazy" decoding="async" data-id="${w.id}" ${onerr(w)}>`).join('');
 $('#wallGrid').addEventListener('click', e => {
   if (e.target.dataset.id) openLb(e.target.dataset.id, wallPicks);
 });
@@ -247,14 +304,14 @@ $('#filters').addEventListener('click', e => {
 });
 moreBtn.addEventListener('click', () => { shownCount += PAGE; renderGallery(); });
 
-$('#discGrid').addEventListener('click', e => {
-  const d = e.target.closest('.disc');
+$('#discList').addEventListener('click', e => {
+  const d = e.target.closest('.di');
   if (!d) return;
   applyFilter(d.dataset.cat);
   $('#work').scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth' });
 });
-$('#discGrid').addEventListener('keydown', e => {
-  if ((e.key === 'Enter' || e.key === ' ') && e.target.closest('.disc')) { e.preventDefault(); e.target.click(); }
+$('#discList').addEventListener('keydown', e => {
+  if ((e.key === 'Enter' || e.key === ' ') && e.target.closest('.di')) { e.preventDefault(); e.target.closest('.di').click(); }
 });
 
 /* =====================================================================

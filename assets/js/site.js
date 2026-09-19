@@ -71,24 +71,25 @@ export const DISCIPLINES = [
     hero: 'St_LeDdU6Ys' }
 ];
 
-/* The techniques index — a blueprint-style ledger of the craft. */
+/* The techniques index. Each one points at a build that demonstrates it,
+   so the ledger is something you can use rather than just read. */
 export const TECHNIQUES = [
-  ['Running-bond brickwork',      'Every wall laid course by course, offset by half a brick.'],
-  ['Hand-tied rebar cages',       'Steel bent, cut and wired before a single pour.'],
-  ['Reinforced concrete slabs',   'Ground decks, floor decks and roof decks, cast in place.'],
-  ['Pillar & pile foundations',   'Raised houses on five, seven or a single central stem.'],
-  ['Flood-resistant groundwork',  'Elevated structures engineered against rising water.'],
-  ['Cantilevered volumes',        'Upper storeys projected over open air, unsupported.'],
-  ['Twisted & V-form columns',    'Geometry that bends the brick out of the vertical.'],
-  ['Cast concrete staircases',    'Treads and risers formed, poured and struck by hand.'],
-  ['Working plumbing systems',    'Tanks, pipes and pumps that genuinely move water.'],
-  ['Integrated lighting',         'Wired interiors and lit bridge spans.'],
-  ['Mechanised doors',            'Automatic openings driven by miniature actuators.'],
-  ['Ventilated basements',        'Underground parking with functioning airflow.'],
-  ['Glazing & façade painting',   'Finishing passes that set the character of the house.'],
-  ['Landscaping & planting',      'Trees, gardens and grounds that complete the scene.'],
-  ['Scaffolding at scale',        'Miniature access systems for upper-storey work.'],
-  ['Stone & granite masonry',     'Rustic builds in cut stone as well as brick.']
+  ['Running-bond brickwork',     'Every wall laid course by course, offset by half a brick.',      'jK2jzk5_Vk8'],
+  ['Hand-tied rebar cages',      'Steel bent, cut and wired before a single pour.',                'C5HLXE5JuE4'],
+  ['Reinforced concrete slabs',  'Ground decks, floor decks and roof decks, cast in place.',       'yCgdF55EnQw'],
+  ['Pillar & pile foundations',  'Raised houses on five, seven or a single central stem.',         'H5yzCQgJv1U'],
+  ['Flood-resistant groundwork', 'Elevated structures engineered against rising water.',           'F0GEhfGkYaA'],
+  ['Cantilevered volumes',       'Upper storeys projected over open air, unsupported.',            'XRvUNwXtM7o'],
+  ['Twisted & V-form columns',   'Geometry that bends the brick out of the vertical.',             'SbN9GopL0zA'],
+  ['Cast concrete staircases',   'Treads and risers formed, poured and struck by hand.',           'IisGYJjDNtw'],
+  ['Working plumbing systems',   'Tanks, pipes and pumps that genuinely move water.',              '5L3RuQgo0bs'],
+  ['Integrated lighting',        'Wired interiors and lit bridge spans.',                          'mzAB18R6ucY'],
+  ['Mechanised doors',           'Automatic openings driven by miniature actuators.',              '5AOUD0yHTio'],
+  ['Ventilated basements',       'Underground parking with functioning airflow.',                  'TG-rOWVS0U4'],
+  ['Glazing & façade painting',  'Finishing passes that set the character of the house.',          'ElqevV2IDIo'],
+  ['Landscaping & planting',     'Trees, gardens and grounds that complete the scene.',            '6JPp0hM2Hrk'],
+  ['Scaffolding at scale',       'Miniature access systems for upper-storey work.',                't2oA50ohpJ0'],
+  ['Stone & granite masonry',    'Rustic builds in cut stone as well as brick.',                   'wFtdQTg7znE']
 ];
 
 /* The journey. */
