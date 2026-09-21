@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MINI ARCHITECT — Built Small, Filmed Whole</title>
+<meta name="description" content="MINI ARCHITECT builds miniature houses, mansions, dams and bridges from tiny bricks, and films each one whole. 124 thousand subscribers. 27.5 million views. 29 build films. This is the archive.">
+<meta name="theme-color" content="#050505">
+<meta property="og:type" content="website">
+<meta property="og:title" content="MINI ARCHITECT — Built Small, Filmed Whole">
+<meta property="og:description" content="Miniature houses and mansions in tiny brick, filmed start to finish. 27.5 million views. 29 build films.">
+<meta property="og:image" content="assets/img/logo.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://i.ytimg.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="icon" type="image/png" href="assets/img/favicon.png">
+<link rel="apple-touch-icon" href="assets/img/logo.png">
+
+<script type="importmap">
+{ "imports": { "three": "./assets/vendor/three.module.min.js" } }
+</script>
+</head>
+
+<body>
+
+<!-- ============ PRELOADER ============ -->
+<div class="boot" id="boot">
+  <div class="boot__inner">
+    <img class="boot__logo" src="assets/img/mark.svg" alt="" width="120" height="120">
+    <span class="boot__word">Mini Architect</span>
+    <div class="boot__bar"><i id="bootBar"></i></div>
+    <div class="boot__note mono">Laying the first course<span class="dots"></span></div>
+  </div>
+</div>
+
+<!-- ============ NAV ============ -->
+<div class="prog" id="prog" aria-hidden="true"></div>
+<header class="nav" id="nav">
+  <a class="nav__mark" href="#top" aria-label="MINI ARCHITECT — home">
+    <img src="assets/img/mark.svg" alt="" width="120" height="120">
+    <span class="nav__word">Mini Architect</span>
+  </a>
+  <nav class="nav__links" aria-label="Sections">
+    <a href="#legacy">Legacy</a>
+    <a href="#craft">The Craft</a>
+    <a href="#disciplines">Disciplines</a>
+    <a href="#work">The Work</a>
+    <a href="#journey">Journey</a>
+    <a href="#reach">Reach</a>
+  </nav>
+  <a class="nav__cta" href="https://www.youtube.com/@theminiarchitect" target="_blank" rel="noopener">
+    Subscribe <span class="mono">124K</span>
+  </a>
+  <button class="nav__burger" id="burger" aria-label="Menu" aria-expanded="false"><span></span><span></span></button>
+</header>
+
+<main id="top">
+
+<!-- ============ THE BUILD — pinned 3D stage ============ -->
+<section class="stage" id="build">
+  <div class="stage__sticky">
+    <canvas id="gl" aria-label="Interactive 3D miniature brick house under construction"></canvas>
+    <div class="stage__vignette"></div>
+
+    <!-- hero copy -->
+    <div class="hero" id="hero">
+      <p class="hero__eyebrow mono">Est. March 2022 · Miniature architecture</p>
+      <h1 class="hero__title">
+        <span><i>One build.</i></span>
+        <span><i>One film.</i></span>
+        <span><i>Start to finish.</i></span>
+      </h1>
+      <p class="hero__lede">
+        MINI ARCHITECT builds houses, mansions, dams and bridges out of bricks the size of sugar
+        cubes — and never cuts away. One build took twenty-nine minutes to film, and nine million
+        people watched all of it.
+      </p>
+      <div class="hero__meta mono">
+        <span>124K subscribers</span><i></i><span>27.5M views</span><i></i><span>29 build films</span>
+      </div>
+    </div>
+
+    <!-- chapter panels injected here -->
+    <div class="chapters" id="chapters" aria-live="polite"></div>
+
+    <!-- HUD -->
+    <div class="hud">
+      <div class="hud__rail" id="hudRail"></div>
+      <div class="hud__read mono"><b id="hudPct">0</b>% complete</div>
+    </div>
+    <div class="scrollcue mono" id="scrollcue"><span>Scroll to build</span><i></i></div>
+    <div class="dragcue mono" id="dragcue">Drag to look around</div>
+  </div>
+</section>
+
+<!-- ============ LEGACY FIGURES ============ -->
+<section class="legacy" id="legacy">
+  <div class="wrap">
+    <p class="kicker mono">§ 01 — The record</p>
+    <h2 class="h2">Four years of<br>not cutting away.</h2>
+    <div class="figures" id="figures"></div>
+  </div>
+</section>
+
+<!-- ============ MARQUEE ============ -->
+<div class="marquee" aria-hidden="true"><div class="marquee__track" id="marqueeTrack"></div></div>
+
+<!-- ============ THE CRAFT ============ -->
+<section class="craft" id="craft">
+  <div class="wrap craft__grid">
+    <div class="craft__text">
+      <p class="kicker mono">§ 02 — The craft</p>
+      <h2 class="h2">No montage.<br>No shortcuts.</h2>
+      <p class="lead">
+        The easy version of this channel is a sixty-second time-lapse.
+        MINI ARCHITECT makes the hard version: the <em>whole build</em>, in one film,
+        including the twenty minutes where somebody is just laying brick.
+      </p>
+      <p>
+        The bricks are real bricks, fired and sized in millimetres, and the mortar is real mortar.
+        Nothing is glued, nothing is cast as a single piece and nothing is cut to fit. The slab is
+        levelled, the corners go up first, a line is run between them, and then it is thousands of
+        blocks laid one at a time in running bond — exactly the way it is done at full size, because
+        at this scale there is no other way that holds.
+      </p>
+      <p>
+        What makes it unusual is the edit, or rather the absence of one. A mansion runs eighteen
+        minutes. A villa runs thirty-four. The films hold an audience through the slow middle because
+        the slow middle is the craft, and because by the time the roof closes you have watched every
+        course that put it there.
+      </p>
+      <blockquote class="pull">
+        “Man builds stunning mini house with small bricks.”
+        <cite>— twenty-nine minutes, 9.3 million views</cite>
+      </blockquote>
+    </div>
+    <div class="craft__stack" id="craftStack"></div>
+  </div>
+</section>
+
+<!-- ============ DISCIPLINES ============ -->
+<section class="disciplines" id="disciplines">
+  <div class="wrap">
+    <p class="kicker mono">§ 03 — Bodies of work</p>
+    <h2 class="h2">Six disciplines.</h2>
+    <p class="section-lede">
+      Twenty-nine build films, sorted by what was standing at the end.
+    </p>
+    <div class="disc">
+      <ol class="disc__list" id="discList"></ol>
+      <div class="disc__plate" id="discPlate" aria-hidden="true"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ IN MOTION ============ -->
+<section class="motion" id="motion">
+  <div class="wrap motion__grid">
+    <div class="motion__copy">
+      <p class="kicker mono">§ 04 — In motion</p>
+      <h2 class="h2">Watch one<br>all the way.</h2>
+      <p>
+        The three most-watched films in the archive, playing where they stand.
+        A mini house, a two-storey house and a working dam on a remote river — no
+        narration, no music cues, just the build.
+      </p>
+      <ol class="motion__index" id="motionIndex"></ol>
+    </div>
+    <div class="motion__row" id="motionRow"></div>
+  </div>
+</section>
+
+<!-- ============ THE WORK ============ -->
+<section class="work" id="work">
+  <div class="wrap">
+    <p class="kicker mono">§ 05 — The archive</p>
+    <h2 class="h2">The work.</h2>
+    <p class="section-lede">
+      Every build MINI ARCHITECT has filmed. Choose one and watch it go up.
+    </p>
+    <div class="filters" id="filters" role="tablist" aria-label="Filter the archive"></div>
+    <div class="gal" id="gal"></div>
+    <div class="work__more">
+      <button class="btn" id="moreBtn">Show more films</button>
+      <p class="mono work__count" id="workCount"></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HALL OF FAME ============ -->
+<section class="fame" id="fame">
+  <div class="wrap">
+    <p class="kicker mono">§ 06 — Hall of record</p>
+    <h2 class="h2">The ones the<br>world stopped for.</h2>
+    <div class="fame__list" id="fameList"></div>
+  </div>
+</section>
+
+<!-- ============ JOURNEY ============ -->
+<section class="journey" id="journey">
+  <div class="wrap">
+    <p class="kicker mono">§ 07 — The journey</p>
+    <h2 class="h2">Four years,<br>one film at a time.</h2>
+    <ol class="tl" id="tl"></ol>
+  </div>
+</section>
+
+<!-- ============ TECHNIQUE INDEX ============ -->
+<section class="index" id="index">
+  <div class="wrap">
+    <p class="kicker mono">§ 08 — The ledger</p>
+    <h2 class="h2">Techniques<br>in the repertoire.</h2>
+    <div class="ledger" id="ledger"></div>
+  </div>
+</section>
+
+<!-- ============ REACH ============ -->
+<section class="reach" id="reach">
+  <div class="wrap">
+    <p class="kicker mono">§ 09 — Reach</p>
+    <h2 class="h2">Where the<br>work lives.</h2>
+    <div class="plat" id="plat"></div>
+  </div>
+</section>
+
+<!-- ============ THE WALL ============ -->
+<section class="wall" id="wall" aria-label="Wall of builds">
+  <div class="wall__grid" id="wallGrid" aria-hidden="true"></div>
+  <div class="wall__over">
+    <p class="mono">Twenty-nine build films</p>
+    <p class="wall__line">Every one of them<br>uncut.</p>
+  </div>
+</section>
+
+<!-- ============ CLOSING ============ -->
+<section class="close" id="close">
+  <div class="wrap close__inner">
+    <p class="kicker mono">§ 10 — The legacy</p>
+    <h2 class="close__line">
+      Anyone can show you<br>the finished house.<br>
+      <em>Almost nobody<br>shows you all of it.</em>
+    </h2>
+    <p class="close__body">
+      Four years. Twenty-nine build films. Twenty-seven and a half million views. Slab, corners,
+      line, courses, floor, roof, render, water — filmed in order and filmed whole, on the bet that
+      enough people would rather watch the work than the highlight.
+    </p>
+    <div class="close__cta">
+      <a class="btn btn--solid" href="https://www.youtube.com/@theminiarchitect" target="_blank" rel="noopener">Watch on YouTube</a>
+      <a class="btn" href="https://www.facebook.com/Theminiarchitect" target="_blank" rel="noopener">Follow on Facebook</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap foot__grid">
+    <div>
+      <img class="foot__logo" src="assets/img/logo.png" alt="MINI ARCHITECT" width="448" height="448">
+      <p class="mono">Miniature architecture · Est. 4 March 2022</p>
+    </div>
+    <nav class="foot__links" aria-label="MINI ARCHITECT channels">
+      <a href="https://www.youtube.com/@theminiarchitect" target="_blank" rel="noopener">YouTube</a>
+      <a href="https://www.facebook.com/Theminiarchitect" target="_blank" rel="noopener">Facebook</a>
+    </nav>
+    <p class="foot__fine mono">
+      Thumbnails and films are the property of MINI ARCHITECT.
+    </p>
+  </div>
+</footer>
+
+<!-- ============ LIGHTBOX ============ -->
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Film player" hidden>
+  <button class="lb__x" id="lbX" aria-label="Close">&times;</button>
+  <button class="lb__nav lb__nav--prev" id="lbPrev" aria-label="Previous">&#8249;</button>
+  <button class="lb__nav lb__nav--next" id="lbNext" aria-label="Next">&#8250;</button>
+  <div class="lb__stage">
+    <div class="lb__frame" id="lbFrame"></div>
+    <div class="lb__meta">
+      <h3 id="lbTitle"></h3>
+      <p class="mono"><span id="lbViews"></span><i></i><span id="lbCat"></span></p>
+      <a class="lb__out mono" id="lbOut" target="_blank" rel="noopener">Open on YouTube &#8599;</a>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="assets/js/main.js"></script>
+</body>
+</html>

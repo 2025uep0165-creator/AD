@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120" preserveAspectRatio="xMidYMid meet" role="img" aria-label="OUROBOROS ARQ">
+  <title>OUROBOROS ARQ</title>
+  <!-- the ouroboros ring, broken where the tail meets the head -->
+  <path d="M69.02 8.79A52 52 0 1 1 51.6 9.04" fill="none" stroke="#7cb4dd" stroke-width="7" stroke-linecap="round"/>
+  <circle cx="69.6" cy="8.9" r="6.2" fill="#7cb4dd"/>
+  <!-- a reinforced concrete section: two columns carrying three slabs -->
+  <g fill="#eef1f4">
+    <rect x="32" y="36" width="56" height="7" rx="1.5"/>
+    <rect x="32" y="58" width="56" height="7" rx="1.5"/>
+    <rect x="32" y="80" width="56" height="7" rx="1.5"/>
+  </g>
+  <g fill="#4d8ab8">
+    <rect x="38" y="43" width="9" height="15"/>
+    <rect x="73" y="43" width="9" height="15"/>
+    <rect x="38" y="65" width="9" height="15"/>
+    <rect x="73" y="65" width="9" height="15"/>
+  </g>
+</svg>

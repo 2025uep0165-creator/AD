@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Mini Construction">
+  <title>Mini Construction</title>
+  <!-- head of water falling into the runner -->
+  <g fill="#1a6a5b">
+    <path d="M14 10h13v34H14Z"/>
+    <path d="M33 10h13v22H33Z"/>
+  </g>
+  <!-- the runner: a Francis wheel -->
+  <circle cx="64" cy="64" r="44" fill="none" stroke="#5fc9b2" stroke-width="7"/>
+  <g stroke="#eef4f1" stroke-width="6" stroke-linecap="round">
+    <path d="M64 27v16M64 85v16M27 64h16M85 64h16"/>
+    <path d="M37.8 37.8 49.1 49.1M78.9 78.9l11.3 11.3M90.2 37.8 78.9 49.1M49.1 78.9 37.8 90.2"/>
+  </g>
+  <circle cx="64" cy="64" r="13" fill="#2f9e88"/>
+  <!-- tailrace -->
+  <path d="M8 104h104" stroke="#2f9e88" stroke-width="7" stroke-linecap="round"/>
+</svg>
